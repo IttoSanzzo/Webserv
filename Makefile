@@ -6,7 +6,7 @@
 #    By: marcosv2 <marcosv2@student.42.rio>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/02 15:01:33 by marcosv2          #+#    #+#              #
-#    Updated: 2024/05/27 21:48:48 by marcosv2         ###   ########.fr        #
+#    Updated: 2024/05/28 04:51:04 by marcosv2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,15 +28,20 @@ D_OBJS	= objs/
 # Sources & Objects
 
 DS_MAIN	= main/
-DS_PARS	= parse/
+DS_CLAS	= classes/
+DS_UTIL	= utils/
 
 N_MAIN	=	main.cpp
+N_CLAS	=	ServerConfig.cpp
+N_UTIL	=	ws_inet_pton.cpp	\
+			ws_inet_addr.cpp
 
-F_SRCS  =	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
-			$(addprefix $(D_SRCS)$(DS_PARS), $(N_MAIN))	\
-
-N_OBJS  =       $(N_MAIN:.cpp=.opp)	\
-
+F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
+			$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))	\
+			$(addprefix $(D_SRCS)$(DS_UTIL), $(N_UTIL))
+N_OBJS	=		$(N_MAIN:.cpp=.opp)	\
+				$(N_CLAS:.cpp=.opp)	\
+				$(N_UTIL:.cpp=.opp)
 F_OBJS	= $(addprefix $(D_OBJS), $(N_OBJS))
 
 # Colors
