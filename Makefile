@@ -6,7 +6,7 @@
 #    By: marcosv2 <marcosv2@student.42.rio>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/02 15:01:33 by marcosv2          #+#    #+#              #
-#    Updated: 2024/05/27 21:09:17 by marcosv2         ###   ########.fr        #
+#    Updated: 2024/05/27 21:48:48 by marcosv2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,15 +21,21 @@ C_PUTS	= printf
 
 # Dirs
 
-D_HDRS	= -I ./
-D_SRCS	= ./
+D_HDRS	= -I ./includes/
+D_SRCS	= srcs/
 D_OBJS	= objs/
 
 # Sources & Objects
 
-N_MAIN	=	
-F_SRCS	= $(addprefix $(D_SRCS)/, $(N_MAIN))
-N_OBJS	= $(N_MAIN:.cpp=.opp)
+DS_MAIN	= main/
+DS_PARS	= parse/
+
+N_MAIN	=	main.cpp
+
+F_SRCS  =	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
+			$(addprefix $(D_SRCS)$(DS_PARS), $(N_MAIN))	\
+
+N_OBJS  =       $(N_MAIN:.cpp=.opp)	\
 
 F_OBJS	= $(addprefix $(D_OBJS), $(N_OBJS))
 
@@ -53,7 +59,7 @@ $(NAME)		: $(D_OBJS) $(F_OBJS)
 	@$(C_COMP) $(C_FLAG) $(D_HDRS) -o $@ $(F_OBJS)
 	@$(C_PUTS) "$(P_GREEN)Done!$(P_WHITE)\n"
 
-$(D_OBJS)%.opp	: $(D_SRCS)/%.cpp
+$(D_OBJS)%.opp	: $(D_SRCS)/*/%.cpp
 	@$(C_PUTS) "\t$(P_PRPLE)Generating $(NAME)..: %-33.33s\r $(P_WHITE)" $@
 	@$(C_COMP) $(C_FLAG) $(D_HDRS) -c $< -o $@
 
