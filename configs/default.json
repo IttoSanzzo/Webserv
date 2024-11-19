@@ -1,0 +1,41 @@
+{
+	"config": {
+		"listen": 8002,
+		"host": "127.0.0.1",
+		"server_name": "localhost",
+		"root": "docs/fusion_web/",
+		"index": "index.html",
+		"client_max_size_body": 2048,
+		"error_pages": [
+			{
+				"code": "404",
+				"page": "error_pages/404.html"
+			}
+		],
+		"locations": [
+			{
+				"page": "/",
+				"autoindex": false,
+				"allow_methods": "GET POST DELETE"
+			},
+			{
+				"page": "/characters",
+				"index": "characters.html",
+				"autoindex": true,
+				"allow_methods": "GET POST PUT HEAD"
+			},
+			{
+				"page": "/char",
+				"return": "characters"
+			},
+			{
+				"page": "/cgi-bin",
+				"index": "dice.py",
+				"root": "./",
+				"cgi_path": "/usr/bin/python3 /bin/bash",
+				"cgi_ext": ".py .sh",
+				"allow_methods": "GET POST DELETE"
+			}
+		]
+	}
+}
