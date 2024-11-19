@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ServerConfig.hpp                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marcosv2 <marcosv2@student.42.rio>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/27 22:34:34 by marcosv2          #+#    #+#             */
-/*   Updated: 2024/05/28 05:39:21 by marcosv2         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef SERVERCONFIG_HPP
 # define SERVERCONFIG_HPP
 
@@ -28,7 +16,7 @@ class	ServerConfig {
 		int								_listen_fd;
 		unsigned long					_cli_max_body_size;
 		std::map<short, std::string>	_error_pages;
-		// std::vector<Location>			_locations; // TODO LOCATIONS 1
+		// std::vector<Location>		_locations; // TODO LOCATIONS 1
 		struct sockaddr_in				_server_address;
 	public:
 	/* Commons */
