@@ -1,6 +1,6 @@
 {
 	"config": {
-		"listen": 8002,
+		"port": 8002,
 		"host": "127.0.0.1",
 		"server_name": "localhost",
 		"root": "docs/fusion_web/",

@@ -1,8 +1,7 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-/* Default Includes */
-
+/* 0. Default Includes */
 # include <iostream>
 # include <fcntl.h>
 # include <cstring>
@@ -37,13 +36,13 @@
 # include <sys/select.h>
 # include <arpa/inet.h>
 
-/* Local Macros */
+/* 1. Local Macros */
 # include "ws_macros.hpp"
 
-/* Class Includes */
+/* 2. Class Includes */
 # include "ServerConfig.hpp"
 
-/* Others */
+/* 3. Others */
 int			ws_inet_pton(int af, const char *src, void *dst);
 in_addr_t	ws_inet_addr(const char *cp);
 

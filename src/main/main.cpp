@@ -4,12 +4,12 @@
 int	ws_testing(ServerConfig& conf) {
 	/* Set */
 	try {
-		conf.setPort("65500;");
-		// conf.setHost("localhost;");
-		// conf.setServerName("Bananada de Banana;");
-		// conf.setIndex(";");
-		// conf.setAutoindex("on;");
-		// conf.setClientMaxBodySize("100;");
+		conf.setPort("65500");
+		conf.setHost("localhost");
+		conf.setServerName("Bananada de Banana");
+		conf.setIndex(";");
+		conf.setAutoindex(true);
+		conf.setClientMaxBodySize(100);
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;

@@ -1,12 +1,12 @@
 #ifndef WS_MACROS_HPP
 # define WS_MACROS_HPP
 
-/* Macros */
+/* 0. Number Macros */
 # define MAX_CLI_SIZE	30000000
 # define MAX_URL_SIZE	4096
 # define MAX_PORT_NUM	65500
 
-/* Errors */
+/* 1. Errors Messages */
 # define ERR_PORT		"Wrong syntax: port"
 # define ERR_HOST		"Wrong syntax: host"
 # define ERR_AUTOINDEX	"Wrong syntax: autoindex"

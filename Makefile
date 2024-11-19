@@ -10,7 +10,7 @@ C_PUTS	= printf
 # Dirs
 
 D_HDRS	= -I ./includes/
-D_SRCS	= srcs/
+D_SRCS	= src/
 D_OBJS	= objs/
 
 # Sources & Objects
@@ -27,9 +27,9 @@ N_UTIL	=	ws_inet_pton.cpp	\
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
 			$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))	\
 			$(addprefix $(D_SRCS)$(DS_UTIL), $(N_UTIL))
-N_OBJS	=		$(N_MAIN:.cpp=.opp)	\
-				$(N_CLAS:.cpp=.opp)	\
-				$(N_UTIL:.cpp=.opp)
+N_OBJS	=	$(N_MAIN:.cpp=.opp)	\
+			$(N_CLAS:.cpp=.opp)	\
+			$(N_UTIL:.cpp=.opp)
 F_OBJS	= $(addprefix $(D_OBJS), $(N_OBJS))
 
 # Colors
@@ -45,7 +45,7 @@ P_NWINE = \033[38;5;88m
 
 # Mandatory Rules
 
-all		: $(NAME)
+all			: $(NAME)
 
 $(NAME)		: $(D_OBJS) $(F_OBJS)
 	@$(C_PUTS) "\n\t$(P_NCYAN)Finishing binary..: $(P_LBLUE)$(NAME)$(P_WHITE)\n"
