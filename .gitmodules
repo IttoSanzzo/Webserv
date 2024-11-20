@@ -1,0 +1,3 @@
+[submodule "CppJsonHandler"]
+	path = CppJsonHandler
+	url = git@github.com:IttoSanzzo/CppJsonHandler.git

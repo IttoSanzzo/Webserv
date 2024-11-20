@@ -20,9 +20,12 @@ DS_CLAS	= classes/
 DS_UTIL	= utils/
 
 N_MAIN	=	main.cpp
-N_CLAS	=	ServerConfig.cpp
+N_CLAS	=	ServerConfig.cpp	\
+			Location.cpp		\
+			ServerArray.cpp
 N_UTIL	=	ws_inet_pton.cpp	\
-			ws_inet_addr.cpp
+			ws_inet_addr.cpp	\
+			stp_utils.cpp
 
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
 			$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))	\
@@ -31,6 +34,11 @@ N_OBJS	=	$(N_MAIN:.cpp=.opp)	\
 			$(N_CLAS:.cpp=.opp)	\
 			$(N_UTIL:.cpp=.opp)
 F_OBJS	= $(addprefix $(D_OBJS), $(N_OBJS))
+
+# JsonHandler
+D_JSON	=	./CppJsonHandler/
+N_JSON	=	jsonHandler.a
+F_JSON	=	$(addprefix $(D_JSON), $(N_JSON))
 
 # Colors
 P_WHITE = \033[0m
@@ -47,9 +55,9 @@ P_NWINE = \033[38;5;88m
 
 all			: $(NAME)
 
-$(NAME)		: $(D_OBJS) $(F_OBJS)
+$(NAME)		: $(F_JSON) $(D_OBJS) $(F_OBJS)
 	@$(C_PUTS) "\n\t$(P_NCYAN)Finishing binary..: $(P_LBLUE)$(NAME)$(P_WHITE)\n"
-	@$(C_COMP) $(C_FLAG) $(D_HDRS) -o $@ $(F_OBJS)
+	@$(C_COMP) $(C_FLAG) $(D_HDRS) -o $@ $(F_OBJS) $(F_JSON)
 	@$(C_PUTS) "$(P_GREEN)Done!$(P_WHITE)\n"
 
 $(D_OBJS)%.opp	: $(D_SRCS)/*/%.cpp
@@ -57,16 +65,21 @@ $(D_OBJS)%.opp	: $(D_SRCS)/*/%.cpp
 	@$(C_COMP) $(C_FLAG) $(D_HDRS) -c $< -o $@
 
 $(D_OBJS)	:
-	@clear
 	@$(C_PUTS) "$(P_LGREN)Starting $(NAME) compilation...$(P_WHITE)"
 	@$(C_PUTS) "\n\t$(P_MAGEN)Creating $(NAME) objects directory...$(P_WHITE)\n"
 	@$(C_MDIR) $(D_OBJS)
 
+$(F_JSON)	:
+	@clear
+	@$(MAKE) --no-print-directory -C $(D_JSON)
+
 clean		:
+	@$(MAKE) clean --no-print-directory -C $(D_JSON)
 	@$(C_PUTS) "$(P_NWINE)Cleaning $(NAME) objects...$(P_WHITE)\n"
 	@${C_REMO} $(D_OBJS)
 
 fclean		:
+	@$(MAKE) fclean --no-print-directory -C $(D_JSON)
 	@$(C_PUTS) "$(P_NWINE)Cleaning $(NAME) objects...$(P_WHITE)\n"
 	@${C_REMO} $(D_OBJS)
 	@$(C_PUTS) "$(P_NWINE)Deleting $(NAME)...$(P_WHITE)\n"
@@ -76,8 +89,13 @@ re		: fclean all
 
 # Test
 
+test	: $(NAME)
+	@./$(NAME)
+
 val		:
 	@valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
+
+valtest	: $(NAME) val
 
 # Phony
 

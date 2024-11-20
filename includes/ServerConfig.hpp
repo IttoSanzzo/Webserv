@@ -3,8 +3,6 @@
 
 #include "webserv.hpp"
 
-class	Location;
-
 class	ServerConfig {
 	private:
 		uint16_t						_port;
@@ -16,40 +14,60 @@ class	ServerConfig {
 		int								_listen_fd;
 		unsigned long					_client_max_body_size;
 		std::map<short, std::string>	_error_pages;
-		// std::vector<Location>		_locations; // TODO LOCATIONS 1
+		std::map<std::string, Location>	_locations;
 		struct sockaddr_in				_server_address;
-	public:
 	/* C. Constructors */
+	public:
 		~ServerConfig();
 		ServerConfig();
 		ServerConfig(const ServerConfig& src);
 		ServerConfig&	operator=(const ServerConfig& src);
+		ServerConfig(const JsonNode& configJson);
 	/* S. Setters */
-		void	setPort(std::string port);
+		void	setPort(const std::string& port);
 		void	setHost(std::string host);
-		void	setServerName(std::string server_name);
-		void	setRoot(std::string root);
-		void	setIndex(std::string index);
+		void	setServerName(const std::string& server_name);
+		void	setRoot(const std::string& root);
+		void	setIndex(const std::string& index);
 		void	setAutoindex(bool autoindex);
 		void	setFd(int fd);
 		void	setClientMaxBodySize(int body_size);
 	/* G. Getters */
-		u_int16_t							getPort(void) const;
-		in_addr_t							getHost(void) const;
-		std::string						getServerName(void) const;
-		std::string						getRoot(void) const;
-		std::string						getIndex(void) const;
-		bool								getAutoindex(void) const;
-		int								getFd(void) const;
-		size_t							getClientMaxBodySize(void) const;
+		u_int16_t	getPort(void) const;
+		in_addr_t	getHost(void) const;
+		std::string	getServerName(void) const;
+		std::string	getRoot(void) const;
+		std::string	getIndex(void) const;
+		bool		getAutoindex(void) const;
+		size_t		getClientMaxBodySize(void) const;
+		std::string	getErrorPage(const short& pos);
+		Location	getLocation(const std::string& page);
+		int			getFd(void) const;
 	/* 0. Core */
+	public:
 		void		initErrorPages(void);
 		bool		isValidHost(std::string host) const;
 		// bool		isValidErrorPages(void); //TODO ServerConfig::isValidErrorPages
 		// int		isValidLocation(Location &location) const; //TODO ServerConfig::isValidLocation
 		// bool		checkLocations(void) const; //TODO ServerConfig::checkLocation
 		// void		setupServer(void); //TODO ServerConfig::setupServer
+	/* 1. JsonParsing*/
+	private:
+		void		setPort(const JsonNode& configJson);
+		void		setHost(const JsonNode& configJson);
+		void		setServerName(const JsonNode& configJson);
+		void		setRoot(const JsonNode& configJson);
+		void		setIndex(const JsonNode& configJson);
+		void		setAutoindex(const JsonNode& configJson);
+		void		setClientMaxBodySize(const JsonNode& configJson);
+		void		setErrorPages(const JsonNode& configJson);
+		void		setLocations(const JsonNode& configJson);
+		void		parseErrorChild(const JsonNode& errorChild);
+		std::string	parseErrorElement(const JsonNode& errorChild, const std::string& element);
+	/* PRIU. Utils */
+		void	deepCopy(const ServerConfig& src);
 	/* E. Exception */
+	public:
 		class	ErrorException : public std::exception {
 			private:
 				std::string	_message;
