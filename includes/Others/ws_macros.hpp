@@ -1,10 +1,13 @@
 #ifndef WS_MACROS_HPP
 # define WS_MACROS_HPP
 
-/* 0. Number Macros */
+/* 0. Defaults */
 # define MAX_CLI_SIZE	30000000
 # define MAX_URL_SIZE	4096
 # define MAX_PORT_NUM	65500
+# define RECV_SIZE		65536
+# define CGI_BUFSIZE	65536
+# define DEFAULT_CONFIG	"./configs/default.json"
 
 /* 10. Log Sets */
 # define LOG_LOG			true
@@ -25,5 +28,11 @@
 # define ERR_AUTOINDEX	"Wrong syntax: autoindex"
 # define ERR_MAXBODY	"Wrong syntax: client_max_body_size"
 # define ERR_EXCE		"\033[38;5;196mSERVER CONFIG ERROR : \033[0m"
+
+/* 3. Bytes for endian conversion */
+# define BYTE_0 0xff000000
+# define BYTE_1 0x00ff0000
+# define BYTE_2 0x0000ff00
+# define BYTE_3 0x000000ff
 
 #endif

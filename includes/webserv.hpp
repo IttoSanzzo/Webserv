@@ -1,47 +1,49 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-/* 0. Default Includes */
+/* 00. Default Includes */
 # include <iostream>
-# include <algorithm>
-# include <fcntl.h>
-# include <cstring>
-# include <string> 
-# include <unistd.h>
-# include <dirent.h>
 # include <sstream>
-
-# include <cstdlib>
 # include <fstream>
-# include <sstream>
-# include <cctype>
+# include <string>
+# include <cstring>
 # include <ctime>
 # include <cstdarg>
 
+/* 01. Cpp Containers */
 # include <map>
 # include <set>
 # include <vector>
 # include <algorithm>
 # include <iterator>
 # include <list>
+# include <utility>
 
+/* 02. C Defaults */
+# include <unistd.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <dirent.h>
+# include <poll.h>
+
+/* 03. C Network */
+# include <sys/socket.h>
+# include <sys/select.h>
+# include <arpa/inet.h>
+# include <netinet/in.h>
+
+/* 03. System */
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <sys/time.h>
-# include <unistd.h>
-# include <signal.h>
-
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <sys/select.h>
-# include <arpa/inet.h>
 
 /* 1. Local Macros */
 # include "Others/ws_macros.hpp"
 
 /* 2. Classes Declaration */
 class	ServerConfig;
+class	ServerConfigArray;
 class	Location;
 
 /* 4. Internal Includes */
@@ -50,6 +52,7 @@ class	Location;
 # include "Classes/ServerConfig.hpp"
 # include "Classes/Location.hpp"
 # include "Classes/ServerConfigArray.hpp"
+# include "Classes/Cluster.hpp"
 
 /* 5. Others */
 int				ws_inet_pton(int af, const char *src, void *dst);

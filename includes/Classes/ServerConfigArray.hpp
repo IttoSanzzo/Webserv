@@ -8,16 +8,20 @@
 class ServerConfigArray {
 	private:
 	/* M. Member Variables */
-		ServerConfig*	serverConfigs;
-		size_t			size;
+		std::vector<ServerConfig>	serverConfigs;
 	public:
-	/* C. Contrusctors */
+	/* C. Constructors */
 		~ServerConfigArray(void);
 		ServerConfigArray(void);
+		ServerConfigArray(const ServerConfigArray& src);
+		ServerConfigArray&	operator=(const ServerConfigArray& src);
 		ServerConfigArray(std::string& configurationFilePath);
 	/* G. Getters */
-		ServerConfig*	GetServer(size_t pos) const;
+		ServerConfig&	GetServer(size_t pos);
 		size_t			GetSize(void) const;
+	private:
+	/* PRI0. Private Functions */
+	void	deepCopy(const ServerConfigArray& src);
 };
 
 #endif

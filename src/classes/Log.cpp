@@ -32,6 +32,9 @@ void	Log::error(const std::string& message) {
 	if (Log::key_error)
 		std::cout << LOGCOLOR_ERROR << message << "\033[0m" << std::endl;
 }
+void	Log::error(const std::exception& ex) {
+	Log::error(ex.what());
+}
 void	Log::debug(const std::string& message) {
 	if (Log::key_debug)
 		std::cout << LOGCOLOR_DEBUG << message << "\033[0m" << std::endl;

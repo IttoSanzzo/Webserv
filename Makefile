@@ -23,6 +23,7 @@ N_MAIN	=	main.cpp
 N_CLAS	=	ServerConfig.cpp		\
 			Location.cpp			\
 			ServerConfigArray.cpp	\
+			Cluster.cpp				\
 			Log.cpp
 N_UTIL	=	ws_inet_pton.cpp	\
 			ws_inet_addr.cpp	\

@@ -18,8 +18,8 @@ class	ServerConfig {
 		struct sockaddr_in				_server_address;
 	/* C. Constructors */
 	public:
-		~ServerConfig();
-		ServerConfig();
+		~ServerConfig(void);
+		ServerConfig(void);
 		ServerConfig(const ServerConfig& src);
 		ServerConfig&	operator=(const ServerConfig& src);
 		ServerConfig(const JsonNode& configJson);
@@ -72,7 +72,7 @@ class	ServerConfig {
 			public:
 				virtual ~ErrorException() throw() {}
 				ErrorException(std::string message) throw() {
-					this->_message = ERR_EXCE + message;
+					this->_message = "ServerConfig Error :\033[0m " + message;
 				}
 				virtual const char*	what() const throw() {
 					return (_message.c_str());

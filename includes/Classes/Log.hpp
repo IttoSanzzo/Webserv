@@ -34,6 +34,7 @@ class Log {
 		static void	info(const std::string& message);
 		static void	warning(const std::string& message);
 		static void	error(const std::string& message);
+		static void	error(const std::exception& ex);
 		static void	debug(const std::string& message);
 		static void	omni(const LogType& type, const std::string& message);
 };

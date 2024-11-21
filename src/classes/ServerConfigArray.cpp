@@ -1,20 +1,20 @@
 #include "webserv.hpp"
 
 /* C. Constructors */
-ServerConfigArray::~ServerConfigArray(void) {
-	if (this->serverConfigs != NULL)
-		delete[] this->serverConfigs;
+ServerConfigArray::~ServerConfigArray(void) {}
+ServerConfigArray::ServerConfigArray(void) {}
+ServerConfigArray::ServerConfigArray(const ServerConfigArray& src) {
+	this->deepCopy(src);
 }
-ServerConfigArray::ServerConfigArray(void) {
-	this->serverConfigs = NULL;
-	this->size = 0;
+ServerConfigArray&	ServerConfigArray::operator=(const ServerConfigArray& src) {
+	if (this != &src)
+		this->deepCopy(src);
+	return (*this);
 }
 ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
-	this->serverConfigs = NULL;
-	this->size = 0;
-	JsonChildren 	serverChildren;
+	JsonChildren serverChildren;
 	try {
-		JsonNode		serversConfigFile = JsonNode::TryParseJsonFromFile(configurationFilePath);
+		JsonNode serversConfigFile = JsonNode::TryParseJsonFromFile(configurationFilePath);
 		serverChildren = serversConfigFile.TryGetChildren("servers");
 		if (serverChildren.GetSize() == 0)
 			throw (ServerConfig::ErrorException("There were no server configs found!"));
@@ -24,10 +24,8 @@ ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
 		exit (10);
 	}
 	try {
-		this->size = serverChildren.GetSize();
-		this->serverConfigs = new ServerConfig[this->size];
-		for (size_t i = 0; i < this->size; ++i)
-			this->serverConfigs[i] = ServerConfig(serverChildren.GetChildNode(i));
+		for (size_t i = 0; i < serverChildren.GetSize(); ++i)
+			this->serverConfigs.push_back(ServerConfig(serverChildren.GetChildNode(i)));
 	} catch (const std::exception& ex) {
 		Log::error("Configuration File Error: ");
 		std::cout << ex.what() << std::endl;
@@ -36,11 +34,14 @@ ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
 }
 
 /* G. Getters */
-ServerConfig*	ServerConfigArray::GetServer(size_t pos) const {
-	if (pos < this->size)
-		return (this->serverConfigs + pos);
-	return (NULL);
+ServerConfig&	ServerConfigArray::GetServer(size_t pos) {
+	return	(this->serverConfigs[pos]);
 }
-size_t	ServerConfigArray::GetSize(void) const {
-	return (this->size);
+size_t			ServerConfigArray::GetSize(void) const {
+	return (this->serverConfigs.size());
+}
+
+/* PRI0. Private Functions */
+void	ServerConfigArray::deepCopy(const ServerConfigArray& src) {
+	this->serverConfigs = src.serverConfigs;
 }

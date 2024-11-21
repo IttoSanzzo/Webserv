@@ -11,7 +11,6 @@ ServerConfig::ServerConfig(void) {
 	this->_autoindex = false;
 	this->_listen_fd = 0;
 	this->_client_max_body_size = MAX_CLI_SIZE;
-	this->initErrorPages();
 }
 ServerConfig::ServerConfig(const ServerConfig& src) {
 	this->deepCopy(src);
