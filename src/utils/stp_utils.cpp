@@ -64,3 +64,18 @@ bool			stp_checkSufix(const std::string& str, const std::string& sufix) {
 		return (false);
 	return (true);
 }
+std::string		stp_itoa(const int& number) {
+	std::ostringstream	oss;
+	oss << number;
+	return (oss.str());
+}
+std::string		stp_btoa(const bool& value) {
+	switch (value) {
+		case (true):
+			return ("true");
+		break;
+		case (false):
+			return ("false");
+		break;
+	}
+}

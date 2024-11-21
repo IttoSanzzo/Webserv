@@ -1,21 +1,31 @@
 #include "webserv.hpp"
 
 
-int	ws_testing(ServerConfig* conf) {
-	/* View */
-	std::cout << "Port.......: " << conf->getPort() << std::endl;
-	std::cout << "Host.......: " << conf->getHost() << std::endl;
-	std::cout << "Name.......: " << conf->getServerName() << std::endl;
-	std::cout << "Root.......: " << conf->getRoot() << std::endl;
-	std::cout << "Index......: " << conf->getIndex() << std::endl;
-	std::cout << "Autoindex..: " << conf->getAutoindex() << std::endl;
-	std::cout << "FD.........: " << conf->getFd() << std::endl;
-	std::cout << "CliMax.....: " << conf->getClientMaxBodySize() << std::endl;
-	std::cout << std::endl;
-	std::cout << "404........: " << conf->getErrorPage(404) << std::endl;
-	std::cout << std::endl;
-	std::cout << "Location...: " << conf->getLocation("/cgi-bin").getRoot() << std::endl;
-	return (0);
+void infoAllServerSettings(ServerConfigArray& serverConfigs) {
+	if (Log::getInfoState() == true) {
+		for (size_t i = 0; i < serverConfigs.GetSize(); ++i)
+			Log::info("Server Config[" + stp_itoa(i + 1) + "]\n" + serverConfigs.GetServer(i)->toString());
+		std::cout << std::endl;
+	}
+}
+void	infoServerConfig(ServerConfig* serverConfig) {
+	Log::info("\tPort.......: " + stp_itoa(serverConfig->getPort()));
+	Log::info("\tHost.......: " + stp_itoa(serverConfig->getHost()));
+	Log::info("\tName.......: " + serverConfig->getServerName());
+	Log::info("\tRoot.......: " + serverConfig->getRoot());
+	Log::info("\tIndex......: " + serverConfig->getIndex());
+	Log::info("\tAutoindex..: " + stp_btoa(serverConfig->getAutoindex()));
+	Log::info("\tCliMaxSize.: " + stp_itoa(serverConfig->getClientMaxBodySize()));
+	if (serverConfig->getErrorPagesMap().size() > 0) {
+		Log::info("\tErrorPages-> ");
+		for (std::map<short, std::string>::iterator i = serverConfig->getErrorPagesMap().begin(); i != serverConfig->getErrorPagesMap().end(); ++i)
+			Log::info("\t\tErrorPage[" + stp_itoa(i->first) + "].: " + i->second);
+	}
+	if (serverConfig->getLocationsMap().size() > 0) {
+		Log::info("\tLocations-> ");
+		for (std::map<std::string, Location>::iterator i = serverConfig->getLocationsMap().begin(); i != serverConfig->getLocationsMap().end(); ++i)
+			Log::info("\t\tLocation[" + i->first + "]");
+	}
 }
 
 int	main(int ac, char** av) {
@@ -24,10 +34,9 @@ int	main(int ac, char** av) {
 		return (1);
 	else if (ac == 2)
 		serverConfigurationFilePath = av[1];
-	ServerArray		servers(serverConfigurationFilePath);
+	ServerConfigArray	servers(serverConfigurationFilePath);
+	infoAllServerSettings(servers);
 
-	std::cout << "size: " << servers.GetSize() << std::endl;
-	if (servers.GetSize() > 0)
-		return (ws_testing(servers.GetServer(0)));
+
 	return (0);
 }

@@ -1,16 +1,16 @@
 #include "webserv.hpp"
 
 /* C. Constructors */
-ServerArray::~ServerArray(void) {
-	if (this->servers != NULL)
-		delete[] this->servers;
+ServerConfigArray::~ServerConfigArray(void) {
+	if (this->serverConfigs != NULL)
+		delete[] this->serverConfigs;
 }
-ServerArray::ServerArray(void) {
-	this->servers = NULL;
+ServerConfigArray::ServerConfigArray(void) {
+	this->serverConfigs = NULL;
 	this->size = 0;
 }
-ServerArray::ServerArray(std::string& configurationFilePath) {
-	this->servers = NULL;
+ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
+	this->serverConfigs = NULL;
 	this->size = 0;
 	JsonChildren 	serverChildren;
 	try {
@@ -19,28 +19,28 @@ ServerArray::ServerArray(std::string& configurationFilePath) {
 		if (serverChildren.GetSize() == 0)
 			throw (ServerConfig::ErrorException("There were no server configs found!"));
 	} catch (const std::exception& ex) {
-		std::cout << "Configuration File Error: ";
+		Log::error("Configuration File Error: ");
 		std::cout << ex.what() << std::endl;
 		exit (10);
 	}
 	try {
 		this->size = serverChildren.GetSize();
-		this->servers = new ServerConfig[this->size];
+		this->serverConfigs = new ServerConfig[this->size];
 		for (size_t i = 0; i < this->size; ++i)
-			this->servers[i] = ServerConfig(serverChildren.GetChildNode(i));
+			this->serverConfigs[i] = ServerConfig(serverChildren.GetChildNode(i));
 	} catch (const std::exception& ex) {
-		std::cout << "Configuration File Error: ";
+		Log::error("Configuration File Error: ");
 		std::cout << ex.what() << std::endl;
 		exit (11);
 	}
 }
 
 /* G. Getters */
-ServerConfig*	ServerArray::GetServer(size_t pos) const {
+ServerConfig*	ServerConfigArray::GetServer(size_t pos) const {
 	if (pos < this->size)
-		return (this->servers + pos);
+		return (this->serverConfigs + pos);
 	return (NULL);
 }
-size_t	ServerArray::GetSize(void) const {
+size_t	ServerConfigArray::GetSize(void) const {
 	return (this->size);
 }

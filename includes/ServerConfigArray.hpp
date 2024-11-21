@@ -1,20 +1,20 @@
-#ifndef SERVERARRAY_HPP
-# define SERVERARRAY_HPP
+#ifndef SERVERCONFIGARRAY_HPP
+# define SERVERCONFIGARRAY_HPP
 
 /* 0. Includes*/
 #include "webserv.hpp"
 
 /* 1. Class */
-class ServerArray {
+class ServerConfigArray {
 	private:
 	/* M. Member Variables */
-		ServerConfig*	servers;
+		ServerConfig*	serverConfigs;
 		size_t			size;
 	public:
 	/* C. Contrusctors */
-		~ServerArray(void);
-		ServerArray(void);
-		ServerArray(std::string& configurationFilePath);
+		~ServerConfigArray(void);
+		ServerConfigArray(void);
+		ServerConfigArray(std::string& configurationFilePath);
 	/* G. Getters */
 		ServerConfig*	GetServer(size_t pos) const;
 		size_t			GetSize(void) const;

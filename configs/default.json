@@ -11,6 +11,10 @@
 				{
 					"codes": "404",
 					"page": "error_pages/404.html"
+				},
+				{
+					"codes": "405",
+					"page": "error_pages/40x.html"
 				}
 			],
 			"locations": [
@@ -46,6 +50,11 @@
 					"allow_methods": "GET POST DELETE"
 				}
 			]
+		},
+		{
+			"port": 8000,
+			"host": "127.0.0.2",
+			"server_name": "Second Server"
 		}
 	]
 }

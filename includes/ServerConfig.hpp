@@ -43,14 +43,12 @@ class	ServerConfig {
 		std::string	getErrorPage(const short& pos);
 		Location	getLocation(const std::string& page);
 		int			getFd(void) const;
+		std::map<short, std::string>&		getErrorPagesMap(void);
+		std::map<std::string, Location>&	getLocationsMap(void);
 	/* 0. Core */
-	public:
+		std::string	toString(void);
 		void		initErrorPages(void);
 		bool		isValidHost(std::string host) const;
-		// bool		isValidErrorPages(void); //TODO ServerConfig::isValidErrorPages
-		// int		isValidLocation(Location &location) const; //TODO ServerConfig::isValidLocation
-		// bool		checkLocations(void) const; //TODO ServerConfig::checkLocation
-		// void		setupServer(void); //TODO ServerConfig::setupServer
 	/* 1. JsonParsing*/
 	private:
 		void		setPort(const JsonNode& configJson);

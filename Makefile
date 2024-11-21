@@ -20,9 +20,10 @@ DS_CLAS	= classes/
 DS_UTIL	= utils/
 
 N_MAIN	=	main.cpp
-N_CLAS	=	ServerConfig.cpp	\
-			Location.cpp		\
-			ServerArray.cpp
+N_CLAS	=	ServerConfig.cpp		\
+			Location.cpp			\
+			ServerConfigArray.cpp	\
+			Log.cpp
 N_UTIL	=	ws_inet_pton.cpp	\
 			ws_inet_addr.cpp	\
 			stp_utils.cpp
@@ -90,6 +91,9 @@ re		: fclean all
 # Test
 
 test	: $(NAME)
+	@./$(NAME)
+
+retest	: re
 	@./$(NAME)
 
 val		:

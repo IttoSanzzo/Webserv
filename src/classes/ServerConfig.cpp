@@ -105,8 +105,35 @@ Location	ServerConfig::getLocation(const std::string& page) {
 int			ServerConfig::getFd(void) const {
 	return (this->_listen_fd);
 }
+std::map<short, std::string>&		ServerConfig::getErrorPagesMap(void) {
+	return (this->_error_pages);
+}
+std::map<std::string, Location>&	ServerConfig::getLocationsMap(void) {
+	return (this->_locations);
+}
 
 /* PUB0. Core */
+std::string	ServerConfig::toString(void) {
+	std::string	serverConfigInfo = "";
+	serverConfigInfo += "\tPort.......: " + stp_itoa(this->_port) + "\n";
+	serverConfigInfo += "\tHost.......: " + stp_itoa(this->_host) + "\n";
+	serverConfigInfo += "\tName.......: " + this->_server_name + "\n";
+	serverConfigInfo += "\tRoot.......: " + this->_root + "\n";
+	serverConfigInfo += "\tIndex......: " + this->_index + "\n";
+	serverConfigInfo += "\tAutoindex..: " + stp_btoa(this->_autoindex) + "\n";
+	serverConfigInfo += "\tCliMaxSize.: " + stp_itoa(this->_client_max_body_size);
+	if (this->_error_pages.size() > 0) {
+		serverConfigInfo += std::string("\n\tErrorPages->");
+		for (std::map<short, std::string>::iterator i = this->_error_pages.begin(); i != this->_error_pages.end(); ++i)
+			serverConfigInfo += "\n\t\tErrorPage[" + stp_itoa(i->first) + "].: " + i->second;
+	}
+	if (this->_locations.size() > 0) {
+		serverConfigInfo += std::string("\n\tLocations->");
+		for (std::map<std::string, Location>::iterator i = this->_locations.begin(); i != this->_locations.end(); ++i)
+			serverConfigInfo += "\n\t\tLocation[" + i->first + "]";
+	}
+	return (serverConfigInfo);
+}
 void	ServerConfig::initErrorPages(void) {
 	this->_error_pages[301] = "";
 	this->_error_pages[302] = "";
@@ -130,7 +157,7 @@ bool	ServerConfig::isValidHost(std::string host) const {
 }
 
 /* PRI0. JsonParsing */
-void		ServerConfig::setPort(const JsonNode& configJson) {
+void	ServerConfig::setPort(const JsonNode& configJson) {
 	try {
 		this->_port = configJson.TryGetInt("port");
 	} catch (const std::exception& ex) {
@@ -139,7 +166,7 @@ void		ServerConfig::setPort(const JsonNode& configJson) {
 		throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setHost(const JsonNode& configJson) {
+void	ServerConfig::setHost(const JsonNode& configJson) {
 	try {
 		this->setHost(configJson.TryGetString("host"));
 	} catch (const std::exception& ex) {
@@ -148,16 +175,19 @@ void		ServerConfig::setHost(const JsonNode& configJson) {
 		throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setServerName(const JsonNode& configJson) {
+void	ServerConfig::setServerName(const JsonNode& configJson) {
 	try {
 		this->setServerName(configJson.TryGetString("server_name"));
 	} catch (const std::exception& ex) {
 		if (std::string(ex.what()).find("Not this type") != std::string::npos)
 			throw (ServerConfig::ErrorException("\"server_name\" Element should be string!"));
-		throw (ServerConfig::ErrorException(ex.what()));
+		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
+			this->setServerName("Server");
+		else
+			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setRoot(const JsonNode& configJson) {
+void	ServerConfig::setRoot(const JsonNode& configJson) {
 	try {
 		this->setRoot(configJson.TryGetString("root"));
 	} catch (const std::exception& ex) {
@@ -169,7 +199,7 @@ void		ServerConfig::setRoot(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setIndex(const JsonNode& configJson) {
+void	ServerConfig::setIndex(const JsonNode& configJson) {
 	try {
 		this->setIndex(configJson.TryGetString("index"));
 	} catch (const std::exception& ex) {
@@ -181,7 +211,7 @@ void		ServerConfig::setIndex(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setClientMaxBodySize(const JsonNode& configJson) {
+void	ServerConfig::setClientMaxBodySize(const JsonNode& configJson) {
 	try {
 		this->setClientMaxBodySize(configJson.TryGetInt("client_max_size_body"));
 	} catch (const std::exception& ex) {
@@ -193,7 +223,7 @@ void		ServerConfig::setClientMaxBodySize(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setAutoindex(const JsonNode& configJson) {
+void	ServerConfig::setAutoindex(const JsonNode& configJson) {
 	try {
 		this->setAutoindex(configJson.TryGetBool("autoindex"));
 	} catch (const std::exception& ex) {
@@ -205,7 +235,7 @@ void		ServerConfig::setAutoindex(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void		ServerConfig::setErrorPages(const JsonNode& configJson) {
+void	ServerConfig::setErrorPages(const JsonNode& configJson) {
 	JsonChildren errorChildren;
 	try {
 		errorChildren = configJson.TryGetChildren("error_pages");
@@ -220,7 +250,7 @@ void		ServerConfig::setErrorPages(const JsonNode& configJson) {
 	for (size_t i = 0; i < errorChildren.GetSize(); ++i)
 		this->parseErrorChild(errorChildren.GetChildNode(i));
 }
-void		ServerConfig::setLocations(const JsonNode& configJson) {
+void	ServerConfig::setLocations(const JsonNode& configJson) {
 	JsonChildren locationsChildren;
 	try {
 		locationsChildren = configJson.TryGetChildren("locations");
@@ -237,7 +267,7 @@ void		ServerConfig::setLocations(const JsonNode& configJson) {
 		this->_locations[location.getPage()] = location;
 	}
 }
-void		ServerConfig::parseErrorChild(const JsonNode& errorChild) {
+void	ServerConfig::parseErrorChild(const JsonNode& errorChild) {
 	std::string	page = this->parseErrorElement(errorChild, "page");
 	if (stp_checkSufix(page, ".html") == false)
 		throw (ServerConfig::ErrorException("\"error_pages.page\" Element should be an html file!"));
