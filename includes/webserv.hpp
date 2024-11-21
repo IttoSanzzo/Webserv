@@ -38,7 +38,7 @@
 # include <arpa/inet.h>
 
 /* 1. Local Macros */
-# include "ws_macros.hpp"
+# include "Others/ws_macros.hpp"
 
 /* 2. Classes Declaration */
 class	ServerConfig;
@@ -46,10 +46,10 @@ class	Location;
 
 /* 4. Internal Includes */
 # include "../CppJsonHandler/includes/JsonHandler.hpp"
-# include "Log.hpp"
-# include "ServerConfig.hpp"
-# include "Location.hpp"
-# include "ServerConfigArray.hpp"
+# include "Classes/Log.hpp"
+# include "Classes/ServerConfig.hpp"
+# include "Classes/Location.hpp"
+# include "Classes/ServerConfigArray.hpp"
 
 /* 5. Others */
 int				ws_inet_pton(int af, const char *src, void *dst);

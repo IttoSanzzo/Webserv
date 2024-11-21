@@ -1,4 +1,4 @@
-#include "ServerConfig.hpp"
+#include "webserv.hpp"
 
 /* C. Constructors */
 ServerConfig::~ServerConfig(void) {}
