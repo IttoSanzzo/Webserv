@@ -6,6 +6,7 @@
 class Cluster {
 	private:
 		ServerConfigArray	_servers;
+		int					_error;
 	public:
 	/* C. Constructors */
 		~Cluster(void);
@@ -13,9 +14,10 @@ class Cluster {
 		Cluster&	operator=(const Cluster& src);
 		Cluster(std::string& configurationFilePath);
 	/* G. Getters */
-		ServerConfigArray&	GetServerConfigArray(void);
-		ServerConfig&		GetServerConfig(const size_t& pos);
-		size_t				GetServerConfigSize(void) const;
+		int					getError(void) const;
+		ServerConfigArray&	getServerConfigArray(void);
+		ServerConfig&		getServerConfig(const size_t& pos);
+		size_t				getServerConfigSize(void) const;
 	/* PUB0. Core */
 		void	run(void);
 	private:

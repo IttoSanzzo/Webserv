@@ -40,6 +40,8 @@
 
 /* 1. Local Macros */
 # include "Others/ws_macros.hpp"
+# include "Others/ws_dataStructures.hpp"
+# include "Others/stplib.hpp"
 
 /* 2. Classes Declaration */
 class	ServerConfig;
@@ -52,20 +54,12 @@ class	Location;
 # include "Classes/ServerConfig.hpp"
 # include "Classes/Location.hpp"
 # include "Classes/ServerConfigArray.hpp"
+# include "Classes/Server.hpp"
 # include "Classes/Cluster.hpp"
 
 /* 5. Others */
-int				ws_inet_pton(int af, const char *src, void *dst);
-in_addr_t		ws_inet_addr(const char *cp);
-void			infoAllServerSettings(ServerConfigArray& serverConfigs);
-void			infoServerConfig(ServerConfig* serverConfig);
-size_t			stp_stringArrayLength(const std::string* str);
-int				stp_countOccurrences(const std::string& input, char delimiter);
-std::string*	stp_split(const std::string& inputString, char delimiter);
-bool			stp_stringIsNumeric(const std::string& str);
-bool			stp_stringIsNumericOrSpaced(const std::string& str);
-bool			stp_checkSufix(const std::string& str, const std::string& sufix);
-std::string		stp_itoa(const int& number);
-std::string		stp_btoa(const bool& value);
+int			ws_inet_pton(int af, const char *src, void *dst);
+in_addr_t	ws_inet_addr(const char *cp);
+void		infoAllServerSettings(ServerConfigArray& serverConfigs);
 
 #endif

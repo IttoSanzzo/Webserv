@@ -79,3 +79,8 @@ std::string		stp_btoa(const bool& value) {
 		break;
 	}
 }
+void*			stp_memset(void* target, const int& value, const size_t& size) {
+	for (size_t i = 0; i < size; ++i)
+		((unsigned char *)target)[i] = value;
+	return (target);
+}

@@ -3,6 +3,7 @@
 
 /* 0. Defaults */
 # define MAX_CLI_SIZE	30000000
+# define MAX_FD			100
 # define MAX_URL_SIZE	4096
 # define MAX_PORT_NUM	65500
 # define RECV_SIZE		65536

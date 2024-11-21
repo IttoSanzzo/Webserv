@@ -18,7 +18,9 @@ int	main(int ac, char** av) {
 	else if (ac == 2)
 		serverConfigurationFilePath = av[1];
 	Cluster	cluster(serverConfigurationFilePath);
-	infoAllServerSettings(cluster.GetServerConfigArray());
+	if (cluster.getError() > 0)
+		return (cluster.getError());
+	infoAllServerSettings(cluster.getServerConfigArray());
 	try {
 		cluster.run();
 	} catch (const std::exception& ex) {

@@ -23,10 +23,11 @@ N_MAIN	=	main.cpp
 N_CLAS	=	ServerConfig.cpp		\
 			Location.cpp			\
 			ServerConfigArray.cpp	\
+			Server.cpp				\
 			Cluster.cpp				\
 			Log.cpp
-N_UTIL	=	ws_inet_pton.cpp	\
-			ws_inet_addr.cpp	\
+N_UTIL	=	ws_inet_pton.cpp			\
+			ws_inet_addr.cpp			\
 			stp_utils.cpp
 
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\

@@ -8,7 +8,8 @@
 class ServerConfigArray {
 	private:
 	/* M. Member Variables */
-		std::vector<ServerConfig>	serverConfigs;
+		std::vector<ServerConfig>	_serverConfigs;
+		int							_error;
 	public:
 	/* C. Constructors */
 		~ServerConfigArray(void);
@@ -17,6 +18,7 @@ class ServerConfigArray {
 		ServerConfigArray&	operator=(const ServerConfigArray& src);
 		ServerConfigArray(std::string& configurationFilePath);
 	/* G. Getters */
+	int					getError(void) const;
 		ServerConfig&	GetServer(size_t pos);
 		size_t			GetSize(void) const;
 	private:
