@@ -1,24 +1,24 @@
 #include "webserv.hpp"
 
-bool			stp_stringIsNumeric(const std::string& str) {
+bool						stp_stringIsNumeric(const std::string& str) {
 	for (size_t i = 0; i < str.size(); ++i)
 		if (std::isdigit(str[i]) == false)
 			return (false);
 	return (true);
 }
-bool			stp_stringIsNumericOrSpaced(const std::string& str) {
+bool						stp_stringIsNumericOrSpaced(const std::string& str) {
 	for (size_t i = 0; i < str.size(); ++i)
 		if (std::isdigit(str[i]) == false && str[i] != ' ')
 			return (false);
 	return (true);
 }
-size_t			stp_stringArrayLength(const std::string* str) {
+size_t						stp_stringArrayLength(const std::string* str) {
 	size_t	lenght = 0;
 	while (str[lenght] != "")
 		lenght++;
 	return (lenght);
 }
-int				stp_countOccurrences(const std::string& input, char delimiter) {
+int							stp_countOccurrences(const std::string& input, char delimiter) {
     int		count = 0;
 	size_t	i = 0;
 	while (i < (size_t)input.size() && input[i] == delimiter)
@@ -34,7 +34,7 @@ int				stp_countOccurrences(const std::string& input, char delimiter) {
     }
     return (count);
 }
-std::string*	stp_split(const std::string& inputString, char delimiter) {
+std::string*				stp_split(const std::string& inputString, char delimiter) {
     int partsCount = stp_countOccurrences(inputString, delimiter) + 1;
     std::string* parts = new std::string[partsCount];
 	if (partsCount == 1) {
@@ -58,18 +58,31 @@ std::string*	stp_split(const std::string& inputString, char delimiter) {
     parts[partIndex] = "";
     return (parts);
 }
-bool			stp_checkSufix(const std::string& str, const std::string& sufix) {
+std::vector<std::string>	stp_split(const std::string& str, const std::string& delimiter) {
+	std::vector<std::string>	parts;
+	size_t						start = 0;
+	size_t						end = str.find(delimiter);
+	while (end != std::string::npos) {
+		parts.push_back(str.substr(start, end - start));
+		start = end + delimiter.length();
+		end = str.find(delimiter, start);
+	}
+	if (str.substr(start, end) != "")
+		parts.push_back(str.substr(start, end));
+	return (parts);
+}
+bool						stp_checkSufix(const std::string& str, const std::string& sufix) {
 	size_t sufixPosition = str.find(sufix);
 	if (sufixPosition != str.size() - sufix.size())
 		return (false);
 	return (true);
 }
-std::string		stp_itoa(const int& number) {
+std::string					stp_itoa(const int& number) {
 	std::ostringstream	oss;
 	oss << number;
 	return (oss.str());
 }
-std::string		stp_btoa(const bool& value) {
+std::string					stp_btoa(const bool& value) {
 	switch (value) {
 		case (true):
 			return ("true");
@@ -79,7 +92,7 @@ std::string		stp_btoa(const bool& value) {
 		break;
 	}
 }
-void*			stp_memset(void* target, const int& value, const size_t& size) {
+void*						stp_memset(void* target, const int& value, const size_t& size) {
 	for (size_t i = 0; i < size; ++i)
 		((unsigned char *)target)[i] = value;
 	return (target);

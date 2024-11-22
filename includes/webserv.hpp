@@ -56,6 +56,7 @@ class	Location;
 # include "Classes/ServerConfigArray.hpp"
 # include "Classes/Server.hpp"
 # include "Classes/Cluster.hpp"
+# include "Classes/HttpRequest.hpp"
 # include "Classes/HttpResponse.hpp"
 
 /* 5. Others */

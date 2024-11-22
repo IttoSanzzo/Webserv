@@ -73,11 +73,19 @@ void	Cluster::runCluster(void) {
 					Log::debug(stp_itoa(testSocket));
 					char	bufff[3000];
 					int bytes = recv(testSocket, bufff, sizeof(bufff), 0);
-					Log::debug("Bytes: " + stp_itoa(bytes));
 					bufff[bytes] = '\0';
-					Log::debug("Retur: " + std::string(bufff));
+					Log::debug(std::string(bufff));
+					HttpRequest	request(bufff);
+					Log::info("Method: " + HttpRequest::methodToString(request.getMethod()));
+					Log::info("Route: " + request.getTargetRoute());
+					Log::info("Protocol: " + request.getProtocol());
+					Log::info("Host: " + request.getHost());
+					Log::info("Agent: " + request.getUserAgent());
+					Log::info("Accept: " + request.getAccept(0));
+					Log::info("Encoding: " + request.getAcceptEncoding(0));
+					Log::info("Token: " + request.getOther("Postman-Token"));
 					
-					std::string responseBody = "<!DOCTYPE html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"UTF-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t\t<title>Calculator</title>\n\t</head>\n\t<body>\n\t\tTest Test\n\t</body>\n</html>";
+					std::string responseBody = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title>Calculator</title></head><body>Test Test</body></html>";
 					HttpResponse	response;
 					response.setCode(200);
 					response.setType(textHtml);

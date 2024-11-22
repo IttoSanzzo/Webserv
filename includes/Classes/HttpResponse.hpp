@@ -3,12 +3,6 @@
 
 # include "webserv.hpp"
 
-typedef enum e_contentType {
-	typeless,
-	textHtml,
-	textCss
-}	t_contentType;
-
 class HttpResponse {
 	private:
 		short			_code;

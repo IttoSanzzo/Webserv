@@ -17,6 +17,25 @@ typedef struct	s_listen {
 		return (std::string(ws_inet_ntoa(ntohl(host))) + ":" + ossPort.str());
 	}
 }	t_listen;
+typedef enum e_protocol {
+	no_protocol,
+	http1dot1
+}	t_protocol;
+typedef enum e_contentType {
+	no_type,
+	textHtml,
+	textCss
+}	t_contentType;
+typedef enum e_method {
+	no_method,
+	GET,
+	POST,
+	PUT,
+	PATCH,
+	DELETE,
+	HEAD,
+	OPTIONS
+}	t_method;
 
 typedef pollfd pollfd;
 typedef sockaddr_in sockaddr_in;

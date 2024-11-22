@@ -25,6 +25,7 @@ N_CLAS	=	ServerConfig.cpp		\
 			ServerConfigArray.cpp	\
 			Server.cpp				\
 			Cluster.cpp				\
+			HttpRequest.cpp			\
 			HttpResponse.cpp		\
 			Log.cpp
 N_UTIL	=	ws_inet_pton.cpp			\

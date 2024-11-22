@@ -3,7 +3,7 @@
 HttpResponse::~HttpResponse(void) {}
 HttpResponse::HttpResponse(void) {
 	this->_code = 0;
-	this->_contentType = typeless;
+	this->_contentType = no_type;
 	this->_content = "";
 }
 HttpResponse::HttpResponse(const HttpResponse& src) {
