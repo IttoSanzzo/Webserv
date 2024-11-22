@@ -56,10 +56,12 @@ class	Location;
 # include "Classes/ServerConfigArray.hpp"
 # include "Classes/Server.hpp"
 # include "Classes/Cluster.hpp"
+# include "Classes/HttpResponse.hpp"
 
 /* 5. Others */
 int			ws_inet_pton(int af, const char *src, void *dst);
 in_addr_t	ws_inet_addr(const char *cp);
+std::string	ws_inet_ntoa(in_addr_t addr);
 void		infoAllServerSettings(ServerConfigArray& serverConfigs);
 
 #endif

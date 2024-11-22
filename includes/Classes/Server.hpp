@@ -24,12 +24,13 @@ class Server {
 		int				getSocketFd(void) const;
 		sockaddr_in		getAddr(void) const;
 	/* PUB0. Core */
+		bool	listenerSetup(void);
+		void	closeSocketFd(void);
+		void	closeSocketFd(const int& socketFd);
 	private:
 	/* PRI0. Private Functions */
 	void	deepCopy(const Server& src);
 	void	setAddr(void);
-	void	closeFd(void);
-	void	closeSocket(const int& socket);
 };
 
 #endif

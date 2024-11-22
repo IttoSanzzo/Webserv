@@ -2,6 +2,7 @@
 # define WS_DATASTRUCTURES_HPP
 
 #include "webserv.hpp"
+std::string	ws_inet_ntoa(in_addr_t addr);
 
 typedef struct	s_listen {
 	// 0. Variables
@@ -11,11 +12,9 @@ typedef struct	s_listen {
 	bool	operator==(const s_listen& other) const {return (host == other.host && port == other.port);}
 	bool	operator!=(const s_listen& other) const {return (!(*this == other));}
 	std::string	toString(void) {
-		std::ostringstream	ossHost;
 		std::ostringstream	ossPort;
-		ossHost << host;
 		ossPort << port;
-		return (ossHost.str() + ":" + ossPort.str());
+		return (std::string(ws_inet_ntoa(ntohl(host))) + ":" + ossPort.str());
 	}
 }	t_listen;
 

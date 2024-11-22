@@ -112,8 +112,8 @@ std::map<std::string, Location>&	ServerConfig::getLocationsMap(void) {
 /* PUB0. Core */
 std::string	ServerConfig::toString(void) {
 	std::string	serverConfigInfo = "";
+	serverConfigInfo += "\tHost.......: " + ws_inet_ntoa(ntohl(this->_listen.host)) + "\n";
 	serverConfigInfo += "\tPort.......: " + stp_itoa(this->_listen.port) + "\n";
-	serverConfigInfo += "\tHost.......: " + stp_itoa(this->_listen.host) + "\n";
 	serverConfigInfo += "\tName.......: " + this->_server_name + "\n";
 	serverConfigInfo += "\tRoot.......: " + this->_root + "\n";
 	serverConfigInfo += "\tIndex......: " + this->_index + "\n";

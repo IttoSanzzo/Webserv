@@ -22,7 +22,7 @@ int	main(int ac, char** av) {
 		return (cluster.getError());
 	infoAllServerSettings(cluster.getServerConfigArray());
 	try {
-		cluster.run();
+		cluster.runCluster();
 	} catch (const std::exception& ex) {
 		Log::error(ex);
 		return (12);

@@ -5,7 +5,10 @@
 
 class Cluster {
 	private:
-		ServerConfigArray	_servers;
+		static int			_signalValue;
+		ServerConfigArray	_serverConfigs;
+		std::vector<Server>	_servers;
+		size_t				_requests;
 		int					_error;
 	public:
 	/* C. Constructors */
@@ -19,10 +22,11 @@ class Cluster {
 		ServerConfig&		getServerConfig(const size_t& pos);
 		size_t				getServerConfigSize(void) const;
 	/* PUB0. Core */
-		void	run(void);
+		void	runCluster(void);
 	private:
 	/* PRI0. Private Functions */
-		void	deepCopy(const Cluster& src);
+		void		deepCopy(const Cluster& src);
+		static void	signalHandler(int signal);
 	public:
 	/* E. Exception */
 		class	ErrorException : public std::exception {
