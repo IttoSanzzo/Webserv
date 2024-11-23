@@ -37,12 +37,13 @@ class HttpRequest {
 		std::string			getUserAgent(void) const;
 		std::string			getAccept(const size_t& pos) const;
 		std::string			getAcceptEncoding(const size_t& pos) const;
+		std::string			getOther(const std::string& name);
+		std::map<std::string, std::string>&	getOther(void);
 		static t_method		methodFromString(const std::string& method);
 		static std::string	methodToString(const t_method& method);
 		static t_protocol	protocolFromString(const std::string& protocol);
 		static std::string	protocolToString(const t_protocol& protocol);
-		std::string			getOther(const std::string& name);
-		std::map<std::string, std::string>&	getOther(void);
+		std::string			toString(void);
 	private:
 		void				deepCopy(const HttpRequest& src);
 };

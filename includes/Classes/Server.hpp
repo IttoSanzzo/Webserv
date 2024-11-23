@@ -23,9 +23,12 @@ class Server {
 		bool			listenerSetup(void);
 		void			closeSocketFd(void);
 		void			closeSocketFd(const int& socketFd);
+		void			clientSocketCall(void);
 	private:
 		void			deepCopy(const Server& src);
 		void			setAddr(void);
+		bool			serveRequest(const HttpRequest& request, const int& clientSocketFd);
+		std::vector<HttpResponse>	processRequest(const HttpRequest& request);
 };
 
 #endif

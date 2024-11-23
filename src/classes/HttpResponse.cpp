@@ -26,22 +26,6 @@ void			HttpResponse::setContent(const std::string& content) {
 short			HttpResponse::getCode(void) const {
 	return (this->_code);
 }
-std::string		HttpResponse::getCodeDescription(void) const {
-	return (this->getCodeDescription(this->_code));
-}
-std::string		HttpResponse::getCodeDescription(const short& code) const {
-	switch (code) {
-		case (200):
-			return ("OK");
-		break;
-		case (404):
-			return ("Not Found");
-		break;
-		default:
-			return ("");
-		break;
-	}
-}
 t_contentType	HttpResponse::getType(void) const {
 	return (this->_contentType);
 }
@@ -60,7 +44,7 @@ size_t			HttpResponse::getSize(void) const {
 std::string		HttpResponse::getHeader(void) const {
 	std::string	header = "HTTP/1.1 ";
 	header += stp_itoa(this->_code);
-	std::string	codeDescription = this->getCodeDescription();
+	std::string	codeDescription = httpStatusCodeString(this->_code);
 	if (codeDescription != "")
 		header += " " + codeDescription;
 	header += "\r\nContent-Type: " + HttpResponse::contentTypeString(this->_contentType);

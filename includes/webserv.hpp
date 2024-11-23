@@ -47,6 +47,8 @@
 class	ServerConfig;
 class	ServerConfigArray;
 class	Location;
+class	HttpRequest;
+class	HttpResponse;
 
 /* 4. Internal Includes */
 # include "../CppJsonHandler/includes/JsonHandler.hpp"
@@ -63,6 +65,7 @@ class	Location;
 int			ws_inet_pton(int af, const char *src, void *dst);
 in_addr_t	ws_inet_addr(const char *cp);
 std::string	ws_inet_ntoa(in_addr_t addr);
+std::string	httpStatusCodeString(const int& code);
 void		infoAllServerSettings(ServerConfigArray& serverConfigs);
 
 #endif

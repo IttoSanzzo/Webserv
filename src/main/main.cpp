@@ -11,9 +11,13 @@ void infoAllServerSettings(ServerConfigArray& serverConfigs) {
 
 int	main(int ac, char** av) {
 	std::string	serverConfigurationFilePath = DEFAULT_CONFIG;
-	if (ac > 2) {
-		Log::error("Too many arguments!");
+	if (MAX_CLI_SIZE > 4000) {
+		Log::error("You should not set Max Client Body Size above 4000!");
 		return (1);
+	}
+	else if (ac > 2) {
+		Log::error("Too many arguments!");
+		return (2);
 	}
 	else if (ac == 2)
 		serverConfigurationFilePath = av[1];

@@ -17,8 +17,6 @@ class HttpResponse {
 		void				setType(const t_contentType& type);
 		void				setContent(const std::string& content);
 		short				getCode(void) const;
-		std::string			getCodeDescription(void) const;
-		std::string			getCodeDescription(const short& code) const;
 		t_contentType		getType(void) const;
 		size_t				getHeaderLength(void) const;
 		size_t				getContentLength(void) const;

@@ -98,6 +98,12 @@ std::string		HttpRequest::getAccept(const size_t& pos) const {
 std::string		HttpRequest::getAcceptEncoding(const size_t& pos) const {
 	return (this->_acceptEncoding[pos]);
 }
+std::string		HttpRequest::getOther(const std::string& name) {
+	return (this->_others[name]);
+}
+std::map<std::string, std::string>&	HttpRequest::getOther(void) {
+	return (this->_others);
+}
 t_method		HttpRequest::methodFromString(const std::string& method) {
 	if (method == "GET")
 		return (GET);
@@ -160,11 +166,19 @@ std::string		HttpRequest::protocolToString(const t_protocol& protocol) {
 		break;
 	}
 }
-std::string		HttpRequest::getOther(const std::string& name) {
-	return (this->_others[name]);
-}
-std::map<std::string, std::string>&	HttpRequest::getOther(void) {
-	return (this->_others);
+std::string		HttpRequest::toString(void) {
+	std::string	returnString = "Method: " + HttpRequest::methodToString(this->getMethod()) + "\n";
+	returnString += "Route: " + this->getTargetRoute() + "\n";
+	returnString += "Protocol: " + HttpRequest::protocolToString(this->getProtocol()) + "\n";
+	returnString += "Host: " + this->getHost() + "\n";
+	returnString += "Agent: " + this->getUserAgent();
+	for (size_t i = 0; i < this->_accept.size(); ++i)
+		returnString += "\n" + std::string("Accept: ") + this->getAccept(i);
+	for (size_t i = 0; i < this->_acceptEncoding.size(); ++i)
+		returnString += "\n" + std::string("AcceptEncoding: ") + this->getAcceptEncoding(i);
+	for (std::map<std::string, std::string>::iterator i = this->_others.begin(); i != this->_others.end(); ++i)
+		returnString += "\n" + i->first + std::string(": ") + i->second;
+	return (returnString);
 }
 void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_originalString = src._originalString;
