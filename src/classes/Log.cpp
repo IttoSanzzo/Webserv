@@ -15,7 +15,6 @@ bool	Log::getErrorState(void) {
 bool	Log::getDebugState(void) {
 	return (Log::key_debug);
 }
-
 void	Log::log(const std::string& message) {
 	if (Log::key_log)
 		std::cout << LOGCOLOR_LOG << message << "\033[0m" << std::endl;

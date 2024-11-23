@@ -28,7 +28,7 @@ class HttpResponse {
 		std::string			toString(void) const;
 		static std::string	contentTypeString(const t_contentType& type);
 	private:
-		void			deepCopy(const HttpResponse& src);
+		void				deepCopy(const HttpResponse& src);
 };
 
 #endif

@@ -1,17 +1,11 @@
 #include "webserv.hpp"
 
-/* C. Constructors */
 ServerConfigArray::~ServerConfigArray(void) {}
 ServerConfigArray::ServerConfigArray(void) {
 	this->_error = 0;
 }
 ServerConfigArray::ServerConfigArray(const ServerConfigArray& src) {
 	this->deepCopy(src);
-}
-ServerConfigArray&	ServerConfigArray::operator=(const ServerConfigArray& src) {
-	if (this != &src)
-		this->deepCopy(src);
-	return (*this);
 }
 ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
 	JsonChildren serverChildren;
@@ -37,20 +31,21 @@ ServerConfigArray::ServerConfigArray(std::string& configurationFilePath) {
 	}
 	this->_error = 0;
 }
-
-/* G. Getters */
-int				ServerConfigArray::getError(void) const {
+ServerConfigArray&	ServerConfigArray::operator=(const ServerConfigArray& src) {
+	if (this != &src)
+		this->deepCopy(src);
+	return (*this);
+}
+int					ServerConfigArray::getError(void) const {
 	return (this->_error);
 }
-ServerConfig&	ServerConfigArray::GetServer(size_t pos) {
+ServerConfig&		ServerConfigArray::GetServer(size_t pos) {
 	return	(this->_serverConfigs[pos]);
 }
-size_t			ServerConfigArray::GetSize(void) const {
+size_t				ServerConfigArray::GetSize(void) const {
 	return (this->_serverConfigs.size());
 }
-
-/* PRI0. Private Functions */
-void	ServerConfigArray::deepCopy(const ServerConfigArray& src) {
+void				ServerConfigArray::deepCopy(const ServerConfigArray& src) {
 	this->_serverConfigs = src._serverConfigs;
 	this->_error = src._error;
 }

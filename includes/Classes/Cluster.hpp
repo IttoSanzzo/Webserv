@@ -11,24 +11,19 @@ class Cluster {
 		size_t				_requests;
 		int					_error;
 	public:
-	/* C. Constructors */
 		~Cluster(void);
 		Cluster(const Cluster& src);
-		Cluster&	operator=(const Cluster& src);
 		Cluster(std::string& configurationFilePath);
-	/* G. Getters */
+		Cluster&			operator=(const Cluster& src);
 		int					getError(void) const;
 		ServerConfigArray&	getServerConfigArray(void);
 		ServerConfig&		getServerConfig(const size_t& pos);
 		size_t				getServerConfigSize(void) const;
-	/* PUB0. Core */
-		void	runCluster(void);
+		void				runCluster(void);
 	private:
-	/* PRI0. Private Functions */
-		void		deepCopy(const Cluster& src);
-		static void	signalHandler(int signal);
+		void				deepCopy(const Cluster& src);
+		static void			signalHandler(int signal);
 	public:
-	/* E. Exception */
 		class	ErrorException : public std::exception {
 			private:
 				std::string	_message;

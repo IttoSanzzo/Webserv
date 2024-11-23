@@ -13,11 +13,6 @@ HttpRequest::HttpRequest(const HttpRequest& src) {
 	this->deepCopy(src);
 
 }
-HttpRequest		HttpRequest::operator=(const HttpRequest& src) {
-	if (this != &src)
-		this->deepCopy(src);
-	return (*this);
-}
 HttpRequest::HttpRequest(const std::string& request) {
 	this->_originalString = "";
 	this->_method = no_method;
@@ -36,6 +31,11 @@ HttpRequest::HttpRequest(const std::string& request) {
 		std::vector<std::string> parts = stp_split(lines[i], ": ");
 		this->setSwitch(parts[0], parts[1]);
 	}
+}
+HttpRequest		HttpRequest::operator=(const HttpRequest& src) {
+	if (this != &src)
+		this->deepCopy(src);
+	return (*this);
 }
 void			HttpRequest::setSwitch(const std::string& name, const std::string& value) {
 	if (name == "Host")

@@ -8,7 +8,6 @@ static bool	is_valid_digit(const char *str) {
     }
     return (true);
 }
-
 in_addr_t	ws_inet_addr(const char *cp) {
 	unsigned char	bytes[4];
 	const char*		ptr = cp;

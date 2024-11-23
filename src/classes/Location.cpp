@@ -12,11 +12,6 @@ Location::Location(void) {
 Location::Location(const Location& src) {
 	this->deepCopy(src);
 }
-Location&	Location::operator=(const Location& src) {
-	if (this != &src)
-		this->deepCopy(src);
-	return (*this);
-}
 Location::Location(const JsonNode& locationJson) {
 	this->setPage(locationJson);
 	this->setIndex(locationJson);
@@ -26,31 +21,32 @@ Location::Location(const JsonNode& locationJson) {
 	this->setMethods(locationJson);
 	this->setCgiRelation(locationJson);
 }
-
-/* S. Setters */
-void	Location::setPage(const std::string& page) {
+Location&	Location::operator=(const Location& src) {
+	if (this != &src)
+		this->deepCopy(src);
+	return (*this);
+}
+void		Location::setPage(const std::string& page) {
 	this->_page = page;
 }
-void	Location::setIndex(const std::string& index) {
+void		Location::setIndex(const std::string& index) {
 	this->_index = index;
 }
-void	Location::setRoot(const std::string& root) {
+void		Location::setRoot(const std::string& root) {
 	this->_root = root;
 }
-void	Location::setReturner(const std::string& target) {
+void		Location::setReturner(const std::string& target) {
 	this->_returner = target;
 }
-void	Location::setAutoindex(const bool& value) {
+void		Location::setAutoindex(const bool& value) {
 	this->_autoindex = value;
 }
-void	Location::setMethods(const std::string& method, const bool& value) {
+void		Location::setMethods(const std::string& method, const bool& value) {
 	this->_methods[method] = value;
 }
-void	Location::setCgiRelation(const std::string& extension, const std::string& path) {
+void		Location::setCgiRelation(const std::string& extension, const std::string& path) {
 	this->_cgiRelations[extension] = path;
 }
-
-/* G. Getters */
 std::string	Location::getPage(void) const {
 	return (this->_page);
 }
@@ -72,9 +68,7 @@ bool		Location::getMethod(const std::string& method) {
 std::string	Location::getCgiPath(const std::string& extension) {
 	return (this->_cgiRelations[extension]);
 }
-
-/* PRI0. JsonParsing */
-void	Location::setPage(const JsonNode& locationJson) {
+void		Location::setPage(const JsonNode& locationJson) {
 	try {
 		this->_page = locationJson.TryGetString("page");
 	} catch (const std::exception& ex) {
@@ -83,7 +77,7 @@ void	Location::setPage(const JsonNode& locationJson) {
 		throw (Location::ErrorException(ex.what()));
 	}
 }
-void	Location::setIndex(const JsonNode& locationJson) {
+void		Location::setIndex(const JsonNode& locationJson) {
 	try {
 		this->_index = locationJson.TryGetString("index");
 	} catch (const std::exception& ex) {
@@ -95,7 +89,7 @@ void	Location::setIndex(const JsonNode& locationJson) {
 			throw (Location::ErrorException(ex.what()));
 	}
 }
-void	Location::setRoot(const JsonNode& locationJson) {
+void		Location::setRoot(const JsonNode& locationJson) {
 	try {
 		this->_root = locationJson.TryGetString("root");
 	} catch (const std::exception& ex) {
@@ -107,7 +101,7 @@ void	Location::setRoot(const JsonNode& locationJson) {
 			throw (Location::ErrorException(ex.what()));
 	}
 }
-void	Location::setReturner(const JsonNode& locationJson) {
+void		Location::setReturner(const JsonNode& locationJson) {
 	try {
 		this->_returner = locationJson.TryGetString("return");
 	} catch (const std::exception& ex) {
@@ -119,7 +113,7 @@ void	Location::setReturner(const JsonNode& locationJson) {
 			throw (Location::ErrorException(ex.what()));
 	}
 }
-void	Location::setAutoindex(const JsonNode& locationJson) {
+void		Location::setAutoindex(const JsonNode& locationJson) {
 	try {
 		this->_autoindex = locationJson.TryGetBool("autoindex");
 	} catch (const std::exception& ex) {
@@ -131,7 +125,7 @@ void	Location::setAutoindex(const JsonNode& locationJson) {
 			throw (Location::ErrorException(ex.what()));
 	}
 }
-void	Location::setMethods(const JsonNode& locationJson) {
+void		Location::setMethods(const JsonNode& locationJson) {
 	std::string	methodsString;
 	try {
 		methodsString = locationJson.TryGetString("allow_methods");
@@ -148,7 +142,7 @@ void	Location::setMethods(const JsonNode& locationJson) {
 		this->_methods[allMethods[i]] = true;
 	delete[] allMethods;
 }
-void	Location::setCgiRelation(const JsonNode& locationJson) {
+void		Location::setCgiRelation(const JsonNode& locationJson) {
 	JsonChildren cgiChildren;
 	try {
 		cgiChildren = locationJson.TryGetChildren("cgi");
@@ -177,9 +171,7 @@ std::string	Location::parseCgiElement(const JsonNode& cgiChild, const std::strin
 		throw (Location::ErrorException(ex.what()));
 	}
 }
-
-/* PRIU. Utils */
-void	Location::deepCopy(const Location& src) {
+void		Location::deepCopy(const Location& src) {	
 	this->_page = src._page;
 	this->_index = src._index;
 	this->_root = src._root;

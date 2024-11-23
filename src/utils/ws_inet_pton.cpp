@@ -8,7 +8,6 @@ static bool	is_valid_digit(const char *str) {
     }
     return (true);
 }
-
 static int	hex_to_int(char c) {
 	if (c >= '0' && c <= '9')
 		return (c - '0');
@@ -18,8 +17,7 @@ static int	hex_to_int(char c) {
 		return (c - 'A' + 10);
 	return (-1);
 }
-
-int	ws_inet_pton(int af, const char *src, void *dst) {
+int			ws_inet_pton(int af, const char *src, void *dst) {
 	if (af == AF_INET) {
 		struct in_addr*	addr = (struct in_addr *)dst;
 		unsigned char	bytes[4];

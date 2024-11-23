@@ -2,7 +2,6 @@
 
 int Cluster::_signalValue = 0;
 
-/* C. Constructors */
 Cluster::~Cluster(void) {
 	Log::log("Closing cluster...");
 	for (size_t i = 0; i < this->_servers.size(); ++i) {
@@ -13,11 +12,6 @@ Cluster::~Cluster(void) {
 Cluster::Cluster(const Cluster& src) {
 	this->deepCopy(src);
 }
-Cluster&	Cluster::operator=(const Cluster& src) {
-	if (this != &src)
-		this->deepCopy(src);
-	return (*this);
-}
 Cluster::Cluster(std::string& configurationFilePath) {
 	Log::log("Parsing configuration file");
 	this->_serverConfigs = ServerConfigArray(configurationFilePath);
@@ -27,8 +21,11 @@ Cluster::Cluster(std::string& configurationFilePath) {
 	this->_requests = 0;
 	Log::log("Configuration File parsed");
 }
-
-/* G. Getters */
+Cluster&			Cluster::operator=(const Cluster& src) {
+	if (this != &src)
+		this->deepCopy(src);
+	return (*this);
+}
 int					Cluster::getError(void) const {
 	return (this->_error);
 }
@@ -41,9 +38,7 @@ ServerConfig&		Cluster::getServerConfig(const size_t& pos) {
 size_t				Cluster::getServerConfigSize(void) const {
 	return (this->_serverConfigs.GetSize());
 }
-
-/* PUB0. Core */
-void	Cluster::runCluster(void) {
+void				Cluster::runCluster(void) {
 	::signal(SIGINT, signalHandler);
 	Log::log("Starting cluster...");
 	for (size_t i = 0; i < this->_serverConfigs.GetSize(); ++i)
@@ -101,15 +96,13 @@ void	Cluster::runCluster(void) {
 		}
 	}
 }
-
-/* PRI0. Private Functions */
-void	Cluster::deepCopy(const Cluster& src) {
+void				Cluster::deepCopy(const Cluster& src) {
 	this->_error = src._error;
 	this->_serverConfigs = src._serverConfigs;
 	this->_servers = src._servers;
 	this->_requests = src._requests;
 }
-void	Cluster::signalHandler(int signal) {
+void				Cluster::signalHandler(int signal) {
 	Log::log("SIGINT signal Detected");
 	Cluster::_signalValue = signal;
 }

@@ -11,26 +11,21 @@ class Server {
 		std::map<long, std::string>	_requests;
 		Server(void);
 	public:
-	/* C. Constructors */
 		~Server(void);
 		Server(const Server& src);
-		Server&	operator=(const Server& src);
 		Server(const ServerConfig& serverConfig);
-	/* S. Setters */
-		void	setServerConfig(const ServerConfig& serverConfig);
-		void	setSocketFd(const int& fd);
-	/* G. Getters */
+		Server&			operator=(const Server& src);
+		void			setServerConfig(const ServerConfig& serverConfig);
+		void			setSocketFd(const int& fd);
 		ServerConfig&	getServerConfig(void);
 		int				getSocketFd(void) const;
 		sockaddr_in		getAddr(void) const;
-	/* PUB0. Core */
-		bool	listenerSetup(void);
-		void	closeSocketFd(void);
-		void	closeSocketFd(const int& socketFd);
+		bool			listenerSetup(void);
+		void			closeSocketFd(void);
+		void			closeSocketFd(const int& socketFd);
 	private:
-	/* PRI0. Private Functions */
-	void	deepCopy(const Server& src);
-	void	setAddr(void);
+		void			deepCopy(const Server& src);
+		void			setAddr(void);
 };
 
 #endif

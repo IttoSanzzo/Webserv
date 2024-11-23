@@ -12,22 +12,19 @@ class	Location {
 		bool								_autoindex;
 		std::map<std::string, std::string>	_cgiRelations;
 		std::map<std::string, bool>			_methods;
-	/* C. Constructors */
 	public:
 		~Location(void);
 		Location(void);
 		Location(const Location& src);
-		Location&	operator=(const Location& src);
 		Location(const JsonNode& locationJson);
-	/* S. Setters */
-		void	setPage(const std::string& page);
-		void	setIndex(const std::string& index);
-		void	setRoot(const std::string& root);
-		void	setReturner(const std::string& target);
-		void	setAutoindex(const bool& value);
-		void	setMethods(const std::string& method, const bool& value);
-		void	setCgiRelation(const std::string& extension, const std::string& path);
-	/* G. Getters */
+		Location&	operator=(const Location& src);
+		void		setPage(const std::string& page);
+		void		setIndex(const std::string& index);
+		void		setRoot(const std::string& root);
+		void		setReturner(const std::string& target);
+		void		setAutoindex(const bool& value);
+		void		setMethods(const std::string& method, const bool& value);
+		void		setCgiRelation(const std::string& extension, const std::string& path);
 		std::string	getPage(void) const;
 		std::string	getIndex(void) const;
 		std::string	getRoot(void) const;
@@ -35,8 +32,8 @@ class	Location {
 		bool		getAutoindex(void) const;
 		bool		getMethod(const std::string& method);
 		std::string	getCgiPath(const std::string& extension);
-	/* PRI0. JsonParsing */
 	private:
+		void		deepCopy(const Location& src);
 		void		setPage(const JsonNode& locationJson);
 		void		setIndex(const JsonNode& locationJson);
 		void		setRoot(const JsonNode& locationJson);
@@ -46,10 +43,6 @@ class	Location {
 		void		setCgiRelation(const JsonNode& locationJson);
 		void		parseCgiChild(const JsonNode& errorChild);
 		std::string	parseCgiElement(const JsonNode& errorChild, const std::string& element);
-	/* PRIU. Utils */
-	private:
-		void	deepCopy(const Location& src);
-	/* E. Exception */
 	public:
 		class	ErrorException : public std::exception {
 			private:
