@@ -12,7 +12,7 @@ class HttpResponse {
 		~HttpResponse(void);
 		HttpResponse(void);
 		HttpResponse(const HttpResponse& src);
-		HttpResponse		operator=(const HttpResponse& src);
+		HttpResponse&		operator=(const HttpResponse& src);
 		void				setCode(const short& code);
 		void				setType(const t_contentType& type);
 		void				setContent(const std::string& content);

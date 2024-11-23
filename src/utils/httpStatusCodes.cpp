@@ -32,6 +32,12 @@ std::string	httpStatusCodeString(const int& code) {
 		case (404):
 			return ("Not Found");
 		break;
+		case (405):
+			return ("Method Not Allowed");
+		break;
+		case (413):
+			return ("Payload Too Large");
+		break;
 		case (500):
 			return ("Internal Server Error");
 		break;

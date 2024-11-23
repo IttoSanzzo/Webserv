@@ -60,6 +60,7 @@ class	HttpResponse;
 # include "Classes/Cluster.hpp"
 # include "Classes/HttpRequest.hpp"
 # include "Classes/HttpResponse.hpp"
+# include "Classes/RequestProcessor.hpp"
 
 /* 5. Others */
 int			ws_inet_pton(int af, const char *src, void *dst);

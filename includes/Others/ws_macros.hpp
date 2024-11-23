@@ -29,6 +29,7 @@
 # define ERR_AUTOINDEX	"Wrong syntax: autoindex"
 # define ERR_MAXBODY	"Wrong syntax: client_max_body_size"
 # define ERR_EXCE		"\033[38;5;196mSERVER CONFIG ERROR : \033[0m"
+# define ERRORPAGEERROR	"<!DOCTYPE html>\n<html><title>40404</title><body>There was an error finding your error page</body></html>\n"
 
 /* 3. Bytes for endian conversion */
 # define BYTE_0 0xff000000

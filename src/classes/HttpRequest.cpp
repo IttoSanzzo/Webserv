@@ -32,7 +32,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 		this->setSwitch(parts[0], parts[1]);
 	}
 }
-HttpRequest		HttpRequest::operator=(const HttpRequest& src) {
+HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {
 	if (this != &src)
 		this->deepCopy(src);
 	return (*this);

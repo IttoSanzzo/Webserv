@@ -28,7 +28,6 @@ class Server {
 		void			deepCopy(const Server& src);
 		void			setAddr(void);
 		bool			serveRequest(const HttpRequest& request, const int& clientSocketFd);
-		std::vector<HttpResponse>	processRequest(const HttpRequest& request);
 };
 
 #endif

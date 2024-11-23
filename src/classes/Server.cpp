@@ -90,27 +90,18 @@ void			Server::setAddr(void) {
 	this->_addr.sin_port = htons(this->_serverConfig.getPort());
 }
 bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
-	std::vector<HttpResponse>	response(this->processRequest(request));
-	for (size_t i = 0; i < response.size(); ++i) {
-		Log::debug("Doing Sht");
-		std::string	fullResponse(response[i].toString());
-		::send(clientSocketFd, fullResponse.c_str(), fullResponse.size(), 0);
-		Log::debug("Done");
-	}
-	::close(clientSocketFd);
-	return (true);
-}
-std::vector<HttpResponse>	Server::processRequest(const HttpRequest& request) {
-	std::vector<HttpResponse>	allResponses;
+	RequestProcessor	processor(request, this);
+	processor.process(clientSocketFd);
+/*
 	Location	targetRoute = this->_serverConfig.getLocation(request.getTargetRoute());
 	if (targetRoute.getPage() == "") {
 		HttpResponse	response;
 		response.setCode(404);
 		Log::error(httpStatusCodeString(response.getCode()));
 		response.setType(textHtml);
-		response.setContent("<h1>404 Page Not Found</h1>");	
-		allResponses.push_back(response);
-		return (allResponses);
+		response.setContent("<h1>404 Page Not Found</h1>");
+		// allResponses.push_back(response);
+		// return (allResponses);
 	}
 	(void)request;
 	{
@@ -119,8 +110,17 @@ std::vector<HttpResponse>	Server::processRequest(const HttpRequest& request) {
 		response.setCode(200);
 		response.setType(textHtml);
 		response.setContent(responseBody);	
-		allResponses.push_back(response);
+		// allResponses.push_back(response);
 	}
 	
-	return (allResponses);
+	
+	for (size_t i = 0; i < response.size(); ++i) {
+		Log::debug("Doing Sht");
+		std::string	fullResponse(response[i].toString());
+		::send(clientSocketFd, fullResponse.c_str(), fullResponse.size(), 0);
+		Log::debug("Done");
+	}
+	::close(clientSocketFd);
+*/
+	return (true);
 }

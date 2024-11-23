@@ -9,7 +9,7 @@ HttpResponse::HttpResponse(void) {
 HttpResponse::HttpResponse(const HttpResponse& src) {
 	this->deepCopy(src);
 }
-HttpResponse	HttpResponse::operator=(const HttpResponse& src) {
+HttpResponse&	HttpResponse::operator=(const HttpResponse& src) {
 	if (this != &src)
 		this->deepCopy(src);
 	return (*this);

@@ -19,7 +19,7 @@ class HttpRequest {
 		HttpRequest(void);
 		HttpRequest(const HttpRequest& src);
 		HttpRequest(const std::string& request);
-		HttpRequest			operator=(const HttpRequest& src);
+		HttpRequest&		operator=(const HttpRequest& src);
 		void				setSwitch(const std::string& name, const std::string& value);
 		void				setOriginalString(const std::string& src);
 		void				setMethod(const t_method& method);
