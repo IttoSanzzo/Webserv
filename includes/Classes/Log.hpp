@@ -18,6 +18,7 @@ class Log {
 		static const bool	key_warning = LOG_WARNING;
 		static const bool	key_error = LOG_ERROR;
 		static const bool	key_debug = LOG_DEBUG;
+		~Log(void);
 		Log(void);
     	Log(const Log&);
     	Log&		operator=(const Log&);

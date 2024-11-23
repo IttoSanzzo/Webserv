@@ -4,8 +4,8 @@
 void infoAllServerSettings(ServerConfigArray& serverConfigs) {
 	Log::debug("Giving Server Info");
 	if (Log::getInfoState() == true)
-		for (size_t i = 0; i < serverConfigs.GetSize(); ++i)
-			Log::info("Server Config[" + stp_itoa(i + 1) + "]\n" + serverConfigs.GetServer(i).toString());
+		for (size_t i = 0; i < serverConfigs.getSize(); ++i)
+			Log::info("Server Config[" + stp_itoa(i + 1) + "]\n" + serverConfigs.getServer(i).toString());
 	Log::debug("Server Info Given");
 }
 

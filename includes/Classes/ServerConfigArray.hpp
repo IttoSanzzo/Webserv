@@ -14,8 +14,8 @@ class ServerConfigArray {
 		ServerConfigArray(std::string& configurationFilePath);
 		ServerConfigArray&	operator=(const ServerConfigArray& src);
 	int						getError(void) const;
-		ServerConfig&		GetServer(size_t pos);
-		size_t				GetSize(void) const;
+		ServerConfig&		getServer(size_t pos);
+		size_t				getSize(void) const;
 	private:
 	void					deepCopy(const ServerConfigArray& src);
 };

@@ -33,16 +33,16 @@ ServerConfigArray&	Cluster::getServerConfigArray(void) {
 	return (this->_serverConfigs);
 }
 ServerConfig&		Cluster::getServerConfig(const size_t& pos) {
-	return (this->_serverConfigs.GetServer(pos));
+	return (this->_serverConfigs.getServer(pos));
 }
 size_t				Cluster::getServerConfigSize(void) const {
-	return (this->_serverConfigs.GetSize());
+	return (this->_serverConfigs.getSize());
 }
 void				Cluster::runCluster(void) {
 	::signal(SIGINT, signalHandler);
 	Log::log("Starting cluster...");
-	for (size_t i = 0; i < this->_serverConfigs.GetSize(); ++i)
-		this->_servers.push_back(Server(_serverConfigs.GetServer(i)));
+	for (size_t i = 0; i < this->_serverConfigs.getSize(); ++i)
+		this->_servers.push_back(Server(_serverConfigs.getServer(i)));
 	Log::log("\tOpening listeners...");
 	for (size_t i = 0; i < this->_servers.size(); ++i)
 		if (this->_servers[i].listenerSetup() == false)

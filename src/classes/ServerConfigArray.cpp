@@ -39,10 +39,10 @@ ServerConfigArray&	ServerConfigArray::operator=(const ServerConfigArray& src) {
 int					ServerConfigArray::getError(void) const {
 	return (this->_error);
 }
-ServerConfig&		ServerConfigArray::GetServer(size_t pos) {
+ServerConfig&		ServerConfigArray::getServer(size_t pos) {
 	return	(this->_serverConfigs[pos]);
 }
-size_t				ServerConfigArray::GetSize(void) const {
+size_t				ServerConfigArray::getSize(void) const {
 	return (this->_serverConfigs.size());
 }
 void				ServerConfigArray::deepCopy(const ServerConfigArray& src) {
