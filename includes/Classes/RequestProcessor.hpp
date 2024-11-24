@@ -17,7 +17,7 @@ class RequestProcessor {
 		void				setServer(Server* server);
 		void				setRequest(const HttpRequest& request);
 		short				process(const int& socketFd);
-		std::string			readHtml(const std::string& filePath);
+		HttpResponse		readHtml(const std::string& filePath);
 		int					fileExists(std::string filePath);
 	private:
 		void	deepCopy(const RequestProcessor& src);

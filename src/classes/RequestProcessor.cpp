@@ -21,19 +21,28 @@ void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
 short				RequestProcessor::process(const int& socketFd) {
-	
+	(void)socketFd;
+	this->_response.push_back(this->readHtml(this->_server->getServerConfig().getLocation(this->_request.getTargetRoute()).getPage()));
+	for (size_t i = 0; i < this->_response.size(); ++i) {
+		std::string	completeResponse(this->_response[i].toString());
+		::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
+	}
+	::close(socketFd);
+	return (0);
 }
-std::string			RequestProcessor::readHtml(const std::string& filePath)
-{
+HttpResponse		RequestProcessor::readHtml(const std::string& filePath) {
 	HttpResponse		htmlResponse;
 	std::ofstream		file;
 	std::stringstream	buffer;
+	std::string			finalFilePath("./public/" + filePath + ".html");
+
+	Log::debug(finalFilePath);
 
 	htmlResponse.setType(textHtml);
-	if (this->fileExists(filePath)) {
-		file.open(filePath.c_str(), std::ifstream::in);
+	if (this->fileExists(finalFilePath)) {
+		file.open(finalFilePath.c_str(), std::ifstream::in);
 		if (file.is_open() == false) {
-			htmlResponse.setCode(40404);
+			htmlResponse.setCode(500);
 			htmlResponse.setContent(ERRORPAGEERROR);
 		} else {
 			buffer << file.rdbuf();
@@ -43,12 +52,12 @@ std::string			RequestProcessor::readHtml(const std::string& filePath)
 		}
 	}
 	else {
-		htmlResponse.setCode(40404);
+		htmlResponse.setCode(500);
 		htmlResponse.setContent(ERRORPAGEERROR);
 	}
-	this->_response.push_back(htmlResponse);
+	return (htmlResponse);
 }
-int					RequestProcessor::fileExists(std::string filePath) //deprecated, replaced by ::pathIsFile()
+int					RequestProcessor::fileExists(std::string filePath)
 {
 	struct stat	stats;
 	if (stat(filePath.c_str(), &stats) == 0)

@@ -120,7 +120,6 @@ bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketF
 		::send(clientSocketFd, fullResponse.c_str(), fullResponse.size(), 0);
 		Log::debug("Done");
 	}
-	::close(clientSocketFd);
 */
 	return (true);
 }
