@@ -90,39 +90,45 @@ void				RequestProcessor::deepCopy(const RequestProcessor& src) {
 	this->_response = src._response;
 }
 void				RequestProcessor::doErrorPage(void) {
+	Log::log("Doing Error Page");
 	this->_response[0].setType(textHtml);
+	HttpResponse	errorResponse;
 	std::string		errorPagePath(this->_server->getServerConfig().getErrorPage(this->_response[0].getCode()));
 	if (errorPagePath != "") {
-		HttpResponse	errorResponse(this->getHtml(errorPagePath));
-		if (errorResponse.getCode() != 200) {
+		errorResponse = this->getHtml(errorPagePath);
+		if (errorResponse.getCode() == 200) {
 			errorResponse.setCode(this->_response[0].getCode());
+			this->_response[0] = errorResponse;
 			return ;
 		}
+		errorResponse.setCode(this->_response[0].getCode());
+		errorResponse.setContent(ERRORPAGEERROR);
+		this->_response[0] = errorResponse;
+		return ;
 	}
+	errorResponse.setCode(this->_response[0].getCode());
+	errorResponse.setContent(ERRORPAGE);
 	this->_response[0] = errorResponse;
-
-
-
-	// this->_response[0].setContent(ERRORPAGEERROR);
 }
 void				RequestProcessor::getMethod(const int& socketFd) {
 	this->_response.push_back(this->getHtml(this->_server->getServerConfig().getLocation(this->_request.getTargetRoute()).getPage()));
+	(void)socketFd;
 }
 void				RequestProcessor::postMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
 void				RequestProcessor::putMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
 void				RequestProcessor::patchMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
 void				RequestProcessor::deleteMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
 void				RequestProcessor::headMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
 void				RequestProcessor::optionsMethod(const int& socketFd) {
-
+	(void)socketFd;
 }
