@@ -52,7 +52,7 @@ void			HttpRequest::setSwitch(const std::string& name, const std::string& value)
 void			HttpRequest::setOriginalString(const std::string& src) {
 	this->_originalString = src;
 }
-void			HttpRequest::setMethod(const t_method& method) {
+void			HttpRequest::setMethodType(const t_method& method) {
 	this->_method = method;
 }
 void			HttpRequest::setTargetRoute(const std::string& targetRoute) {
@@ -77,7 +77,7 @@ void			HttpRequest::pushAcceptEncoding(const std::string& acceptEncoding) {
 std::string		HttpRequest::getOriginalString(void) const {
 	return (this->_originalString);
 }
-t_method		HttpRequest::getMethod(void) const {
+t_method		HttpRequest::getMethodType(void) const {
 	return (this->_method);
 }
 std::string		HttpRequest::getTargetRoute(void) const {
@@ -167,7 +167,7 @@ std::string		HttpRequest::protocolToString(const t_protocol& protocol) {
 	}
 }
 std::string		HttpRequest::toString(void) {
-	std::string	returnString = "Method: " + HttpRequest::methodToString(this->getMethod()) + "\n";
+	std::string	returnString = "Method: " + HttpRequest::methodToString(this->getMethodType()) + "\n";
 	returnString += "Route: " + this->getTargetRoute() + "\n";
 	returnString += "Protocol: " + HttpRequest::protocolToString(this->getProtocol()) + "\n";
 	returnString += "Host: " + this->getHost() + "\n";

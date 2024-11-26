@@ -21,7 +21,8 @@ void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
 short				RequestProcessor::process(const int& socketFd) {
-	switch (this->_request.getMethod()) {
+	this->_response.push_back(HttpResponse());
+	switch (this->_request.getMethodType()) {
 		case (GET):
 			this->getMethod(socketFd);
 		break;
@@ -46,9 +47,8 @@ short				RequestProcessor::process(const int& socketFd) {
 		default:
 		break;
 	}
-	if (this->_response[0].getCode() != 200) {
+	if (this->_response[0].getCode() != 200)
 		this->doErrorPage();
-	}
 	for (size_t i = 0; i < this->_response.size(); ++i) {
 		std::string	completeResponse(this->_response[i].toString());
 		::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
@@ -56,11 +56,11 @@ short				RequestProcessor::process(const int& socketFd) {
 	::close(socketFd);
 	return (0);
 }
-HttpResponse			RequestProcessor::getHtml(const std::string& filePath) {
+HttpResponse		RequestProcessor::readFile(const std::string& filePath) {
 	HttpResponse		htmlResponse;
 	std::ofstream		file;
 	std::stringstream	buffer;
-	std::string			finalFilePath("./" + std::string("public/") + filePath + std::string(".html"));
+	std::string			finalFilePath("./" + std::string("public/") + filePath);
 	if (this->fileExists(finalFilePath)) {
 		file.open(finalFilePath.c_str(), std::ifstream::in);
 		if (file.is_open() == false)
@@ -74,7 +74,7 @@ HttpResponse			RequestProcessor::getHtml(const std::string& filePath) {
 		}
 	}
 	else
-		htmlResponse.setCode(500);
+		htmlResponse.setCode(404);
 	return (htmlResponse);
 }
 int					RequestProcessor::fileExists(std::string filePath)
@@ -90,12 +90,12 @@ void				RequestProcessor::deepCopy(const RequestProcessor& src) {
 	this->_response = src._response;
 }
 void				RequestProcessor::doErrorPage(void) {
-	Log::log("Doing Error Page");
+	Log::log("Doing Error Page " + stp_itoa(this->_response[0].getCode()));
 	this->_response[0].setType(textHtml);
 	HttpResponse	errorResponse;
 	std::string		errorPagePath(this->_server->getServerConfig().getErrorPage(this->_response[0].getCode()));
 	if (errorPagePath != "") {
-		errorResponse = this->getHtml(errorPagePath);
+		errorResponse = this->readFile(errorPagePath);
 		if (errorResponse.getCode() == 200) {
 			errorResponse.setCode(this->_response[0].getCode());
 			this->_response[0] = errorResponse;
@@ -111,8 +111,18 @@ void				RequestProcessor::doErrorPage(void) {
 	this->_response[0] = errorResponse;
 }
 void				RequestProcessor::getMethod(const int& socketFd) {
-	this->_response.push_back(this->getHtml(this->_server->getServerConfig().getLocation(this->_request.getTargetRoute()).getPage()));
+	Location	location(this->getLocation(this->_request.getTargetRoute()));
+	if (location.getMethod("GET") == false) {
+		this->_response[0].setCode(403);
+		return ;
+	}
+	this->_response[0] = this->readFile(location.getIndex());
+	if (this->_response[0].getCode() != 200)
+		return ;
+	if (location.getIndex().substr(location.getIndex().size() - 5) == ".html")
+		this->getHtmlComplements(this->_response[0].getContent());
 	(void)socketFd;
+		
 }
 void				RequestProcessor::postMethod(const int& socketFd) {
 	(void)socketFd;
@@ -131,4 +141,12 @@ void				RequestProcessor::headMethod(const int& socketFd) {
 }
 void				RequestProcessor::optionsMethod(const int& socketFd) {
 	(void)socketFd;
+}
+Location			RequestProcessor::getLocation(const std::string& route) {
+	return (this->_server->getServerConfig().getLocation(route));
+}
+void				getHtmlComplements(const std::string& htmlContent) {
+	size_t extra = htmlContent.find("rel = \"stylesheet\"");
+	if (a)
+	Log::debug("YAHOO");
 }

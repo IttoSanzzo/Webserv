@@ -22,7 +22,7 @@ class HttpRequest {
 		HttpRequest&		operator=(const HttpRequest& src);
 		void				setSwitch(const std::string& name, const std::string& value);
 		void				setOriginalString(const std::string& src);
-		void				setMethod(const t_method& method);
+		void				setMethodType(const t_method& method);
 		void				setTargetRoute(const std::string& targetRoute);
 		void				setHost(const std::string& host);
 		void				setProtocol(const t_protocol& protocol);
@@ -30,7 +30,7 @@ class HttpRequest {
 		void				pushAccept(const std::string& accept);
 		void				pushAcceptEncoding(const std::string& acceptEncoding);
 		std::string			getOriginalString(void) const;
-		t_method			getMethod(void) const;
+		t_method			getMethodType(void) const;
 		std::string			getTargetRoute(void) const;
 		std::string			getHost(void) const;
 		t_protocol			getProtocol(void) const;

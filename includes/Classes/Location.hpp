@@ -21,7 +21,6 @@ class	Location {
 		void		setPage(const std::string& page);
 		void		setIndex(const std::string& index);
 		void		setRoot(const std::string& root);
-		void		setReturner(const std::string& target);
 		void		setAutoindex(const bool& value);
 		void		setMethods(const std::string& method, const bool& value);
 		void		setCgiRelation(const std::string& extension, const std::string& path);

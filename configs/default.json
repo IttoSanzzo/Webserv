@@ -9,6 +9,10 @@
 			"client_max_size_body": 2048,
 			"error_pages": [
 				{
+					"codes": "403",
+					"page": "error_pages/403.html"
+				},
+				{
 					"codes": "404",
 					"page": "error_pages/404.html"
 				},
