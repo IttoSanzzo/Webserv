@@ -147,6 +147,6 @@ Location			RequestProcessor::getLocation(const std::string& route) {
 }
 void				getHtmlComplements(const std::string& htmlContent) {
 	size_t extra = htmlContent.find("rel = \"stylesheet\"");
-	if (aaaaaa)
+	if (aaaaaaa)
 	Log::debug("YAHOO");
 }
