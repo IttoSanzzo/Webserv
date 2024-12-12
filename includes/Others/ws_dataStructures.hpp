@@ -24,7 +24,8 @@ typedef enum e_protocol {
 typedef enum e_contentType {
 	no_type,
 	textHtml,
-	textCss
+	textCss,
+	applicationJavascript
 }	t_contentType;
 typedef enum e_method {
 	no_method,

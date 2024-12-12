@@ -1,0 +1,61 @@
+* {
+	color: black;
+}
+
+:root {
+	--theme: light;
+	--main-bg-color: yellow;
+	--secondary-bg-color: white;
+}
+
+body {
+	background-color: var(--main-bg-color);
+}
+
+#stateTitle {
+	display: block;
+	margin-top: 100px;
+	text-align: center;
+	font-size: 30px;
+}
+
+#mainContainer {
+	background-color: var(--secondary-bg-color);
+	border: 2px solid black;
+	border-radius: 25px;
+	width: 50vw;
+	height: 50vh;
+	margin: auto;
+}
+
+#themeSwitcher {
+	background-color: black;
+	width: 60px;
+	height: 25px;
+	border-radius: 15px;
+	margin: 30px auto;
+	position: fixed;
+	position: relative;
+}
+
+#themeSwitcher img {
+	width: 25px;
+	height: 25px;
+}
+
+#themeDarkIcon {
+	float: left;
+}
+#themeLightIcon {
+	float: right;
+}
+
+#themeButton {
+	background-color: white;
+	border-radius: 50%;
+	height: 25px;
+	width: 25px;
+	position: absolute;
+	left: 0;
+	transition: transform 1s ease;
+}
