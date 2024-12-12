@@ -22,7 +22,7 @@ ServerConfig::ServerConfig(const JsonNode& configJson) {
 	this->setClientMaxBodySize(configJson);
 	this->setAutoindex(configJson);
 	this->setErrorPages(configJson);
-	this->setLocations(configJson);
+	this->setRoutes(configJson);
 }
 ServerConfig&	ServerConfig::operator=(const ServerConfig& src) {
 	if (this != &src)
@@ -91,17 +91,17 @@ size_t			ServerConfig::getClientMaxBodySize(void) const {
 std::string		ServerConfig::getErrorPage(const short& pos) {
 	return (this->_error_pages[pos]);
 }
-Location		ServerConfig::getLocation(const std::string& page) {
-	Location	returner = this->_locations[page];
-	if (returner.getPage() == page && returner.getReturner() != "")
-		return (this->getLocation(returner.getReturner()));
+Route			ServerConfig::getRoute(const std::string& page) {
+	Route	returner = this->_routes[page];
+	if (returner.getRoutePath() == page && returner.getReturner() != "")
+		return (this->getRoute(returner.getReturner()));
 	return (returner);
 }
-std::map<short, std::string>&		ServerConfig::getErrorPagesMap(void) {
+std::map<short, std::string>&	ServerConfig::getErrorPagesMap(void) {
 	return (this->_error_pages);
 }
-std::map<std::string, Location>&	ServerConfig::getLocationsMap(void) {
-	return (this->_locations);
+std::map<std::string, Route>&	ServerConfig::getRoutesMap(void) {
+	return (this->_routes);
 }
 std::string		ServerConfig::toString(void) {
 	std::string	serverConfigInfo = "";
@@ -117,10 +117,10 @@ std::string		ServerConfig::toString(void) {
 		for (std::map<short, std::string>::iterator i = this->_error_pages.begin(); i != this->_error_pages.end(); ++i)
 			serverConfigInfo += "\n\t\tErrorPage[" + stp_itoa(i->first) + "].: " + i->second;
 	}
-	if (this->_locations.size() > 0) {
-		serverConfigInfo += std::string("\n\tLocations->");
-		for (std::map<std::string, Location>::iterator i = this->_locations.begin(); i != this->_locations.end(); ++i)
-			serverConfigInfo += "\n\t\tLocation[" + i->first + "]";
+	if (this->_routes.size() > 0) {
+		serverConfigInfo += std::string("\n\tRoutes->");
+		for (std::map<std::string, Route>::iterator i = this->_routes.begin(); i != this->_routes.end(); ++i)
+			serverConfigInfo += "\n\t\tRoute[" + i->first + "]";
 	}
 	return (serverConfigInfo);
 }
@@ -238,21 +238,21 @@ void			ServerConfig::setErrorPages(const JsonNode& configJson) {
 	for (size_t i = 0; i < errorChildren.GetSize(); ++i)
 		this->parseErrorChild(errorChildren.GetChildNode(i));
 }
-void			ServerConfig::setLocations(const JsonNode& configJson) {
-	JsonChildren locationsChildren;
+void			ServerConfig::setRoutes(const JsonNode& configJson) {
+	JsonChildren routesChildren;
 	try {
-		locationsChildren = configJson.TryGetChildren("locations");
+		routesChildren = configJson.TryGetChildren("routes");
 	} catch (const std::exception& ex) {
 		if (std::string(ex.what()).find("Not this type") != std::string::npos)
-			throw (ServerConfig::ErrorException("\"locations\" Element should be children!"));
+			throw (ServerConfig::ErrorException("\"routes\" Element should be children!"));
 		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
 			return ;
 		else
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
-	for (size_t i = 0; i < locationsChildren.GetSize(); ++i) {
-		Location location = Location(locationsChildren.GetChildNode(i));
-		this->_locations[location.getPage()] = location;
+	for (size_t i = 0; i < routesChildren.GetSize(); ++i) {
+		Route route = Route(routesChildren.GetChildNode(i));
+		this->_routes[route.getRoutePath()] = route;
 	}
 }
 void			ServerConfig::parseErrorChild(const JsonNode& errorChild) {
@@ -285,5 +285,5 @@ void			ServerConfig::deepCopy(const ServerConfig& src) {
 	this->_autoindex = src._autoindex;
 	this->_client_max_body_size = src._client_max_body_size;
 	this->_error_pages = src._error_pages;
-	this->_locations = src._locations;
+	this->_routes = src._routes;
 }

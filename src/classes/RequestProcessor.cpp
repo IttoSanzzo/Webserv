@@ -111,18 +111,16 @@ void				RequestProcessor::doErrorPage(void) {
 	this->_response[0] = errorResponse;
 }
 void				RequestProcessor::getMethod(const int& socketFd) {
-	Location	location(this->getLocation(this->_request.getTargetRoute()));
-	if (location.getMethod("GET") == false) {
+	Log::debug(std::string("Route is: |") + this->_request.getTargetRoute() + std::string("|"));
+	Route	route(this->getRoute(this->_request.getTargetRoute()));
+	if (route.getMethod("GET") == false) {
 		this->_response[0].setCode(403);
 		return ;
 	}
-	this->_response[0] = this->readFile(location.getIndex());
+	this->_response[0] = this->readFile(route.getIndex());
 	if (this->_response[0].getCode() != 200)
 		return ;
-	if (location.getIndex().substr(location.getIndex().size() - 5) == ".html")
-		this->getHtmlComplements(this->_response[0].getContent());
 	(void)socketFd;
-		
 }
 void				RequestProcessor::postMethod(const int& socketFd) {
 	(void)socketFd;
@@ -142,11 +140,6 @@ void				RequestProcessor::headMethod(const int& socketFd) {
 void				RequestProcessor::optionsMethod(const int& socketFd) {
 	(void)socketFd;
 }
-Location			RequestProcessor::getLocation(const std::string& route) {
-	return (this->_server->getServerConfig().getLocation(route));
-}
-void				getHtmlComplements(const std::string& htmlContent) {
-	size_t extra = htmlContent.find("rel = \"stylesheet\"");
-	if (aaaaaaa)
-	Log::debug("YAHOO");
+Route				RequestProcessor::getRoute(const std::string& route) {
+	return (this->_server->getServerConfig().getRoute(route));
 }

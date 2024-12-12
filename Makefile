@@ -21,7 +21,7 @@ DS_UTIL	= utils/
 
 N_MAIN	=	main.cpp
 N_CLAS	=	ServerConfig.cpp		\
-			Location.cpp			\
+			Route.cpp				\
 			ServerConfigArray.cpp	\
 			Server.cpp				\
 			Cluster.cpp				\

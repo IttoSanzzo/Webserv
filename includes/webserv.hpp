@@ -46,7 +46,7 @@
 /* 2. Classes Declaration */
 class	ServerConfig;
 class	ServerConfigArray;
-class	Location;
+class	Route;
 class	HttpRequest;
 class	HttpResponse;
 
@@ -54,7 +54,7 @@ class	HttpResponse;
 # include "../CppJsonHandler/includes/JsonHandler.hpp"
 # include "Classes/Log.hpp"
 # include "Classes/ServerConfig.hpp"
-# include "Classes/Location.hpp"
+# include "Classes/Route.hpp"
 # include "Classes/ServerConfigArray.hpp"
 # include "Classes/Server.hpp"
 # include "Classes/Cluster.hpp"

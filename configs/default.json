@@ -21,24 +21,30 @@
 					"page": "error_pages/40x.html"
 				}
 			],
-			"locations": [
+			"routes": [
 				{
-					"page": "/",
+					"routePath": "/",
 					"autoindex": false,
 					"allow_methods": "GET POST DELETE"
 				},
 				{
-					"page": "/characters",
-					"index": "characters.html",
+					"routePath": "/characters",
+					"routeIndex": "characters.html",
 					"autoindex": true,
 					"allow_methods": "GET POST PUT HEAD"
 				},
 				{
-					"page": "/char",
+					"routePath": "/theme",
+					"index": "ThemeSwitcher/index.html",
+					"autoindex": true,
+					"allow_methods": "GET POST PUT HEAD"
+				},
+				{
+					"routePath": "/char",
 					"return": "/characters"
 				},
 				{
-					"page": "/cgi-bin",
+					"routePath": "/cgi-bin",
 					"index": "dice.py",
 					"root": "./",
 					"cgi": [

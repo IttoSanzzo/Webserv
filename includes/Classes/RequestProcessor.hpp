@@ -29,8 +29,7 @@ class RequestProcessor {
 		void				deleteMethod(const int& socketFd);
 		void				headMethod(const int& socketFd);
 		void				optionsMethod(const int& socketFd);
-		Location			getLocation(const std::string& route);
-		void				getHtmlComplements(const std::string& htmlContent);
+		Route				getRoute(const std::string& route);
 };
 
 #endif

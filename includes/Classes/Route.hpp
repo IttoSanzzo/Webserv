@@ -1,11 +1,11 @@
-#ifndef LOCATION_HPP
-# define LOCATION_HPP
+#ifndef ROUTE_HPP
+# define ROUTE_HPP
 
 #include "webserv.hpp"
 
-class	Location {
+class	Route {
 	private:
-		std::string							_page;
+		std::string							_routePath;
 		std::string							_index;
 		std::string							_root;
 		std::string							_returner;
@@ -13,18 +13,18 @@ class	Location {
 		std::map<std::string, std::string>	_cgiRelations;
 		std::map<std::string, bool>			_methods;
 	public:
-		~Location(void);
-		Location(void);
-		Location(const Location& src);
-		Location(const JsonNode& locationJson);
-		Location&	operator=(const Location& src);
-		void		setPage(const std::string& page);
+		~Route(void);
+		Route(void);
+		Route(const Route& src);
+		Route(const JsonNode& routeJson);
+		Route&		operator=(const Route& src);
+		void		setRoutePath(const std::string& routePath);
 		void		setIndex(const std::string& index);
 		void		setRoot(const std::string& root);
 		void		setAutoindex(const bool& value);
 		void		setMethods(const std::string& method, const bool& value);
 		void		setCgiRelation(const std::string& extension, const std::string& path);
-		std::string	getPage(void) const;
+		std::string	getRoutePath(void) const;
 		std::string	getIndex(void) const;
 		std::string	getRoot(void) const;
 		std::string	getReturner(void) const;
@@ -32,14 +32,14 @@ class	Location {
 		bool		getMethod(const std::string& method);
 		std::string	getCgiPath(const std::string& extension);
 	private:
-		void		deepCopy(const Location& src);
-		void		setPage(const JsonNode& locationJson);
-		void		setIndex(const JsonNode& locationJson);
-		void		setRoot(const JsonNode& locationJson);
-		void		setReturner(const JsonNode& locationJson);
-		void		setAutoindex(const JsonNode& locationJson);
-		void		setMethods(const JsonNode& locationJson);
-		void		setCgiRelation(const JsonNode& locationJson);
+		void		deepCopy(const Route& src);
+		void		setRoutePath(const JsonNode& routeJson);
+		void		setIndex(const JsonNode& routeJson);
+		void		setRoot(const JsonNode& routeJson);
+		void		setReturner(const JsonNode& routeJson);
+		void		setAutoindex(const JsonNode& routeJson);
+		void		setMethods(const JsonNode& routeJson);
+		void		setCgiRelation(const JsonNode& routeJson);
 		void		parseCgiChild(const JsonNode& errorChild);
 		std::string	parseCgiElement(const JsonNode& errorChild, const std::string& element);
 	public:
@@ -49,7 +49,7 @@ class	Location {
 			public:
 				virtual ~ErrorException() throw() {}
 				ErrorException(std::string message) throw() {
-					this->_message = "Location: " + message;
+					this->_message = "Route: " + message;
 				}
 				virtual const char*	what() const throw() {
 					return (_message.c_str());

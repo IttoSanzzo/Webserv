@@ -12,7 +12,7 @@ class	ServerConfig {
 		bool							_autoindex;
 		unsigned long					_client_max_body_size;
 		std::map<short, std::string>	_error_pages;
-		std::map<std::string, Location>	_locations;
+		std::map<std::string, Route>	_routes;
 	public:
 		~ServerConfig(void);
 		ServerConfig(void);
@@ -36,9 +36,9 @@ class	ServerConfig {
 		bool			getAutoindex(void) const;
 		size_t			getClientMaxBodySize(void) const;
 		std::string		getErrorPage(const short& pos);
-		Location		getLocation(const std::string& page);
-		std::map<short, std::string>&		getErrorPagesMap(void);
-		std::map<std::string, Location>&	getLocationsMap(void);
+		Route			getRoute(const std::string& page);
+		std::map<short, std::string>&	getErrorPagesMap(void);
+		std::map<std::string, Route>&	getRoutesMap(void);
 		std::string		toString(void);
 		void			initErrorPages(void);
 		bool			isValidHost(std::string host) const;
@@ -52,7 +52,7 @@ class	ServerConfig {
 		void			setAutoindex(const JsonNode& configJson);
 		void			setClientMaxBodySize(const JsonNode& configJson);
 		void			setErrorPages(const JsonNode& configJson);
-		void			setLocations(const JsonNode& configJson);
+		void			setRoutes(const JsonNode& configJson);
 		void			parseErrorChild(const JsonNode& errorChild);
 		std::string		parseErrorElement(const JsonNode& errorChild, const std::string& element);
 	public:
