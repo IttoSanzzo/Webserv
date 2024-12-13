@@ -62,20 +62,24 @@ void			Server::closeSocketFd(const int& socketFd) {
 		::close(socketFd);
 	this->_requests.erase(socketFd);
 }
-void			Server::clientSocketCall(void) {
+short			Server::clientSocketCall(void) {
 	int clientSocket = ::accept(this->_socketFd, NULL, NULL);
 	Log::log("\tServer " + this->_serverConfig.getListen().toString() + " accepted a client");
-	char	requestReadingBuffer[this->_serverConfig.getClientMaxBodySize() + 1];
+	char requestReadingBuffer[this->_serverConfig.getClientMaxBodySize() + 1];
 	size_t bytesRead = recv(clientSocket, requestReadingBuffer, sizeof(requestReadingBuffer), 0);
 	if (bytesRead > this->_serverConfig.getClientMaxBodySize()) {
 		Log::error("Client sent a request bigger than permitted!");
 		::close(clientSocket);
-		return ;
+		return (0);
 	}
 	requestReadingBuffer[bytesRead] = '\0';
 	HttpRequest	clientRequest(requestReadingBuffer);
 	Log::info(clientRequest.toString());
 	this->serveRequest(clientRequest, clientSocket);
+	if (clientRequest.getOther("Connection") == "keep-alive")
+		return (clientSocket);
+	::close(clientSocket);
+	return (0);
 }
 void			Server::deepCopy(const Server& src) {
 	this->_serverConfig = src._serverConfig;
@@ -89,37 +93,7 @@ void			Server::setAddr(void) {
 	this->_addr.sin_addr.s_addr = this->_serverConfig.getHost();
 	this->_addr.sin_port = htons(this->_serverConfig.getPort());
 }
-bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
+void			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
 	RequestProcessor	processor(request, this);
 	processor.process(clientSocketFd);
-/*
-	Location	targetRoute = this->_serverConfig.getLocation(request.getTargetRoute());
-	if (targetRoute.getPage() == "") {
-		HttpResponse	response;
-		response.setCode(404);
-		Log::error(httpStatusCodeToString(response.getCode()));
-		response.setType(textHtml);
-		response.setContent("<h1>404 Page Not Found</h1>");
-		// allResponses.push_back(response);
-		// return (allResponses);
-	}
-	(void)request;
-	{
-		HttpResponse	response;
-		std::string responseBody = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title>Calculator</title></head><body>Test Test</body></html>";
-		response.setCode(200);
-		response.setType(textHtml);
-		response.setContent(responseBody);	
-		// allResponses.push_back(response);
-	}
-	
-	
-	for (size_t i = 0; i < response.size(); ++i) {
-		Log::debug("Doing Sht");
-		std::string	fullResponse(response[i].toString());
-		::send(clientSocketFd, fullResponse.c_str(), fullResponse.size(), 0);
-		Log::debug("Done");
-	}
-*/
-	return (true);
 }

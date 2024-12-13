@@ -10,7 +10,7 @@ class Cluster {
 		std::vector<Server>	_servers;
 		size_t				_requests;
 		int					_error;
-		pollfd*				_pollFd;
+		std::vector<pollfd>	_pollFds;
 	public:
 		~Cluster(void);
 		Cluster(const Cluster& src);
@@ -20,14 +20,13 @@ class Cluster {
 		ServerConfig&		getServerConfig(const size_t& pos);
 		size_t				getServerConfigSize(void) const;
 		int					getError(void) const;
-		pollfd*				getPollFd(void) const;
+		std::vector<pollfd>	getPollFds(void) const;
 		void				runCluster(void);
 	private:
 		void				runPoll(void);
 		void				deepCopy(const Cluster& src);
 		static void			signalHandler(int signal);
-		void				setPollFd(pollfd* pollFd);
-		void				freePollFd(void);
+		void				setPollFds(std::vector<pollfd> pollFds);
 		bool				serversStart(void);
 		bool				serversListenersSetup(void);
 		void				pollFdSetup(void);

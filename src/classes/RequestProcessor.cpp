@@ -21,7 +21,7 @@ void				RequestProcessor::setServer(Server* server) {
 void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
-short				RequestProcessor::process(const int& socketFd) {
+void				RequestProcessor::process(const int& socketFd) {
 	switch (this->_request.getMethodType()) {
 		case (GET):
 			this->getMethod(socketFd);
@@ -51,8 +51,6 @@ short				RequestProcessor::process(const int& socketFd) {
 		this->doErrorPage();
 	std::string	completeResponse(this->_response.toString());
 	::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
-	::close(socketFd);
-	return (0);
 }
 HttpResponse		RequestProcessor::readFileToResponse(const std::string& filePath) {
 	HttpResponse		htmlResponse;
@@ -108,22 +106,16 @@ void				RequestProcessor::doErrorPage(void) {
 	this->_response = errorResponse;
 }
 void				RequestProcessor::getMethod(const int& socketFd) {
-	Log::debug(std::string("TargetRoute is: |") + this->_request.getTargetRoute() + std::string("|"));
 	Route		route;
 	std::string	index;
 	if (this->_request.getReferer() != "") {
-		Log::debug("Referer: " + this->_request.getReferer());
-		std::string refererTargetRoute(this->_request.getReferer().substr(this->_request.getReferer().find(this->_server->getServerConfig().getListen().toString()) + this->_server->getServerConfig().getListen().toString().length()));
-		route = this->getRoute(refererTargetRoute);
+		route = this->getRoute(this->_request.getReferer().substr(this->_request.getReferer().find(this->_server->getServerConfig().getListen().toString()) + this->_server->getServerConfig().getListen().toString().length()));
 		index = this->_request.getTargetRoute();
 	}
 	else {
 		route = this->getRoute(this->_request.getTargetRoute());
-		route = this->getRoute(this->_request.getTargetRoute());
 		index = route.getIndex();
 	}
-	Log::debug("RoutePath: " + route.getRoutePath());
-	Log::debug("Index: " + index);
 	if (route.getMethod("GET") == false) {
 		this->_response.setCode(403);
 		return ;
@@ -152,6 +144,5 @@ void				RequestProcessor::optionsMethod(const int& socketFd) {
 	(void)socketFd;
 }
 Route				RequestProcessor::getRoute(const std::string& route) {
-	Log::debug("Getting TargetedRoute: |" + route + "|");
 	return (this->_server->getServerConfig().getRoute(route));
 }

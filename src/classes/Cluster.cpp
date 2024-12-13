@@ -4,18 +4,16 @@ int Cluster::_signalValue = 0;
 
 Cluster::~Cluster(void) {
 	Log::log("Closing cluster...");
-	for (size_t i = 0; i < this->_servers.size(); ++i) {
-		Log::debug("\tClosing listener for " + this->_servers[i].getServerConfig().getListen().toString());
-		this->_servers[i].closeSocketFd();
+	for (size_t i = 0; i < this->_pollFds.size(); ++i) {
+		// Log::debug("\tClosing listener for " + this->_servers[i].getServerConfig().getListen().toString());
+		::close(this->_pollFds[i].fd);
 	}
-	this->freePollFd();
 }
 Cluster::Cluster(const Cluster& src) {
 	this->deepCopy(src);
 }
 Cluster::Cluster(std::string& configurationFilePath) {
 	Log::log("Parsing configuration file");
-	this->_pollFd = NULL;
 	this->_serverConfigs = ServerConfigArray(configurationFilePath);
 	this->_error = this->_serverConfigs.getError();
 	if (this->_error != 0)
@@ -40,8 +38,8 @@ size_t				Cluster::getServerConfigSize(void) const {
 int					Cluster::getError(void) const {
 	return (this->_error);
 }
-pollfd*				Cluster::getPollFd(void) const {
-	return (this->_pollFd);
+std::vector<pollfd>	Cluster::getPollFds(void) const {
+	return (this->_pollFds);
 }
 void				Cluster::runCluster(void) {
 	Log::log("Starting cluster...");
@@ -56,17 +54,19 @@ void				Cluster::runPoll(void) {
 	Log::log("Starting poll!");
 	while (Cluster::_signalValue == 0) {
 		Log::log("Back to Poll.");
-		int pollRet = poll(this->_pollFd, this->_servers.size(), -1);
+		int pollRet = poll(this->_pollFds.data(), this->_pollFds.size(), -1);
 		Log::info("Poll return state: " + stp_itoa(pollRet));
 		if (pollRet <= 0)
 			continue;
 		Log::debug("There's data to be read!");
-		for (size_t i = 0; i < this->_servers.size(); ++i) {
-			if (this->_pollFd[i].revents & POLLIN) {
-				Log::debug("Server Reading : " + stp_itoa(i));
-				this->_servers[i].clientSocketCall();
+		for (size_t i = 0; i < this->_pollFds.size(); ++i)
+			if (this->_pollFds[i].revents & POLLIN) {
+				int keepAlive = this->_servers[i].clientSocketCall(); 
+				if (keepAlive == 0)
+					continue;
+				pollfd pfd = {keepAlive, POLL_IN, 0};
+				this->_pollFds.push_back(pfd);
 			}
-		}
 	}
 }
 void				Cluster::deepCopy(const Cluster& src) {
@@ -74,31 +74,14 @@ void				Cluster::deepCopy(const Cluster& src) {
 	this->_serverConfigs = src._serverConfigs;
 	this->_servers = src._servers;
 	this->_requests = src._requests;
-	if (src._pollFd != NULL) {
-		size_t pollFdSize = this->_serverConfigs.getSize();
-		this->_pollFd = new pollfd[pollFdSize];
-		for (size_t i = 0; i < pollFdSize; ++i)
-			this->_pollFd[i] = src._pollFd[i];
-	}
-	else
-		this->_pollFd = NULL;
+	this->_pollFds = src._pollFds;
 }
 void				Cluster::signalHandler(int signal) {
 	Log::log("SIGINT signal Detected");
 	Cluster::_signalValue = signal;
 }
-void				Cluster::setPollFd(pollfd* pollFd) {
-	if (pollFd != NULL) {
-		this->freePollFd();
-		this->_pollFd = pollFd;
-	}
-}
-void				Cluster::freePollFd(void) {
-	if (this->_pollFd != NULL) {
-		delete[] this->_pollFd;
-		this->_pollFd = NULL;
-	}
-
+void				Cluster::setPollFds(std::vector<pollfd> pollFds) {
+	this->_pollFds = pollFds;
 }
 bool				Cluster::serversStart(void) {
 	Log::log("\tSetting servers up...");
@@ -116,11 +99,9 @@ bool				Cluster::serversListenersSetup(void) {
 }
 void				Cluster::pollFdSetup(void) {
 	Log::log("\tSetting PollFd...");
-	this->setPollFd(new	pollfd[this->_servers.size()]);
 	for (size_t i = 0; i < this->_servers.size(); ++i) {
-		this->_pollFd[i].fd = this->_servers[i].getSocketFd();
-		this->_pollFd[i].events = POLL_IN;
-		this->_pollFd[i].revents = 0;
+		pollfd pfd = {this->_servers[i].getSocketFd() , POLL_IN, 0};
+		this->_pollFds.push_back(pfd);
 	}
 	Log::log("\tPollFd Setted up.");
 }

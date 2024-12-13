@@ -16,7 +16,7 @@ class RequestProcessor {
 		RequestProcessor&	operator=(const RequestProcessor& src);
 		void				setServer(Server* server);
 		void				setRequest(const HttpRequest& request);
-		short				process(const int& socketFd);
+		void				process(const int& socketFd);
 		HttpResponse		readFileToResponse(const std::string& filePath);
 		int					fileExists(std::string filePath);
 	private:

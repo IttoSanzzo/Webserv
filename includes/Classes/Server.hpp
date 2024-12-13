@@ -23,11 +23,11 @@ class Server {
 		bool			listenerSetup(void);
 		void			closeSocketFd(void);
 		void			closeSocketFd(const int& socketFd);
-		void			clientSocketCall(void);
+		short			clientSocketCall(void);
 	private:
 		void			deepCopy(const Server& src);
 		void			setAddr(void);
-		bool			serveRequest(const HttpRequest& request, const int& clientSocketFd);
+		void			serveRequest(const HttpRequest& request, const int& clientSocketFd);
 };
 
 #endif
