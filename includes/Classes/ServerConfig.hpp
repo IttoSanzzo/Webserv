@@ -7,6 +7,7 @@ class	ServerConfig {
 	private:
 		t_listen						_listen;
 		std::string						_server_name;
+		std::string						_dataDirectory;
 		std::string						_root;
 		std::string						_index;
 		bool							_autoindex;
@@ -23,6 +24,7 @@ class	ServerConfig {
 		void			setPort(const std::string& port);
 		void			setHost(std::string host);
 		void			setServerName(const std::string& server_name);
+		void			setDataDirectory(const std::string& dataDirectory);
 		void			setRoot(const std::string& root);
 		void			setIndex(const std::string& index);
 		void			setAutoindex(bool autoindex);
@@ -31,6 +33,7 @@ class	ServerConfig {
 		u_int16_t		getPort(void) const;
 		in_addr_t		getHost(void) const;
 		std::string		getServerName(void) const;
+		std::string		getDataDirectory(void) const;
 		std::string		getRoot(void) const;
 		std::string		getIndex(void) const;
 		bool			getAutoindex(void) const;
@@ -47,6 +50,7 @@ class	ServerConfig {
 		void			setPort(const JsonNode& configJson);
 		void			setHost(const JsonNode& configJson);
 		void			setServerName(const JsonNode& configJson);
+		void			setDataDirectory(const JsonNode& configJson);
 		void			setRoot(const JsonNode& configJson);
 		void			setIndex(const JsonNode& configJson);
 		void			setAutoindex(const JsonNode& configJson);

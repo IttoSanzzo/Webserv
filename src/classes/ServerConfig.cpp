@@ -5,6 +5,7 @@ ServerConfig::ServerConfig(void) {
 	this->_listen.port = 0;
 	this->_listen.host = 0;
 	this->_server_name = "";
+	this->_dataDirectory = "";
 	this->_root = "";
 	this->_index = "";
 	this->_autoindex = false;
@@ -51,6 +52,9 @@ void			ServerConfig::setHost(std::string host) {
 void			ServerConfig::setServerName(const std::string& server_name) {
 	this->_server_name = server_name;
 }
+void			ServerConfig::setDataDirectory(const std::string& dataDirectory) {
+	this->_dataDirectory = dataDirectory;
+}
 void			ServerConfig::setRoot(const std::string& root) {
 	// TODO ServerConfig::setRoot
 	this->_root = root;
@@ -75,6 +79,9 @@ in_addr_t		ServerConfig::getHost(void) const {
 }
 std::string		ServerConfig::getServerName(void) const {
 	return (this->_server_name);
+}
+std::string		ServerConfig::getDataDirectory(void) const {
+	return (this->_dataDirectory);
 }
 std::string		ServerConfig::getRoot(void) const {
 	return (this->_root);
@@ -171,6 +178,18 @@ void			ServerConfig::setServerName(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException("\"server_name\" Element should be string!"));
 		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
 			this->setServerName("Server");
+		else
+			throw (ServerConfig::ErrorException(ex.what()));
+	}
+}
+void			ServerConfig::setDataDirectory(const JsonNode& configJson) {
+	try {
+		this->setIndex(configJson.TryGetString("dataDirectory"));
+	} catch (const std::exception& ex) {
+		if (std::string(ex.what()).find("Not this type") != std::string::npos)
+			throw (ServerConfig::ErrorException("\"dataDirectory\" Element should be string!"));
+		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
+			this->_index = "./";
 		else
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
@@ -280,6 +299,7 @@ std::string		ServerConfig::parseErrorElement(const JsonNode& errorChild, const s
 void			ServerConfig::deepCopy(const ServerConfig& src) {
 	this->_listen = src._listen;
 	this->_server_name = src._server_name;
+	this->_dataDirectory = src._dataDirectory;
 	this->_root = src._root;
 	this->_index = src._index;
 	this->_autoindex = src._autoindex;
