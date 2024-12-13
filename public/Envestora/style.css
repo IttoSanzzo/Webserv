@@ -1,0 +1,53 @@
+body {
+	background-image: linear-gradient(to right, blue, green, red);
+}
+
+#globalContainer {
+	background-color: rgb(15, 181, 252);
+	border: 3px solid red;
+	border-radius: 15px;
+	height: 45vh;
+	width: 45vh;
+	margin: 20vh auto;
+	padding: 30px;
+	display: flex;
+	flex-flow: column;
+	box-shadow: 10px 10px rgba(0, 0, 0, 0.8);
+}
+
+#screen {
+	background-color: wheat;
+	border: 3px solid black;
+	border-radius: inherit;
+	padding-right: 20px;
+	font-size: 40px;
+	line-height: 0px;
+	text-align: right;
+	box-shadow: 5px 8px rgba(0, 0, 0, 0.8);
+}
+#lastNumberString {
+	position: absolute;
+	text-align: left;
+	margin: 20px;
+}
+#buttonsContainer {
+	background-color: aquamarine;
+	margin-top: 10px;
+	border: 3px solid black;
+	border-radius: inherit;
+	height: 100%;
+	padding: 15px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(4, 1fr);
+	box-shadow: 5px 8px rgba(0, 0, 0, 0.8);
+}
+
+.calcButton {
+	background-color: lightgray;
+	border-radius: inherit;
+	font-size: 50px;
+	height: 90%;
+	width: 90%;
+	box-shadow: 5px 8px rgba(0, 0, 0, 0.8);
+}

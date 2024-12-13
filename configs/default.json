@@ -41,6 +41,12 @@
 					"allow_methods": "GET POST PUT HEAD"
 				},
 				{
+					"routePath": "/envestora",
+					"index": "Envestora/index.html",
+					"autoindex": true,
+					"allow_methods": "GET POST PUT HEAD"
+				},
+				{
 					"routePath": "/char",
 					"return": "/characters"
 				},
