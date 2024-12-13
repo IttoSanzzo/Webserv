@@ -97,7 +97,7 @@ bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketF
 	if (targetRoute.getPage() == "") {
 		HttpResponse	response;
 		response.setCode(404);
-		Log::error(httpStatusCodeString(response.getCode()));
+		Log::error(httpStatusCodeToString(response.getCode()));
 		response.setType(textHtml);
 		response.setContent("<h1>404 Page Not Found</h1>");
 		// allResponses.push_back(response);

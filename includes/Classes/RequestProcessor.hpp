@@ -5,9 +5,9 @@
 
 class RequestProcessor {
 	private:
-		Server*						_server;
-		HttpRequest					_request;
-		std::vector<HttpResponse>	_response;
+		Server*			_server;
+		HttpRequest		_request;
+		HttpResponse	_response;
 		RequestProcessor(void);
 	public:
 		~RequestProcessor(void);
@@ -17,7 +17,7 @@ class RequestProcessor {
 		void				setServer(Server* server);
 		void				setRequest(const HttpRequest& request);
 		short				process(const int& socketFd);
-		HttpResponse		readFile(const std::string& filePath);
+		HttpResponse		readFileToResponse(const std::string& filePath);
 		int					fileExists(std::string filePath);
 	private:
 		void				deepCopy(const RequestProcessor& src);

@@ -63,10 +63,17 @@ class	HttpResponse;
 # include "Classes/RequestProcessor.hpp"
 
 /* 5. Others */
-int			ws_inet_pton(int af, const char *src, void *dst);
-in_addr_t	ws_inet_addr(const char *cp);
-std::string	ws_inet_ntoa(in_addr_t addr);
-std::string	httpStatusCodeString(const int& code);
-void		infoAllServerSettings(ServerConfigArray& serverConfigs);
+int				ws_inet_pton(int af, const char *src, void *dst);
+in_addr_t		ws_inet_addr(const char *cp);
+std::string		ws_inet_ntoa(in_addr_t addr);
+t_method		methodFromString(const std::string& method);
+std::string		methodToString(const t_method& method);
+t_protocol		protocolFromString(const std::string& protocol);
+std::string		protocolToString(const t_protocol& protocol);
+t_contentType	contentTypeFromString(const std::string& contentType);
+std::string		contentTypeToString(const t_contentType& contentType);
+t_contentType	contentTypeFromFile(const std::string& filePath);
+std::string		httpStatusCodeToString(const int& code);
+void			infoAllServerSettings(ServerConfigArray& serverConfigs);
 
 #endif

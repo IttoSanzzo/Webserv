@@ -24,7 +24,6 @@ class HttpResponse {
 		size_t				getSize(void) const;
 		std::string			getHeader(void) const;
 		std::string			toString(void) const;
-		static std::string	contentTypeString(const t_contentType& type);
 	private:
 		void				deepCopy(const HttpResponse& src);
 };

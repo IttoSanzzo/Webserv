@@ -20,11 +20,12 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_host = "";
 	this->_protocol = no_protocol;
 	this->_userAgent = "";
+	this->_referer = "";
 	std::vector<std::string> lines = stp_split(request, "\n");
 	std::vector<std::string> mainParts = stp_split(lines[0], " ");
-	this->_method = HttpRequest::methodFromString(mainParts[0]);
+	this->_method = methodFromString(mainParts[0]);
 	this->_targetRoute = mainParts[1];
-	this->_protocol = HttpRequest::protocolFromString(mainParts[2]);
+	this->_protocol = protocolFromString(mainParts[2]);
 	for (size_t i = 1; i < lines.size(); ++i) {
 		if (lines[i] == "\r")
 			continue;
@@ -44,6 +45,10 @@ void			HttpRequest::setSwitch(const std::string& name, const std::string& value)
 		this->_userAgent = value;
 	else if (name == "Accept")
 		this->_accept.push_back(value);
+	else if (name == "Referer") {
+		this->_referer = value;
+		this->_referer.erase(value.find('\r'));
+	}
 	else if (name == "Accept-Encoding")
 		this->_acceptEncoding = stp_split(value, ", ");
 	else
@@ -66,6 +71,9 @@ void			HttpRequest::setProtocol(const t_protocol& protocol) {
 }
 void			HttpRequest::setUserAgent(const std::string& userAgent) {
 	this->_userAgent = userAgent;
+}
+void			HttpRequest::setReferer(const std::string& referer) {
+	this->_referer = referer;
 }
 void			HttpRequest::pushAccept(const std::string& accept) {
 	this->_accept.push_back(accept);
@@ -92,6 +100,9 @@ t_protocol		HttpRequest::getProtocol(void) const {
 std::string		HttpRequest::getUserAgent(void) const {
 	return (this->_userAgent);
 }
+std::string		HttpRequest::getReferer(void) const {
+	return (this->_referer);
+}
 std::string		HttpRequest::getAccept(const size_t& pos) const {
 	return (this->_accept[pos]);
 }
@@ -104,72 +115,10 @@ std::string		HttpRequest::getOther(const std::string& name) {
 std::map<std::string, std::string>&	HttpRequest::getOther(void) {
 	return (this->_others);
 }
-t_method		HttpRequest::methodFromString(const std::string& method) {
-	if (method == "GET")
-		return (GET);
-	else if (method == "POST")
-		return (POST);
-	else if (method == "PUT")
-		return (PUT);
-	else if (method == "PATCH")
-		return (PATCH);
-	else if (method == "DELETE")
-		return (DELETE);
-	else if (method == "HEAD")
-		return (HEAD);
-	else if (method == "OPTIONS")
-		return (OPTIONS);
-	else
-		return (no_method);
-}
-std::string		HttpRequest::methodToString(const t_method& method) {
-	switch (method) {
-		case (GET):
-			return ("GET");
-		break;
-		case (POST):
-			return ("POST");
-		break;
-		case (PUT):
-			return ("PUT");
-		break;
-		case (PATCH):
-			return ("PATCH");
-		break;
-		case (DELETE):
-			return ("DELETE");
-		break;
-		case (HEAD):
-			return ("HEAD");
-		break;
-		case (OPTIONS):
-			return ("OPTIONS");
-		break;
-		default:
-			return ("");
-		break;
-	}
-}
-t_protocol		HttpRequest::protocolFromString(const std::string& protocol) {
-	if (protocol == "HTTP/1.1")
-		return (http1dot1);
-	else
-		return (no_protocol);
-}
-std::string		HttpRequest::protocolToString(const t_protocol& protocol) {
-	switch (protocol) {
-		case (http1dot1):
-			return ("HTTP/1.1");
-		break;
-		default:
-			return ("");
-		break;
-	}
-}
 std::string		HttpRequest::toString(void) {
-	std::string	returnString = "Method: " + HttpRequest::methodToString(this->getMethodType()) + "\n";
+	std::string	returnString = "Method: " + methodToString(this->getMethodType()) + "\n";
 	returnString += "Route: " + this->getTargetRoute() + "\n";
-	returnString += "Protocol: " + HttpRequest::protocolToString(this->getProtocol()) + "\n";
+	returnString += "Protocol: " + protocolToString(this->getProtocol()) + "\n";
 	returnString += "Host: " + this->getHost() + "\n";
 	returnString += "Agent: " + this->getUserAgent();
 	for (size_t i = 0; i < this->_accept.size(); ++i)
@@ -187,6 +136,7 @@ void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_host = src._host;
 	this->_protocol = src._protocol;
 	this->_userAgent = src._userAgent;
+	this->_referer = src._referer;
 	this->_accept = src._accept;
 	this->_acceptEncoding = src._acceptEncoding;
 	this->_others = src._others;

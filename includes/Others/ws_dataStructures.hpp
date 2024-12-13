@@ -22,7 +22,7 @@ typedef enum e_protocol {
 	http1dot1
 }	t_protocol;
 typedef enum e_contentType {
-	no_type,
+	anyType,
 	textHtml,
 	textCss,
 	applicationJavascript

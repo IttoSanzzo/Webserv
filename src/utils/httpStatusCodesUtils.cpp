@@ -1,6 +1,6 @@
 #include "webserv.hpp"
 
-std::string	httpStatusCodeString(const int& code) {
+std::string	httpStatusCodeToString(const int& code) {
 	switch (code) {
 		case (200):
 			return ("OK");

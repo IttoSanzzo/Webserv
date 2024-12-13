@@ -3,7 +3,7 @@
 HttpResponse::~HttpResponse(void) {}
 HttpResponse::HttpResponse(void) {
 	this->_code = 0;
-	this->_contentType = no_type;
+	this->_contentType = anyType;
 	this->_content = "";
 }
 HttpResponse::HttpResponse(const HttpResponse& src) {
@@ -44,28 +44,15 @@ size_t			HttpResponse::getSize(void) const {
 std::string		HttpResponse::getHeader(void) const {
 	std::string	header = "HTTP/1.1 ";
 	header += stp_itoa(this->_code);
-	std::string	codeDescription = httpStatusCodeString(this->_code);
+	std::string	codeDescription = httpStatusCodeToString(this->_code);
 	if (codeDescription != "")
 		header += " " + codeDescription;
-	header += "\r\nContent-Type: " + HttpResponse::contentTypeString(this->_contentType);
+	header += "\r\nContent-Type: " + contentTypeToString(this->_contentType);
 	header += "\r\nContent-Length: " + stp_itoa(this->getContentLength());
 	return (header);
 }
 std::string		HttpResponse::toString(void) const {
 	return (this->getHeader() + "\r\n\r\n" + this->getContent());
-}
-std::string		HttpResponse::contentTypeString(const t_contentType& type) {
-	switch (type) {
-		case (textHtml):
-			return ("text/html");
-		break;
-		case (textCss):
-			return ("text/css");
-		break;
-		default:
-			return ("");
-		break;
-	}
 }
 void			HttpResponse::deepCopy(const HttpResponse& src) {
 	this->_code = src._code;

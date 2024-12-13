@@ -5,6 +5,7 @@ RequestProcessor::RequestProcessor(void) {}
 RequestProcessor::RequestProcessor(const HttpRequest& request, Server* server) {
 	this->_server = server;
 	this->_request = request;
+	this->_response = HttpResponse();
 }
 RequestProcessor::RequestProcessor(const RequestProcessor& src) {
 	this->deepCopy(src);
@@ -21,7 +22,6 @@ void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
 short				RequestProcessor::process(const int& socketFd) {
-	this->_response.push_back(HttpResponse());
 	switch (this->_request.getMethodType()) {
 		case (GET):
 			this->getMethod(socketFd);
@@ -47,26 +47,24 @@ short				RequestProcessor::process(const int& socketFd) {
 		default:
 		break;
 	}
-	if (this->_response[0].getCode() != 200)
+	if (this->_response.getCode() != 200)
 		this->doErrorPage();
-	for (size_t i = 0; i < this->_response.size(); ++i) {
-		std::string	completeResponse(this->_response[i].toString());
-		::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
-	}
+	std::string	completeResponse(this->_response.toString());
+	::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
 	::close(socketFd);
 	return (0);
 }
-HttpResponse		RequestProcessor::readFile(const std::string& filePath) {
+HttpResponse		RequestProcessor::readFileToResponse(const std::string& filePath) {
 	HttpResponse		htmlResponse;
 	std::ofstream		file;
 	std::stringstream	buffer;
-	std::string			finalFilePath("./" + std::string("public/") + filePath);
+	std::string			finalFilePath("./" + this->_server->getServerConfig().getDataDirectory() + std::string("/") + filePath);
 	if (this->fileExists(finalFilePath)) {
 		file.open(finalFilePath.c_str(), std::ifstream::in);
 		if (file.is_open() == false)
 			htmlResponse.setCode(403);
 		else {
-			htmlResponse.setType(textHtml);
+			htmlResponse.setType(contentTypeFromFile(filePath));
 			buffer << file.rdbuf();
 			file.close();
 			htmlResponse.setCode(200);
@@ -77,8 +75,7 @@ HttpResponse		RequestProcessor::readFile(const std::string& filePath) {
 		htmlResponse.setCode(404);
 	return (htmlResponse);
 }
-int					RequestProcessor::fileExists(std::string filePath)
-{
+int					RequestProcessor::fileExists(std::string filePath) {
 	struct stat	stats;
 	if (stat(filePath.c_str(), &stats) == 0)
 		return (1);
@@ -90,35 +87,49 @@ void				RequestProcessor::deepCopy(const RequestProcessor& src) {
 	this->_response = src._response;
 }
 void				RequestProcessor::doErrorPage(void) {
-	Log::log("Doing Error Page " + stp_itoa(this->_response[0].getCode()));
-	this->_response[0].setType(textHtml);
+	Log::log("Doing Error Page " + stp_itoa(this->_response.getCode()));
+	this->_response.setType(textHtml);
 	HttpResponse	errorResponse;
-	std::string		errorPagePath(this->_server->getServerConfig().getErrorPage(this->_response[0].getCode()));
+	std::string		errorPagePath(this->_server->getServerConfig().getErrorPage(this->_response.getCode()));
 	if (errorPagePath != "") {
-		errorResponse = this->readFile(errorPagePath);
+		errorResponse = this->readFileToResponse(errorPagePath);
 		if (errorResponse.getCode() == 200) {
-			errorResponse.setCode(this->_response[0].getCode());
-			this->_response[0] = errorResponse;
+			errorResponse.setCode(this->_response.getCode());
+			this->_response = errorResponse;
 			return ;
 		}
-		errorResponse.setCode(this->_response[0].getCode());
+		errorResponse.setCode(this->_response.getCode());
 		errorResponse.setContent(ERRORPAGEERROR);
-		this->_response[0] = errorResponse;
+		this->_response = errorResponse;
 		return ;
 	}
-	errorResponse.setCode(this->_response[0].getCode());
+	errorResponse.setCode(this->_response.getCode());
 	errorResponse.setContent(ERRORPAGE);
-	this->_response[0] = errorResponse;
+	this->_response = errorResponse;
 }
 void				RequestProcessor::getMethod(const int& socketFd) {
-	Log::debug(std::string("Route is: |") + this->_request.getTargetRoute() + std::string("|"));
-	Route	route(this->getRoute(this->_request.getTargetRoute()));
+	Log::debug(std::string("TargetRoute is: |") + this->_request.getTargetRoute() + std::string("|"));
+	Route		route;
+	std::string	index;
+	if (this->_request.getReferer() != "") {
+		Log::debug("Referer: " + this->_request.getReferer());
+		std::string refererTargetRoute(this->_request.getReferer().substr(this->_request.getReferer().find(this->_server->getServerConfig().getListen().toString()) + this->_server->getServerConfig().getListen().toString().length()));
+		route = this->getRoute(refererTargetRoute);
+		index = this->_request.getTargetRoute();
+	}
+	else {
+		route = this->getRoute(this->_request.getTargetRoute());
+		route = this->getRoute(this->_request.getTargetRoute());
+		index = route.getIndex();
+	}
+	Log::debug("RoutePath: " + route.getRoutePath());
+	Log::debug("Index: " + index);
 	if (route.getMethod("GET") == false) {
-		this->_response[0].setCode(403);
+		this->_response.setCode(403);
 		return ;
 	}
-	this->_response[0] = this->readFile(route.getIndex());
-	if (this->_response[0].getCode() != 200)
+	this->_response = this->readFileToResponse(index);
+	if (this->_response.getCode() != 200)
 		return ;
 	(void)socketFd;
 }
@@ -141,5 +152,6 @@ void				RequestProcessor::optionsMethod(const int& socketFd) {
 	(void)socketFd;
 }
 Route				RequestProcessor::getRoute(const std::string& route) {
+	Log::debug("Getting TargetedRoute: |" + route + "|");
 	return (this->_server->getServerConfig().getRoute(route));
 }

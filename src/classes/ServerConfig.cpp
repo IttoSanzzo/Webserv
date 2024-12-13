@@ -18,6 +18,7 @@ ServerConfig::ServerConfig(const JsonNode& configJson) {
 	this->setPort(configJson);
 	this->setHost(configJson);
 	this->setServerName(configJson);
+	this->setDataDirectory(configJson);
 	this->setRoot(configJson);
 	this->setIndex(configJson);
 	this->setClientMaxBodySize(configJson);
@@ -115,6 +116,7 @@ std::string		ServerConfig::toString(void) {
 	serverConfigInfo += "\tHost.......: " + ws_inet_ntoa(ntohl(this->_listen.host)) + "\n";
 	serverConfigInfo += "\tPort.......: " + stp_itoa(this->_listen.port) + "\n";
 	serverConfigInfo += "\tName.......: " + this->_server_name + "\n";
+	serverConfigInfo += "\tDataDir....: " + this->_dataDirectory + "\n";
 	serverConfigInfo += "\tRoot.......: " + this->_root + "\n";
 	serverConfigInfo += "\tIndex......: " + this->_index + "\n";
 	serverConfigInfo += "\tAutoindex..: " + stp_btoa(this->_autoindex) + "\n";
@@ -184,12 +186,12 @@ void			ServerConfig::setServerName(const JsonNode& configJson) {
 }
 void			ServerConfig::setDataDirectory(const JsonNode& configJson) {
 	try {
-		this->setIndex(configJson.TryGetString("dataDirectory"));
+		this->setDataDirectory(configJson.TryGetString("dataDirectory"));
 	} catch (const std::exception& ex) {
 		if (std::string(ex.what()).find("Not this type") != std::string::npos)
 			throw (ServerConfig::ErrorException("\"dataDirectory\" Element should be string!"));
 		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
-			this->_index = "./";
+			this->_dataDirectory = "./";
 		else
 			throw (ServerConfig::ErrorException(ex.what()));
 	}

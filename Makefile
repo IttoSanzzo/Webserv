@@ -32,7 +32,10 @@ N_CLAS	=	ServerConfig.cpp		\
 N_UTIL	=	ws_inet_pton.cpp			\
 			ws_inet_addr.cpp			\
 			ws_inet_ntoa.cpp			\
-			httpStatusCodes.cpp			\
+			httpStatusCodesUtils.cpp	\
+			methodUtils.cpp				\
+			protocolUtils.cpp			\
+			contentTypeUtils.cpp		\
 			stp_utils.cpp
 
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
