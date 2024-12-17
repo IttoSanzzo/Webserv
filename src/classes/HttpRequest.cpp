@@ -22,6 +22,8 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_userAgent = "";
 	this->_referer = "";
 	std::vector<std::string> lines = stp_split(request, "\n");
+	if (lines.size() == 0)
+		return ;
 	std::vector<std::string> mainParts = stp_split(lines[0], " ");
 	this->_method = methodFromString(mainParts[0]);
 	this->_targetRoute = mainParts[1];
@@ -30,7 +32,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 		if (lines[i] == "\r")
 			continue;
 		std::vector<std::string> parts = stp_split(lines[i], ": ");
-		this->setSwitch(parts[0], parts[1]);
+		this->setSwitch(parts[0], std::string(parts[1]).erase(parts[1].find('\r')));
 	}
 }
 HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {
@@ -45,10 +47,8 @@ void			HttpRequest::setSwitch(const std::string& name, const std::string& value)
 		this->_userAgent = value;
 	else if (name == "Accept")
 		this->_accept.push_back(value);
-	else if (name == "Referer") {
+	else if (name == "Referer")
 		this->_referer = value;
-		this->_referer.erase(value.find('\r'));
-	}
 	else if (name == "Accept-Encoding")
 		this->_acceptEncoding = stp_split(value, ", ");
 	else

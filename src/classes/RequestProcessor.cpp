@@ -49,6 +49,8 @@ void				RequestProcessor::process(const int& socketFd) {
 	}
 	if (this->_response.getCode() != 200)
 		this->doErrorPage();
+	else if (this->_request.getOther("Connection") == "keep-alive")
+		this->_response.setKeepAlive(true);
 	std::string	completeResponse(this->_response.toString());
 	::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
 }

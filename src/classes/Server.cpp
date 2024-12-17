@@ -62,9 +62,7 @@ void			Server::closeSocketFd(const int& socketFd) {
 		::close(socketFd);
 	this->_requests.erase(socketFd);
 }
-short			Server::clientSocketCall(void) {
-	int clientSocket = ::accept(this->_socketFd, NULL, NULL);
-	Log::log("\tServer " + this->_serverConfig.getListen().toString() + " accepted a client");
+short			Server::clientSocketCall(const short& clientSocket) {
 	char requestReadingBuffer[this->_serverConfig.getClientMaxBodySize() + 1];
 	size_t bytesRead = recv(clientSocket, requestReadingBuffer, sizeof(requestReadingBuffer), 0);
 	if (bytesRead > this->_serverConfig.getClientMaxBodySize()) {
@@ -73,9 +71,15 @@ short			Server::clientSocketCall(void) {
 		return (0);
 	}
 	requestReadingBuffer[bytesRead] = '\0';
-	HttpRequest	clientRequest(requestReadingBuffer);
+	std::string	requestBufferString(requestReadingBuffer);
+	if (requestBufferString == "") {
+		// ::close(clientSocket);
+		return (0);
+	}
+	HttpRequest	clientRequest(requestBufferString);
 	Log::info(clientRequest.toString());
 	this->serveRequest(clientRequest, clientSocket);
+	Log::debug("Conn:|" + clientRequest.getOther("Connection") + std::string("|"));
 	if (clientRequest.getOther("Connection") == "keep-alive")
 		return (clientSocket);
 	::close(clientSocket);

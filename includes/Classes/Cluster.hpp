@@ -5,12 +5,13 @@
 
 class Cluster {
 	private:
-		static int			_signalValue;
-		ServerConfigArray	_serverConfigs;
-		std::vector<Server>	_servers;
-		size_t				_requests;
-		int					_error;
-		std::vector<pollfd>	_pollFds;
+		static int					_signalValue;
+		ServerConfigArray			_serverConfigs;
+		std::vector<Server>			_servers;
+		size_t						_requests;
+		int							_error;
+		std::vector<pollfd>			_pollFds;
+		std::map<int, t_clientConn>	_clientConnMap;
 	public:
 		~Cluster(void);
 		Cluster(const Cluster& src);
@@ -30,6 +31,10 @@ class Cluster {
 		bool				serversStart(void);
 		bool				serversListenersSetup(void);
 		void				pollFdSetup(void);
+		void				handleClient(const size_t& pollIndex);
+		void				acceptNewClient(const size_t& pollIndex);
+		void				handleClientRequest(const size_t& pollIndex);
+		void				checkTimeouts(const time_t& now);
 	public:
 		class	ErrorException : public std::exception {
 			private:

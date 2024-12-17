@@ -38,17 +38,18 @@
 # include <sys/stat.h>
 # include <sys/time.h>
 
-/* 1. Local Macros */
-# include "Others/ws_macros.hpp"
-# include "Others/ws_dataStructures.hpp"
-# include "Others/stplib.hpp"
-
-/* 2. Classes Declaration */
+/* 1. Classes Declaration */
+class	Server;
 class	ServerConfig;
 class	ServerConfigArray;
 class	Route;
 class	HttpRequest;
 class	HttpResponse;
+
+/* 2. Local Macros */
+# include "Others/ws_macros.hpp"
+# include "Others/ws_dataStructures.hpp"
+# include "Others/stplib.hpp"
 
 /* 4. Internal Includes */
 # include "../CppJsonHandler/includes/JsonHandler.hpp"

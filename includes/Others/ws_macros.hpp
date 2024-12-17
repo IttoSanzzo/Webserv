@@ -9,6 +9,7 @@
 # define RECV_SIZE		65536
 # define CGI_BUFSIZE	65536
 # define DEFAULT_CONFIG	"./configs/default.json"
+# define CLIENTTIMEOUT	5
 
 /* 10. Log Sets */
 # define LOG_LOG			true

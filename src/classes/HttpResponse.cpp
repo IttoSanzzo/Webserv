@@ -5,6 +5,7 @@ HttpResponse::HttpResponse(void) {
 	this->_code = 0;
 	this->_contentType = anyType;
 	this->_content = "";
+	this->_keep_alive = false;
 }
 HttpResponse::HttpResponse(const HttpResponse& src) {
 	this->deepCopy(src);
@@ -23,6 +24,9 @@ void			HttpResponse::setType(const t_contentType& type) {
 void			HttpResponse::setContent(const std::string& content) {
 	this->_content = content;
 }
+void			HttpResponse::setKeepAlive(const bool& keepAlive) {
+	this->_keep_alive = keepAlive;
+}
 short			HttpResponse::getCode(void) const {
 	return (this->_code);
 }
@@ -38,6 +42,9 @@ size_t			HttpResponse::getContentLength(void) const {
 std::string		HttpResponse::getContent(void) const {
 	return (this->_content);
 }
+bool			HttpResponse::getKeepAlive(void) const {
+	return (this->_keep_alive);
+}
 size_t			HttpResponse::getSize(void) const {
 	return (this->toString().size());
 }
@@ -49,6 +56,8 @@ std::string		HttpResponse::getHeader(void) const {
 		header += " " + codeDescription;
 	header += "\r\nContent-Type: " + contentTypeToString(this->_contentType);
 	header += "\r\nContent-Length: " + stp_itoa(this->getContentLength());
+	if (this->_keep_alive == true)
+		header += "\r\nConnection: keep-alive\r\nKeep-Alive: timeout=" + stp_itoa(CLIENTTIMEOUT);
 	return (header);
 }
 std::string		HttpResponse::toString(void) const {
@@ -58,4 +67,5 @@ void			HttpResponse::deepCopy(const HttpResponse& src) {
 	this->_code = src._code;
 	this->_contentType = src._contentType;
 	this->_content = src._content;
+	this->_keep_alive = src._keep_alive;
 }

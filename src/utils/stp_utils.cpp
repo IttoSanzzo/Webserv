@@ -58,17 +58,17 @@ std::string*				stp_split(const std::string& inputString, char delimiter) {
     parts[partIndex] = "";
     return (parts);
 }
-std::vector<std::string>	stp_split(const std::string& str, const std::string& delimiter) {
+std::vector<std::string>	stp_split(const std::string& inputString, const std::string& delimiter) {
 	std::vector<std::string>	parts;
 	size_t						start = 0;
-	size_t						end = str.find(delimiter);
+	size_t						end = inputString.find(delimiter);
 	while (end != std::string::npos) {
-		parts.push_back(str.substr(start, end - start));
+		parts.push_back(inputString.substr(start, end - start));
 		start = end + delimiter.length();
-		end = str.find(delimiter, start);
+		end = inputString.find(delimiter, start);
 	}
-	if (str.substr(start, end) != "")
-		parts.push_back(str.substr(start, end));
+	if (inputString.substr(start, end) != "")
+		parts.push_back (inputString.substr(start, end));
 	return (parts);
 }
 bool						stp_checkSufix(const std::string& str, const std::string& sufix) {

@@ -2,7 +2,7 @@
 
 NAME	= webserv
 C_COMP	= c++
-C_FLAG	= -Wall -Werror -Wextra -std=c++98
+C_FLAG	= -Wall -Werror -Wextra -std=c++98 -g
 C_MDIR	= mkdir -p
 C_REMO	= rm -rf
 C_PUTS	= printf

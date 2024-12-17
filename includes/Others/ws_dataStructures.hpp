@@ -17,6 +17,18 @@ typedef struct	s_listen {
 		return (std::string(ws_inet_ntoa(ntohl(host))) + ":" + ossPort.str());
 	}
 }	t_listen;
+typedef struct	s_clientConn {
+	// 0. Variables
+	int		fd;
+	Server*	server;
+	time_t	last_activity;
+	// 1. Overloads
+	bool	timeout_safe(const time_t& now) {
+		if (now - last_activity > CLIENTTIMEOUT)
+			return (false);
+		return (true);
+	}
+}	t_clientConn;
 typedef enum e_protocol {
 	no_protocol,
 	http1dot1

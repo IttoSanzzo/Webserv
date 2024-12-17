@@ -23,7 +23,7 @@ class Server {
 		bool			listenerSetup(void);
 		void			closeSocketFd(void);
 		void			closeSocketFd(const int& socketFd);
-		short			clientSocketCall(void);
+		short			clientSocketCall(const short& clientSocket);
 	private:
 		void			deepCopy(const Server& src);
 		void			setAddr(void);
