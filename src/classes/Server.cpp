@@ -68,22 +68,18 @@ short			Server::clientSocketCall(const short& clientSocket) {
 	if (bytesRead > this->_serverConfig.getClientMaxBodySize()) {
 		Log::error("Client sent a request bigger than permitted!");
 		::close(clientSocket);
-		return (0);
+		return (-2);
 	}
+	else if (bytesRead == 0)
+		return (0);
 	requestReadingBuffer[bytesRead] = '\0';
 	std::string	requestBufferString(requestReadingBuffer);
-	if (requestBufferString == "") {
-		// ::close(clientSocket);
-		return (0);
-	}
 	HttpRequest	clientRequest(requestBufferString);
 	Log::info(clientRequest.toString());
 	this->serveRequest(clientRequest, clientSocket);
-	Log::debug("Conn:|" + clientRequest.getOther("Connection") + std::string("|"));
 	if (clientRequest.getOther("Connection") == "keep-alive")
 		return (clientSocket);
-	::close(clientSocket);
-	return (0);
+	return (-1);
 }
 void			Server::deepCopy(const Server& src) {
 	this->_serverConfig = src._serverConfig;

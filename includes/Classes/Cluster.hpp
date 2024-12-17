@@ -35,6 +35,7 @@ class Cluster {
 		void				acceptNewClient(const size_t& pollIndex);
 		void				handleClientRequest(const size_t& pollIndex);
 		void				checkTimeouts(const time_t& now);
+		void				closePollFd(const size_t& pollIndex);
 	public:
 		class	ErrorException : public std::exception {
 			private:
