@@ -51,8 +51,7 @@ void				RequestProcessor::process(const int& socketFd) {
 		this->doErrorPage();
 	else if (this->_request.getOther("Connection") == "keep-alive")
 		this->_response.setKeepAlive(true);
-	std::string	completeResponse(this->_response.toString());
-	::send(socketFd, completeResponse.c_str(), completeResponse.size(), 0);
+	this->sendResponse(socketFd, this->_response.toString());
 }
 HttpResponse		RequestProcessor::readFileToResponse(const std::string& filePath) {
 	HttpResponse		htmlResponse;
@@ -147,4 +146,15 @@ void				RequestProcessor::optionsMethod(const int& socketFd) {
 }
 Route				RequestProcessor::getRoute(const std::string& route) {
 	return (this->_server->getServerConfig().getRoute(route));
+}
+void				RequestProcessor::sendResponse(const int& socketFd, const std::string& responseString) {
+	size_t sent = 0;
+	while (sent < responseString.size()) {
+    	size_t n = ::send(socketFd, responseString.c_str() + sent, responseString.size() - sent, 0);
+    	if ((int)n < 0) {
+	        Log::error("Send failed for FD " + stp_itoa(socketFd));
+        	return ;
+    	}
+    	sent += n;
+	}
 }

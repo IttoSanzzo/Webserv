@@ -30,6 +30,7 @@ class RequestProcessor {
 		void				headMethod(const int& socketFd);
 		void				optionsMethod(const int& socketFd);
 		Route				getRoute(const std::string& route);
+		void				sendResponse(const int& socketFd, const std::string& responseString);
 };
 
 #endif

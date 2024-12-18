@@ -52,9 +52,9 @@ void				Cluster::runCluster(void) {
 }
 void				Cluster::runPoll(void) {
 	Log::log("Starting poll!");
-	int	pollRunCount = 0;
+	size_t	pollRunCount = 0;
 	while (Cluster::_signalValue == 0) {
-		Log::log("Back to Poll for count " + stp_itoa(pollRunCount++) + "\t(" + stp_itoa(this->_pollFds.size() - this->_servers.size()) + " clients)");
+		Log::log("Back to Poll for count " + stp_itoa(pollRunCount++) + " (" + stp_itoa(this->_pollFds.size() - this->_servers.size()) + " clients)");
 		int pollRet = poll(this->_pollFds.data(), this->_pollFds.size(), CLIENTTIMEOUT * 500);
 		if (pollRet > 0) {
 			Log::debug("There's data to be read!");

@@ -64,12 +64,14 @@ void			Server::closeSocketFd(const int& socketFd) {
 }
 short			Server::clientSocketCall(const short& clientSocket) {
 	char requestReadingBuffer[this->_serverConfig.getClientMaxBodySize() + 1];
-	size_t bytesRead = recv(clientSocket, requestReadingBuffer, sizeof(requestReadingBuffer), 0);
-	if (bytesRead > this->_serverConfig.getClientMaxBodySize()) {
+	int bytesRead = recv(clientSocket, requestReadingBuffer, sizeof(requestReadingBuffer), 0);
+	if (bytesRead > (int)this->_serverConfig.getClientMaxBodySize()) {
 		Log::error("Client sent a request bigger than permitted!");
 		::close(clientSocket);
 		return (-2);
 	}
+	else if (bytesRead  == -1)
+		return (-3);
 	else if (bytesRead == 0)
 		return (0);
 	requestReadingBuffer[bytesRead] = '\0';
