@@ -45,7 +45,7 @@ void				Cluster::runCluster(void) {
 	Log::log("Starting cluster...");
 	::signal(SIGINT, signalHandler);
 	if (this->serversStart() == false)
-		return ;
+			return ;
 	Log::log("\tServers setted up.");
 	this->pollFdSetup();
 	this->runPoll();
