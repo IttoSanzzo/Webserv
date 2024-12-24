@@ -131,6 +131,7 @@ void				RequestProcessor::getMethod() {
 		this->_response = this->readFileToResponse(this->_request.getTargetRoute());
 }
 void				RequestProcessor::postMethod() {
+	
 }
 void				RequestProcessor::putMethod() {
 }
