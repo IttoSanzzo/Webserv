@@ -11,7 +11,6 @@ class HttpRequest {
 		std::string							_host;
 		t_protocol							_protocol;
 		std::string							_userAgent;
-		std::string							_referer;
 		std::vector<std::string>			_accept;
 		std::vector<std::string>			_acceptEncoding;
 		std::map<std::string, std::string>	_others;
@@ -28,7 +27,6 @@ class HttpRequest {
 		void			setHost(const std::string& host);
 		void			setProtocol(const t_protocol& protocol);
 		void			setUserAgent(const std::string& userAgent);
-		void			setReferer(const std::string& referer);
 		void			pushAccept(const std::string& accept);
 		void			pushAcceptEncoding(const std::string& acceptEncoding);
 		std::string		getOriginalString(void) const;
@@ -37,7 +35,6 @@ class HttpRequest {
 		std::string		getHost(void) const;
 		t_protocol		getProtocol(void) const;
 		std::string		getUserAgent(void) const;
-		std::string		getReferer(void) const;
 		std::string		getAccept(const size_t& pos) const;
 		std::string		getAcceptEncoding(const size_t& pos) const;
 		std::string		getOther(const std::string& name);

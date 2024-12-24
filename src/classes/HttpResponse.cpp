@@ -6,6 +6,7 @@ HttpResponse::HttpResponse(void) {
 	this->_contentType = anyType;
 	this->_content = "";
 	this->_keep_alive = false;
+	this->_redirect = false;
 }
 HttpResponse::HttpResponse(const HttpResponse& src) {
 	this->deepCopy(src);
@@ -27,6 +28,9 @@ void			HttpResponse::setContent(const std::string& content) {
 void			HttpResponse::setKeepAlive(const bool& keepAlive) {
 	this->_keep_alive = keepAlive;
 }
+void			HttpResponse::setRedirect(const bool& redirect) {
+	this->_redirect = redirect;
+}
 short			HttpResponse::getCode(void) const {
 	return (this->_code);
 }
@@ -45,6 +49,9 @@ std::string		HttpResponse::getContent(void) const {
 bool			HttpResponse::getKeepAlive(void) const {
 	return (this->_keep_alive);
 }
+bool			HttpResponse::getRedirect(void) const {
+	return (this->_redirect);
+}
 size_t			HttpResponse::getSize(void) const {
 	return (this->toString().size());
 }
@@ -61,11 +68,19 @@ std::string		HttpResponse::getHeader(void) const {
 	return (header);
 }
 std::string		HttpResponse::toString(void) const {
-	return (this->getHeader() + "\r\n\r\n" + this->getContent());
+	if (this->_redirect == false)
+		return (this->getHeader() + "\r\n\r\n" + this->getContent());
+	return ("HTTP/1.1 301 Moved Permanently\r\nLocation: " + this->_content +  "\r\nContent-Length: 0\r\nConnection: close");
+}
+void			HttpResponse::doRedirectResponse(const std::string& target) {
+	this->_redirect = true;
+	this->_content = target;
+	this->_code = 301;
 }
 void			HttpResponse::deepCopy(const HttpResponse& src) {
 	this->_code = src._code;
 	this->_contentType = src._contentType;
 	this->_content = src._content;
 	this->_keep_alive = src._keep_alive;
+	this->_redirect = src._redirect;
 }

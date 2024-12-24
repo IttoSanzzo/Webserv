@@ -100,10 +100,7 @@ std::string		ServerConfig::getErrorPage(const short& pos) {
 	return (this->_error_pages[pos]);
 }
 Route			ServerConfig::getRoute(const std::string& page) {
-	Route	returner = this->_routes[page];
-	if (returner.getRoutePath() == page && returner.getReturner() != "")
-		return (this->getRoute(returner.getReturner()));
-	return (returner);
+	return (this->_routes[page]);
 }
 std::map<short, std::string>&	ServerConfig::getErrorPagesMap(void) {
 	return (this->_error_pages);

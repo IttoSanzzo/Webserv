@@ -20,7 +20,6 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_host = "";
 	this->_protocol = no_protocol;
 	this->_userAgent = "";
-	this->_referer = "";
 	std::vector<std::string> lines = stp_split(request, "\n");
 	if (lines.size() == 0)
 		return ;
@@ -47,8 +46,6 @@ void			HttpRequest::setSwitch(const std::string& name, const std::string& value)
 		this->_userAgent = value;
 	else if (name == "Accept")
 		this->_accept.push_back(value);
-	else if (name == "Referer")
-		this->_referer = value;
 	else if (name == "Accept-Encoding")
 		this->_acceptEncoding = stp_split(value, ", ");
 	else
@@ -71,9 +68,6 @@ void			HttpRequest::setProtocol(const t_protocol& protocol) {
 }
 void			HttpRequest::setUserAgent(const std::string& userAgent) {
 	this->_userAgent = userAgent;
-}
-void			HttpRequest::setReferer(const std::string& referer) {
-	this->_referer = referer;
 }
 void			HttpRequest::pushAccept(const std::string& accept) {
 	this->_accept.push_back(accept);
@@ -99,9 +93,6 @@ t_protocol		HttpRequest::getProtocol(void) const {
 }
 std::string		HttpRequest::getUserAgent(void) const {
 	return (this->_userAgent);
-}
-std::string		HttpRequest::getReferer(void) const {
-	return (this->_referer);
 }
 std::string		HttpRequest::getAccept(const size_t& pos) const {
 	return (this->_accept[pos]);
@@ -136,7 +127,6 @@ void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_host = src._host;
 	this->_protocol = src._protocol;
 	this->_userAgent = src._userAgent;
-	this->_referer = src._referer;
 	this->_accept = src._accept;
 	this->_acceptEncoding = src._acceptEncoding;
 	this->_others = src._others;

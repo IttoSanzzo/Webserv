@@ -45,7 +45,7 @@ void				Cluster::runCluster(void) {
 	Log::log("Starting cluster...");
 	::signal(SIGINT, signalHandler);
 	if (this->serversStart() == false)
-			return ;
+		return ;
 	Log::log("\tServers setted up.");
 	this->pollFdSetup();
 	this->runPoll();
@@ -57,12 +57,9 @@ void				Cluster::runPoll(void) {
 		Log::log("Back to Poll for count " + stp_itoa(pollRunCount++) + " (" + stp_itoa(this->_pollFds.size() - this->_servers.size()) + " clients)");
 		int pollRet = poll(this->_pollFds.data(), this->_pollFds.size(), CLIENTTIMEOUT * 500);
 		if (pollRet > 0) {
-			Log::debug("There's data to be read!");
 			for (size_t i = 0 ; i < this->_pollFds.size(); ++i)
-				if (this->_pollFds[i].revents & POLLIN) {
+				if (this->_pollFds[i].revents & POLLIN)
 					this->handleClient(i);
-					break;
-				}
 		}
 		this->checkTimeouts(time(NULL));
 	}
@@ -112,7 +109,7 @@ void				Cluster::handleClient(const size_t& pollIndex) {
 		this->acceptNewClient(pollIndex);
 }
 void				Cluster::acceptNewClient(const size_t& pollIndex) {
-	Log::log("\tServer " + this->_serverConfigs.getServer(pollIndex).getListen().toString() + " accepting a new client");
+	Log::log("\tCLIENT - Server " + this->_serverConfigs.getServer(pollIndex).getListen().toString() + " accepting a new client");
 	int newClient = ::accept(this->_pollFds[pollIndex].fd, NULL, NULL);
 	if (newClient == -1) {
 		Log::error("There was an error accepting new client.");
@@ -129,22 +126,25 @@ void				Cluster::acceptNewClient(const size_t& pollIndex) {
 }
 void				Cluster::handleClientRequest(const size_t& pollIndex) {
 	if (this->_clientConnMap[this->_pollFds[pollIndex].fd].server != NULL) {
-		Log::log("\tServer " + this->_clientConnMap[this->_pollFds[pollIndex].fd].server->getServerConfig().getListen().toString() + " accepting client request");
+		Log::log("\tREQUEST - Server " + this->_clientConnMap[this->_pollFds[pollIndex].fd].server->getServerConfig().getListen().toString() + " received a request [pos: " + stp_itoa(pollIndex) + std::string("]"));
 		int keepAliveFd = this->_clientConnMap[this->_pollFds[pollIndex].fd].server->clientSocketCall(this->_pollFds[pollIndex].fd);
-		this->_clientConnMap[this->_pollFds[pollIndex].fd].last_activity = time(NULL);
-		if (keepAliveFd > 0)
+		if (keepAliveFd > 0) {
+			this->_clientConnMap[this->_pollFds[pollIndex].fd].last_activity = time(NULL);
 			return ;
+		}
 	}
 	this->closePollFd(pollIndex);
 }
 void				Cluster::checkTimeouts(const time_t& now) {
 	for (size_t i = this->_pollFds.size() - 1; i >= this->_servers.size() ; --i)
-		if (this->_clientConnMap[this->_pollFds[i].fd].timeout_safe(now) == false)
+		if (this->_clientConnMap[this->_pollFds[i].fd].timeout_safe(now) == false) {
+			std::cout << "\t\033[38;5;208m" << "TIMEOUT! ";
 			this->closePollFd(i);
+		}
 }
 void				Cluster::closePollFd(const size_t& pollIndex) {
 	Log::log("\tClosing pos " + stp_itoa(pollIndex) + " FD " + stp_itoa(this->_pollFds[pollIndex].fd));
 	::close(this->_pollFds[pollIndex].fd);
-	this->_pollFds.erase(this->_pollFds.begin() + pollIndex);
 	this->_clientConnMap.erase(this->_pollFds[pollIndex].fd);
+	this->_pollFds.erase(this->_pollFds.begin() + pollIndex);
 }

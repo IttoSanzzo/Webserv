@@ -7,6 +7,8 @@ t_contentType	contentTypeFromString(const std::string& contentType) {
 		return (textCss);
 	else if (contentType == ".js")
 		return (applicationJavascript);
+	else if (contentType == ".png")
+		return (imagePng);
 	else
 		return (anyType);
 }
@@ -20,6 +22,9 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 		break;
 		case (applicationJavascript):
 			return ("application/javascript");
+		break;
+		case (imagePng):
+			return ("image/png");
 		break;
 		default:
 			return ("*/*");

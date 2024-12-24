@@ -2,7 +2,8 @@
 
 RequestProcessor::~RequestProcessor(void) {}
 RequestProcessor::RequestProcessor(void) {}
-RequestProcessor::RequestProcessor(const HttpRequest& request, Server* server) {
+RequestProcessor::RequestProcessor(const HttpRequest& request, Server* server, const int& clientFD) {
+	this->_clientFD = clientFD;
 	this->_server = server;
 	this->_request = request;
 	this->_response = HttpResponse();
@@ -15,43 +16,47 @@ RequestProcessor&	RequestProcessor::operator=(const RequestProcessor& src) {
 		this->deepCopy(src);
 	return (*this);
 }
+void				RequestProcessor::setClientFD(const int& clientFD) {
+	this->_clientFD = clientFD;
+}
 void				RequestProcessor::setServer(Server* server) {
 	this->_server = server;
 }
 void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
-void				RequestProcessor::process(const int& socketFd) {
+bool				RequestProcessor::process(void) {
 	switch (this->_request.getMethodType()) {
 		case (GET):
-			this->getMethod(socketFd);
+			this->getMethod();
 		break;
 		case (POST):
-			this->postMethod(socketFd);
+			this->postMethod();
 		break;
 		case (PUT):
-			this->putMethod(socketFd);
+			this->putMethod();
 		break;
 		case (PATCH):
-			this->patchMethod(socketFd);
+			this->patchMethod();
 		break;
 		case (DELETE):
-			this->deleteMethod(socketFd);
+			this->deleteMethod();
 		break;
 		case (HEAD):
-			this->headMethod(socketFd);
+			this->headMethod();
 		break;
 		case (OPTIONS):
-			this->optionsMethod(socketFd);
+			this->optionsMethod();
 		break;
 		default:
 		break;
 	}
-	if (this->_response.getCode() != 200)
+	if (this->_response.getCode() != 200 && this->_response.getCode() != 301)
 		this->doErrorPage();
-	else if (this->_request.getOther("Connection") == "keep-alive")
+	if (this->_request.getOther("Connection") == "keep-alive" && this->_response.getCode() != 301)
 		this->_response.setKeepAlive(true);
-	this->sendResponse(socketFd, this->_response.toString());
+	this->sendResponse(this->_response.toString());
+	return (this->_response.getKeepAlive());
 }
 HttpResponse		RequestProcessor::readFileToResponse(const std::string& filePath) {
 	HttpResponse		htmlResponse;
@@ -81,78 +86,74 @@ int					RequestProcessor::fileExists(std::string filePath) {
 	return (0);
 }
 void				RequestProcessor::deepCopy(const RequestProcessor& src) {
+	this->_clientFD = src._clientFD;
 	this->_server = src._server;
 	this->_request = src._request;
 	this->_response = src._response;
 }
 void				RequestProcessor::doErrorPage(void) {
-	Log::log("Doing Error Page " + stp_itoa(this->_response.getCode()));
+	Log::log("Doing Error Page [" + stp_itoa(this->_response.getCode()) + std::string("]"));
 	this->_response.setType(textHtml);
-	HttpResponse	errorResponse;
 	std::string		errorPagePath(this->_server->getServerConfig().getErrorPage(this->_response.getCode()));
 	if (errorPagePath != "") {
-		errorResponse = this->readFileToResponse(errorPagePath);
-		if (errorResponse.getCode() == 200) {
-			errorResponse.setCode(this->_response.getCode());
-			this->_response = errorResponse;
-			return ;
-		}
+		HttpResponse errorResponse = this->readFileToResponse(errorPagePath);
+		if (errorResponse.getCode() != 200)
+			errorResponse.setContent(ERRORPAGEERROR);
 		errorResponse.setCode(this->_response.getCode());
-		errorResponse.setContent(ERRORPAGEERROR);
 		this->_response = errorResponse;
 		return ;
 	}
-	errorResponse.setCode(this->_response.getCode());
-	errorResponse.setContent(ERRORPAGE);
-	this->_response = errorResponse;
+	std::string	manualErroContent = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title>Error ";
+	manualErroContent += stp_itoa(this->_response.getCode()) + std::string("</title><link rel=\"stylesheet\" href=\"/AllErrorPages/error.css\" /></head><body><div id=\"error\"><div id=\"errorCode\">Error ");
+	manualErroContent += stp_itoa(this->_response.getCode()) + std::string("</div><div id=\"errorMessage\">");
+	manualErroContent += httpStatusCodeToString(this->_response.getCode()) + std::string("!</div></div></body></html>");
+	this->_response.setContent(manualErroContent);
 }
-void				RequestProcessor::getMethod(const int& socketFd) {
-	Route		route;
-	std::string	index;
-	if (this->_request.getReferer() != "") {
-		route = this->getRoute(this->_request.getReferer().substr(this->_request.getReferer().find(this->_server->getServerConfig().getListen().toString()) + this->_server->getServerConfig().getListen().toString().length()));
-		index = this->_request.getTargetRoute();
+void				RequestProcessor::getMethod() {
+	Route route = this->resolveRoute(this->_request.getTargetRoute());
+	if (route.getRoutePath() == "") {
+		this->_response.setCode(404);
+		return ;
 	}
-	else {
-		route = this->getRoute(this->_request.getTargetRoute());
-		index = route.getIndex();
-	}
-	if (route.getMethod("GET") == false) {
+	else if (route.getMethod("GET") == false) {
 		this->_response.setCode(403);
 		return ;
 	}
-	this->_response = this->readFileToResponse(index);
-	if (this->_response.getCode() != 200)
-		return ;
-	(void)socketFd;
+	if (route.getRedirect() != "") {
+		if (route.getRedirect().find("http") == std::string::npos)
+			this->_response.doRedirectResponse(std::string("http://") + this->_server->getServerConfig().getListen().toString() + route.getRedirect());
+		else
+			this->_response.doRedirectResponse(route.getRedirect());
+	}
+	else if (route.getIndex() != "")
+		this->_response = this->readFileToResponse(route.getIndex());
+	else
+		this->_response = this->readFileToResponse(this->_request.getTargetRoute());
 }
-void				RequestProcessor::postMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::postMethod() {
 }
-void				RequestProcessor::putMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::putMethod() {
 }
-void				RequestProcessor::patchMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::patchMethod() {
 }
-void				RequestProcessor::deleteMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::deleteMethod() {
 }
-void				RequestProcessor::headMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::headMethod() {
 }
-void				RequestProcessor::optionsMethod(const int& socketFd) {
-	(void)socketFd;
+void				RequestProcessor::optionsMethod() {
 }
-Route				RequestProcessor::getRoute(const std::string& route) {
-	return (this->_server->getServerConfig().getRoute(route));
+Route				RequestProcessor::resolveRoute(const std::string& routePath) {
+	Route route = this->_server->getServerConfig().getRoute(routePath);
+	if (route.getRoutePath() != "")
+		return (route);
+	return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
 }
-void				RequestProcessor::sendResponse(const int& socketFd, const std::string& responseString) {
+void				RequestProcessor::sendResponse(const std::string& responseString) {
 	size_t sent = 0;
 	while (sent < responseString.size()) {
-    	size_t n = ::send(socketFd, responseString.c_str() + sent, responseString.size() - sent, 0);
-    	if ((int)n < 0) {
-	        Log::error("Send failed for FD " + stp_itoa(socketFd));
+    	size_t n = ::send(this->_clientFD, responseString.c_str() + sent, responseString.size() - sent, 0);
+    	if ((int)n <= 0) {
+	        Log::error("Send failed for FD " + stp_itoa(this->_clientFD));
         	return ;
     	}
     	sent += n;

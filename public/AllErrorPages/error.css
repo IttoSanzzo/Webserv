@@ -1,0 +1,12 @@
+body {
+	background-image: linear-gradient(to left, darkblue, red);
+	font-size: 100px;
+}
+
+#error {
+	background-color: gray;
+	border: 10px solid rgba(0, 0, 0, 0.8);
+	border-radius: 15px;
+	text-align: center;
+	margin-top: 25vh;
+}

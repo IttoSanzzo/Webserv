@@ -8,7 +8,7 @@ class	Route {
 		std::string							_routePath;
 		std::string							_index;
 		std::string							_root;
-		std::string							_returner;
+		std::string							_redirect;
 		bool								_autoindex;
 		std::map<std::string, std::string>	_cgiRelations;
 		std::map<std::string, bool>			_methods;
@@ -27,7 +27,7 @@ class	Route {
 		std::string	getRoutePath(void) const;
 		std::string	getIndex(void) const;
 		std::string	getRoot(void) const;
-		std::string	getReturner(void) const;
+		std::string	getRedirect(void) const;
 		bool		getAutoindex(void) const;
 		bool		getMethod(const std::string& method);
 		std::string	getCgiPath(const std::string& extension);
@@ -36,7 +36,7 @@ class	Route {
 		void		setRoutePath(const JsonNode& routeJson);
 		void		setIndex(const JsonNode& routeJson);
 		void		setRoot(const JsonNode& routeJson);
-		void		setReturner(const JsonNode& routeJson);
+		void		setRedirect(const JsonNode& routeJson);
 		void		setAutoindex(const JsonNode& routeJson);
 		void		setMethods(const JsonNode& routeJson);
 		void		setCgiRelation(const JsonNode& routeJson);

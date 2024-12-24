@@ -27,7 +27,7 @@ class Server {
 	private:
 		void			deepCopy(const Server& src);
 		void			setAddr(void);
-		void			serveRequest(const HttpRequest& request, const int& clientSocketFd);
+		bool			serveRequest(const HttpRequest& request, const int& clientSocketFd);
 };
 
 #endif

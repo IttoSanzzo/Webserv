@@ -6,7 +6,7 @@ Route::Route(void) {
 	this->_routePath = "";
 	this->_index = "";
 	this->_root = "";
-	this->_returner = "";
+	this->_redirect = "";
 	this->_autoindex = false;
 }
 Route::Route(const Route& src) {
@@ -16,7 +16,7 @@ Route::Route(const JsonNode& routeJson) {
 	this->setRoutePath(routeJson);
 	this->setIndex(routeJson);
 	this->setRoot(routeJson);
-	this->setReturner(routeJson);
+	this->setRedirect(routeJson);
 	this->setAutoindex(routeJson);
 	this->setMethods(routeJson);
 	this->setCgiRelation(routeJson);
@@ -53,8 +53,8 @@ std::string	Route::getIndex(void) const {
 std::string	Route::getRoot(void) const {
 	return (this->_root);
 }
-std::string	Route::getReturner(void) const {
-	return (this->_returner);
+std::string	Route::getRedirect(void) const {
+	return (this->_redirect);
 }
 bool		Route::getAutoindex(void) const {
 	return (this->_autoindex);
@@ -98,14 +98,14 @@ void		Route::setRoot(const JsonNode& routeJson) {
 			throw (Route::ErrorException(ex.what()));
 	}
 }
-void		Route::setReturner(const JsonNode& routeJson) {
+void		Route::setRedirect(const JsonNode& routeJson) {
 	try {
-		this->_returner = routeJson.TryGetString("return");
+		this->_redirect = routeJson.TryGetString("redirect");
 	} catch (const std::exception& ex) {
 		if (std::string(ex.what()).find("Not this type") != std::string::npos)
-			throw (Route::ErrorException("\"routes.return\" Element should be string!"));
+			throw (Route::ErrorException("\"routes.redirect\" Element should be string!"));
 		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
-			this->_returner = "";
+			this->_redirect = "";
 		else
 			throw (Route::ErrorException(ex.what()));
 	}
@@ -172,7 +172,7 @@ void		Route::deepCopy(const Route& src) {
 	this->_routePath = src._routePath;
 	this->_index = src._index;
 	this->_root = src._root;
-	this->_returner = src._returner;
+	this->_redirect = src._redirect;
 	this->_autoindex = src._autoindex;
 	this->_methods = src._methods;
 	this->_cgiRelations = src._cgiRelations;

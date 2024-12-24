@@ -78,8 +78,7 @@ short			Server::clientSocketCall(const short& clientSocket) {
 	std::string	requestBufferString(requestReadingBuffer);
 	HttpRequest	clientRequest(requestBufferString);
 	Log::info(clientRequest.toString());
-	this->serveRequest(clientRequest, clientSocket);
-	if (clientRequest.getOther("Connection") == "keep-alive")
+	if (this->serveRequest(clientRequest, clientSocket))
 		return (clientSocket);
 	return (-1);
 }
@@ -95,7 +94,7 @@ void			Server::setAddr(void) {
 	this->_addr.sin_addr.s_addr = this->_serverConfig.getHost();
 	this->_addr.sin_port = htons(this->_serverConfig.getPort());
 }
-void			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
-	RequestProcessor	processor(request, this);
-	processor.process(clientSocketFd);
+bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
+	RequestProcessor	processor(request, this, clientSocketFd);
+	return (processor.process());
 }
