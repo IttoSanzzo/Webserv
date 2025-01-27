@@ -18,7 +18,7 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 			return ("text/html");
 		break;
 		case (textCss):
-			return ("text.css");
+			return ("text/css");
 		break;
 		case (applicationJavascript):
 			return ("application/javascript");

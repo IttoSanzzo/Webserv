@@ -11,7 +11,6 @@ HttpRequest::HttpRequest(void) {
 }
 HttpRequest::HttpRequest(const HttpRequest& src) {
 	this->deepCopy(src);
-
 }
 HttpRequest::HttpRequest(const std::string& request) {
 	this->_originalString = "";
@@ -31,7 +30,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 		if (lines[i] == "\r")
 			continue;
 		std::vector<std::string> parts = stp_split(lines[i], ": ");
-		this->setSwitch(parts[0], std::string(parts[1]).erase(parts[1].find('\r')));
+		this->setSwitch(parts[0], std::string(parts[1]).erase(parts[1].rfind('\r')));
 	}
 }
 HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {

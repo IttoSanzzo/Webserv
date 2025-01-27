@@ -3,6 +3,8 @@
 t_protocol	protocolFromString(const std::string& protocol) {
 	if (protocol == "HTTP/1.1")
 		return (http1dot1);
+	else if (protocol == "HTTP/1.1\r")
+		return (http1dot1);
 	else
 		return (no_protocol);
 }
