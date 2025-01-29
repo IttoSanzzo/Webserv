@@ -38,7 +38,8 @@ typedef enum e_contentType {
 	textHtml,
 	textCss,
 	applicationJavascript,
-	imagePng
+	imagePng,
+	appXWwwFormUrlencoded
 }	t_contentType;
 typedef enum e_method {
 	no_method,

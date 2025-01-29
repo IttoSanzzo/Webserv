@@ -109,7 +109,7 @@ void				RequestProcessor::doErrorPage(void) {
 	manualErroContent += httpStatusCodeToString(this->_response.getCode()) + std::string("!</div></div></body></html>");
 	this->_response.setContent(manualErroContent);
 }
-void				RequestProcessor::getMethod() {
+void				RequestProcessor::getMethod(void) {
 	Route route = this->resolveRoute(this->_request.getTargetRoute());
 	if (route.getRoutePath() == "") {
 		this->_response.setCode(404);
@@ -131,7 +131,8 @@ void				RequestProcessor::getMethod() {
 		this->_response = this->readFileToResponse(this->_request.getTargetRoute());
 }
 void				RequestProcessor::postMethod() {
-	
+	Log::debug("POST REQUESTED");
+	Log::debug(stp_itoa(this->_request.getContentLength()));
 }
 void				RequestProcessor::putMethod() {
 }

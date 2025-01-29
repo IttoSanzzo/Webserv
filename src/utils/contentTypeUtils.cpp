@@ -9,6 +9,8 @@ t_contentType	contentTypeFromString(const std::string& contentType) {
 		return (applicationJavascript);
 	else if (contentType == ".png")
 		return (imagePng);
+	else if (contentType == "application/x-www-form-urlencoded")
+		return (appXWwwFormUrlencoded);
 	else
 		return (anyType);
 }
@@ -25,6 +27,9 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 		break;
 		case (imagePng):
 			return ("image/png");
+		break;
+		case (appXWwwFormUrlencoded):
+			return ("application/x-www-form-urlencoded");
 		break;
 		default:
 			return ("*/*");

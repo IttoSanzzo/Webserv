@@ -127,8 +127,7 @@ void				Cluster::acceptNewClient(const size_t& pollIndex) {
 void				Cluster::handleClientRequest(const size_t& pollIndex) {
 	if (this->_clientConnMap[this->_pollFds[pollIndex].fd].server != NULL) {
 		Log::log("\tREQUEST - Server " + this->_clientConnMap[this->_pollFds[pollIndex].fd].server->getServerConfig().getListen().toString() + " received a request [pos: " + stp_itoa(pollIndex) + std::string("]"));
-		int keepAliveFd = this->_clientConnMap[this->_pollFds[pollIndex].fd].server->clientSocketCall(this->_pollFds[pollIndex].fd);
-		if (keepAliveFd > 0) {
+		if (this->_clientConnMap[this->_pollFds[pollIndex].fd].server->clientSocketCall(this->_pollFds[pollIndex].fd) > 0) {
 			this->_clientConnMap[this->_pollFds[pollIndex].fd].last_activity = time(NULL);
 			return ;
 		}

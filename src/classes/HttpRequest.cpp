@@ -8,47 +8,28 @@ HttpRequest::HttpRequest(void) {
 	this->_host = "";
 	this->_protocol = no_protocol;
 	this->_userAgent = "";
+	this->_contentLength = 0;
+	this->_body = "";
 }
 HttpRequest::HttpRequest(const HttpRequest& src) {
 	this->deepCopy(src);
 }
 HttpRequest::HttpRequest(const std::string& request) {
-	this->_originalString = "";
+	this->_originalString = request;
 	this->_method = no_method;
 	this->_targetRoute = "";
 	this->_host = "";
 	this->_protocol = no_protocol;
 	this->_userAgent = "";
-	std::vector<std::string> lines = stp_split(request, "\n");
-	if (lines.size() == 0)
-		return ;
-	std::vector<std::string> mainParts = stp_split(lines[0], " ");
-	this->_method = methodFromString(mainParts[0]);
-	this->_targetRoute = mainParts[1];
-	this->_protocol = protocolFromString(mainParts[2]);
-	for (size_t i = 1; i < lines.size(); ++i) {
-		if (lines[i] == "\r")
-			continue;
-		std::vector<std::string> parts = stp_split(lines[i], ": ");
-		this->setSwitch(parts[0], std::string(parts[1]).erase(parts[1].rfind('\r')));
-	}
+	this->_contentLength = 0;
+	this->_body = "";
+	this->setHeaderPart(request.substr(0, request.find("\r\n\r") + 1));
+	this->setBodyPart(request.substr(request.find("\r\n\r") + 4));
 }
 HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {
 	if (this != &src)
 		this->deepCopy(src);
 	return (*this);
-}
-void			HttpRequest::setSwitch(const std::string& name, const std::string& value) {
-	if (name == "Host")
-		this->_host = value;
-	else if (name == "User-Agent")
-		this->_userAgent = value;
-	else if (name == "Accept")
-		this->_accept.push_back(value);
-	else if (name == "Accept-Encoding")
-		this->_acceptEncoding = stp_split(value, ", ");
-	else
-		this->_others[name] = value;
 }
 void			HttpRequest::setOriginalString(const std::string& src) {
 	this->_originalString = src;
@@ -67,6 +48,12 @@ void			HttpRequest::setProtocol(const t_protocol& protocol) {
 }
 void			HttpRequest::setUserAgent(const std::string& userAgent) {
 	this->_userAgent = userAgent;
+}
+void			HttpRequest::setContentLength(const size_t& contentLength) {
+	this->_contentLength = contentLength;
+}
+void			HttpRequest::setBody(const std::string& body) {
+	this->_body = body;
 }
 void			HttpRequest::pushAccept(const std::string& accept) {
 	this->_accept.push_back(accept);
@@ -93,6 +80,12 @@ t_protocol		HttpRequest::getProtocol(void) const {
 std::string		HttpRequest::getUserAgent(void) const {
 	return (this->_userAgent);
 }
+size_t			HttpRequest::getContentLength(void) const {
+	return (this->_contentLength);
+}
+std::string		HttpRequest::getBody(void) {
+	return (this->_body);
+}
 std::string		HttpRequest::getAccept(const size_t& pos) const {
 	return (this->_accept[pos]);
 }
@@ -104,6 +97,38 @@ std::string		HttpRequest::getOther(const std::string& name) {
 }
 std::map<std::string, std::string>&	HttpRequest::getOther(void) {
 	return (this->_others);
+}
+void			HttpRequest::setHeaderPart(const std::string& header) {
+	std::vector<std::string> lines = stp_split(header, "\n");
+	if (lines.size() == 0)
+		return ;
+	std::vector<std::string> mainParts = stp_split(lines[0], " ");
+	this->_method = methodFromString(mainParts[0]);
+	this->_targetRoute = mainParts[1];
+	this->_protocol = protocolFromString(mainParts[2]);
+	for (size_t i = 1; i < lines.size(); ++i) {
+		std::vector<std::string> parts = stp_split(lines[i], ": ");
+		this->setHeaderSwitch(parts[0], std::string(parts[1]).erase(parts[1].rfind('\r')));
+	}
+}
+void			HttpRequest::setBodyPart(const std::string& body) {
+	if (body == "")
+		return ;
+	this->_body = body;
+}
+void			HttpRequest::setHeaderSwitch(const std::string& name, const std::string& value) {
+	if (name == "Host")
+		this->_host = value;
+	else if (name == "User-Agent")
+		this->_userAgent = value;
+	else if (name == "Accept")
+		this->_accept.push_back(value);
+	else if (name == "Accept-Encoding")
+		this->_acceptEncoding = stp_split(value, ", ");
+	else if (name == "Content-Length")
+		this->_contentLength = std::atoi(value.c_str());
+	else
+		this->_others[name] = value;
 }
 std::string		HttpRequest::toString(void) {
 	std::string	returnString = "Method: " + methodToString(this->getMethodType()) + "\n";
@@ -117,6 +142,8 @@ std::string		HttpRequest::toString(void) {
 		returnString += "\n" + std::string("AcceptEncoding: ") + this->getAcceptEncoding(i);
 	for (std::map<std::string, std::string>::iterator i = this->_others.begin(); i != this->_others.end(); ++i)
 		returnString += "\n" + i->first + std::string(": ") + i->second;
+	if (this->_body != "")
+		returnString += "\n\n" + this->getBody();
 	return (returnString);
 }
 void			HttpRequest::deepCopy(const HttpRequest& src) {
@@ -126,7 +153,9 @@ void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_host = src._host;
 	this->_protocol = src._protocol;
 	this->_userAgent = src._userAgent;
+	this->_contentLength = src._contentLength;
 	this->_accept = src._accept;
 	this->_acceptEncoding = src._acceptEncoding;
+	this->_body = src._body;
 	this->_others = src._others;
 }

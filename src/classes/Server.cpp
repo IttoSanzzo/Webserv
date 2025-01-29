@@ -77,6 +77,11 @@ short			Server::clientSocketCall(const short& clientSocket) {
 	requestReadingBuffer[bytesRead] = '\0';
 	std::string	requestBufferString(requestReadingBuffer);
 	HttpRequest	clientRequest(requestBufferString);
+	if (clientRequest.getBody().size() > this->_serverConfig.getClientMaxBodySize()) {
+		Log::error("Client sent a request bigger than permitted!");
+		::close(clientSocket);
+		return (-2);
+	}
 	Log::info(clientRequest.toString());
 	if (this->serveRequest(clientRequest, clientSocket))
 		return (clientSocket);
