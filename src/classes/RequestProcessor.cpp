@@ -188,7 +188,6 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	if (route.getRoutePath() != "")
 		return (route);
 	std::string	fatherPath = routePath.substr(0, routePath.rfind("/", routePath.size() - 2) + 1);
-	// /*
 	while (fatherPath != "/") {
 		Log::error(fatherPath);
 		route = this->_server->getServerConfig().getRoute(fatherPath);
@@ -196,10 +195,7 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 			return (route);
 		fatherPath = fatherPath.substr(0, fatherPath.rfind("/", fatherPath.size() - 2) + 1);
 	}
-	// */
-		// return (this->_server->getServerConfig().getRoute(fatherPath));
 	return (Route());
-	// return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
 }
 void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 	DIR* dir = opendir(targetRoute.c_str());
@@ -225,7 +221,7 @@ void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 			closedir(testFolder);
 		}
 		else
-			body += "<li><img src=\"" + contentTypeToImage(contentTypeFromFile(entry->d_name)) + std::string("\" /><a href=\"") + entryPath + std::string("\">") + entry->d_name + std::string("</a></li>");
+			body += "<li><a href=\"" + entryPath + std::string("\" target=\"_blank\" ><img src=\"") + contentTypeToImage(contentTypeFromFile(entry->d_name)) + std::string("\" />") + entry->d_name + std::string("</a></li>");
 	}
 	this->_response.setContent(body + "</ul></body></html>");
     closedir(dir);
