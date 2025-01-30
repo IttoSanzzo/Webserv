@@ -163,16 +163,15 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
 }
 bool				RequestProcessor::send(const std::string& message) {
-	Log::error("Send Start");
 	char clientTest[1];
 	size_t n;
 	size_t sent = 0;
 	while (sent < message.size()) {
-		Log::error("Sending...");
 		if (recv(this->_clientFD, clientTest, 1, MSG_DONTWAIT) == 0) {
 			Log::error("The client closed connection while sending.");
 			return (false);
 		}
+		Log::error("Sending...");
     	n = ::send(this->_clientFD, message.c_str() + sent, message.size() - sent,  MSG_NOSIGNAL);
 		Log::error("Sended " + stp_itoa(n));
     	if ((int)n <= 0) {
@@ -181,7 +180,6 @@ bool				RequestProcessor::send(const std::string& message) {
     	}
     	sent += n;
 	}
-	Log::error("Send End");
 	return (true);
 }
 int					RequestProcessor::createFile(const std::string& path, const std::string& filename, const std::string& content) {

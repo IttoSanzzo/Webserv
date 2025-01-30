@@ -13,11 +13,13 @@ typedef enum e_LogType {
 
 class Log {
 	private:
-		static const bool	key_log = LOG_LOG;
-		static const bool	key_info = LOG_INFO;
-		static const bool	key_warning = LOG_WARNING;
-		static const bool	key_error = LOG_ERROR;
-		static const bool	key_debug = LOG_DEBUG;
+		static std::time_t			startTime;
+		static const bool			key_log = LOG_LOG;
+		static const bool			key_info = LOG_INFO;
+		static const bool			key_warning = LOG_WARNING;
+		static const bool			key_error = LOG_ERROR;
+		static const bool			key_debug = LOG_DEBUG;
+		static const bool			key_timestamp = LOG_TIMESTAMP;
 		~Log(void);
 		Log(void);
     	Log(const Log&);
@@ -35,6 +37,8 @@ class Log {
 		static void	error(const std::exception& ex);
 		static void	debug(const std::string& message);
 		static void	omni(const LogType& type, const std::string& message);
+	private:
+		static void	timestamp(void);
 };
 
 #endif

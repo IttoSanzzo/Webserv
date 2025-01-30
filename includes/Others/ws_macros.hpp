@@ -17,12 +17,14 @@
 # define LOG_WARNING		true
 # define LOG_ERROR			true
 # define LOG_DEBUG			true
+# define LOG_TIMESTAMP		true
 /* 11. Log Colors */
 # define LOGCOLOR_LOG		"\033[38;5;111m"
 # define LOGCOLOR_INFO		"\033[38;5;33m"
 # define LOGCOLOR_WARNING	"\033[38;5;208m"
 # define LOGCOLOR_ERROR		"\033[38;5;196m"
 # define LOGCOLOR_DEBUG		"\033[38;5;229m"
+# define LOGCOLOR_TIMESTAMP	"\033[38;5;68m"
 
 /* 2. Errors Messages */
 # define ERR_PORT		"Wrong syntax: port"

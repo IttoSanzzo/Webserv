@@ -47,7 +47,6 @@ bool			Server::listenerSetup(void) {
 		Log::error("\t\t\tsetsockopt(SO_RCVTIMEO) failed!");
 		return (false);
 	}
-	// /*
 	struct linger so_linger;
 	so_linger.l_onoff = 1;
 	so_linger.l_linger = 2;
@@ -55,7 +54,6 @@ bool			Server::listenerSetup(void) {
 		Log::error("\t\t\tsetsockopt(SO_LINGER) failed!");
 		return (false);
 	}
-	// */
 	this->setAddr();
 	if (bind(this->_socketFd, (sockaddr*)&this->_addr, sizeof(this->_addr)) < 0) {
 		Log::error("\t\t\tCould not bind socket to the port " + stp_itoa(this->_serverConfig.getPort()) + "!");
@@ -116,7 +114,7 @@ std::string		Server::readRequest(const short& clientSocket) {
 		}
 	else if (bytesRead > 0)
 		fullRequest.append(requestBuffer, bytesRead);
-	Log::debug(stp_itoa(fullRequest.size()));
+	// Log::debug(stp_itoa(fullRequest.size()));
 	return (fullRequest);
 }
 void			Server::deepCopy(const Server& src) {
