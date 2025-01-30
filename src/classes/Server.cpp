@@ -81,14 +81,11 @@ short			Server::clientSocketCall(const short& clientSocket) {
 	if (requestBufferString == "")
 		return (0);
 	HttpRequest	clientRequest(requestBufferString);
-	/*
 	if (clientRequest.getBody().size() > this->_serverConfig.getClientMaxBodySize()) {
 		Log::error("Client sent a request bigger than permitted!");
 		::close(clientSocket);
 		return (-2);
 	}
-	*/
-	// Log::info(clientRequest.toString());
 	if (this->serveRequest(clientRequest, clientSocket))
 		return (clientSocket);
 	return (-1);
@@ -114,7 +111,6 @@ std::string		Server::readRequest(const short& clientSocket) {
 		}
 	else if (bytesRead > 0)
 		fullRequest.append(requestBuffer, bytesRead);
-	// Log::debug(stp_itoa(fullRequest.size()));
 	return (fullRequest);
 }
 void			Server::deepCopy(const Server& src) {
