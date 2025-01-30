@@ -43,7 +43,8 @@ typedef enum e_contentType {
 	videoMp4,
 	imageSvgXml,
 	appXWwwFormUrlencoded,
-	multipartFormData
+	multipartFormData,
+	textPlain
 }	t_contentType;
 typedef enum e_method {
 	no_method,

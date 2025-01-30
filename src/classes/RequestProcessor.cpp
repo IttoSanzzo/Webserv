@@ -61,7 +61,7 @@ bool				RequestProcessor::process(void) {
 			default:
 			break;
 		}
-	if (this->_response.getCode() != 200 && this->_response.getCode() != 301)
+	if (!(this->_response.getCode() >= 200 && this->_response.getCode() < 300) && this->_response.getCode() != 301)
 		this->doErrorPage();
 	if (this->_request.getOther("Connection") == "keep-alive" && this->_response.getCode() != 301)
 		this->_response.setKeepAlive(true);
@@ -134,27 +134,52 @@ void				RequestProcessor::getMethod(const Route& route) {
 		this->_response = this->readFileToResponse(this->_request.getTargetRoute());
 }
 void				RequestProcessor::postMethod(const Route& route) {
-	int	startPoint = this->_request.getBody().find("\r\n\r\n") + 4;
-	std::string content(this->_request.getBody().substr(startPoint, this->_request.getBody().rfind(this->_request.getBody().substr(0, this->_request.getBody().find('\n') - 1)) - 2 - startPoint));
-	int	filenameStart = this->_request.getBody().find("filename=\"") + 10;
-	std::string filename(this->_request.getBody().substr(filenameStart, this->_request.getBody().find("\"", filenameStart) - filenameStart));
-	// std::ofstream file(std::string(std::string("./public") + route.getRoutePath() + std::string("/LyraCrop.txt")).c_str(), std::ios::out | std::ios::binary);
-	this->createFile(route.getRoutePath(), filename, content);
+	if (this->_request.getBody() == "") {
+		this->_response.setCode(400);
+		return ;
+	}
+	std::vector<std::string> bodyParts = stp_split(this->_request.getBody(), this->_request.getBody().substr(0, this->_request.getBody().find('\n') - 1));
+	for (size_t i = 1; i < bodyParts.size() - 1; ++i) {
+		bodyParts[i] = bodyParts[i].substr(2, bodyParts[i].size() - 4);
+		int	startPoint = bodyParts[i].find("\r\n\r\n") + 4;
+		int	filenameStart = bodyParts[i].find("filename=\"") + 10;
+		std::string content(bodyParts[i].substr(startPoint, bodyParts[i].rfind(bodyParts[i].substr(0, bodyParts[i].find('\n') - 1)) - 2 - startPoint));
+		std::string filename(bodyParts[i].substr(filenameStart, bodyParts[i].find("\"", filenameStart) - filenameStart));
+		this->createFile(route.getRoutePath(), filename, content);
+	}
+	this->_response.setCode(201);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::putMethod(const Route& route) {
 	(void)route;
+	this->_response.setCode(501);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::patchMethod(const Route& route) {
 	(void)route;
+	this->_response.setCode(501);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::deleteMethod(const Route& route) {
 	(void)route;
+	this->_response.setCode(501);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::headMethod(const Route& route) {
 	(void)route;
+	this->_response.setCode(501);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::optionsMethod(const Route& route) {
 	(void)route;
+	this->_response.setCode(501);
+	this->_response.setType(textPlain);
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	Route route = this->_server->getServerConfig().getRoute(routePath);

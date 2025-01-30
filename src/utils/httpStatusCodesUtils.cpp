@@ -41,6 +41,9 @@ std::string	httpStatusCodeToString(const int& code) {
 		case (500):
 			return ("Internal Server Error");
 		break;
+		case (501):
+			return ("Not Implemented");
+		break;
 		case (502):
 			return ("Bad Gateway");
 		break;

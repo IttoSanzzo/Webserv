@@ -24,7 +24,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_contentLength = 0;
 	this->_body = "";
 	this->setHeaderPart(request.substr(0, request.find("\r\n\r") + 1));
-	this->setBodyPart(request.substr(request.find("\r\n\r") + 4));
+	this->setBody(request.substr(request.find("\r\n\r") + 4));
 }
 HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {
 	if (this != &src)
@@ -110,11 +110,6 @@ void			HttpRequest::setHeaderPart(const std::string& header) {
 		std::vector<std::string> parts = stp_split(lines[i], ": ");
 		this->setHeaderSwitch(parts[0], std::string(parts[1]).erase(parts[1].rfind('\r')));
 	}
-}
-void			HttpRequest::setBodyPart(const std::string& body) {
-	if (body == "")
-		return ;
-	this->_body = body;
 }
 void			HttpRequest::setHeaderSwitch(const std::string& name, const std::string& value) {
 	if (name == "Host")

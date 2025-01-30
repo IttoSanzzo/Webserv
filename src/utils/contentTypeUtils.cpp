@@ -19,6 +19,8 @@ t_contentType	contentTypeFromString(const std::string& contentType) {
 		return (appXWwwFormUrlencoded);
 	else if (contentType == "multipart/form-data")
 		return (multipartFormData);
+	else if (contentType == "text/plain")
+		return (multipartFormData);
 	else
 		return (anyType);
 }
@@ -50,6 +52,9 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 		break;
 		case (multipartFormData):
 			return ("multipart/form-data");
+		break;
+		case (textPlain):
+			return ("text/plain");
 		break;
 		default:
 			return ("*/*");

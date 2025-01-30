@@ -47,7 +47,6 @@ class HttpRequest {
 		std::map<std::string, std::string>&	getOther(void);
 		void			setHeaderPart(const std::string& header);
 		void			setHeaderSwitch(const std::string& name, const std::string& value);
-		void			setBodyPart(const std::string& body);
 		std::string		toString(void);
 	private:
 		void			deepCopy(const HttpRequest& src);
