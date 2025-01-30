@@ -187,7 +187,19 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	Route route = this->_server->getServerConfig().getRoute(routePath);
 	if (route.getRoutePath() != "")
 		return (route);
-	return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
+	std::string	fatherPath = routePath.substr(0, routePath.rfind("/", routePath.size() - 2) + 1);
+	// /*
+	while (fatherPath != "/") {
+		Log::error(fatherPath);
+		route = this->_server->getServerConfig().getRoute(fatherPath);
+		if (route.getRoutePath() != "")
+			return (route);
+		fatherPath = fatherPath.substr(0, fatherPath.rfind("/", fatherPath.size() - 2) + 1);
+	}
+	// */
+		// return (this->_server->getServerConfig().getRoute(fatherPath));
+	return (Route());
+	// return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
 }
 void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 	DIR* dir = opendir(targetRoute.c_str());
@@ -209,7 +221,7 @@ void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 		entryPath = this->_request.getTargetRoute() + entry->d_name;
 		DIR* testFolder = opendir(("./public/" + this->_request.getTargetRoute() + entry->d_name).c_str());
 		if (testFolder != NULL) {
-			body += "<li><img src=\"/server/folder.png\" /><a href=\"" + entryPath + std::string("\">") + entry->d_name + std::string("</a></li>");
+			body += "<li><img src=\"/server/folder.png\" /><a href=\"" + entryPath + std::string("/\">") + entry->d_name + std::string("</a></li>");
 			closedir(testFolder);
 		}
 		else
