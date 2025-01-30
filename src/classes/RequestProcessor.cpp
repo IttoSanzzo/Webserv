@@ -26,10 +26,6 @@ void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
 bool				RequestProcessor::process(void) {
-	
-	// Log::debug(this->_request.getOriginalString());
-	// Log::debug(this->_request.getBody());
-	
 	Route route = this->resolveRoute(this->_request.getTargetRoute());
 	if (route.getRoutePath() == "")
 		this->_response.setCode(404);
@@ -145,7 +141,7 @@ void				RequestProcessor::postMethod(const Route& route) {
 		int	filenameStart = bodyParts[i].find("filename=\"") + 10;
 		std::string content(bodyParts[i].substr(startPoint, bodyParts[i].rfind(bodyParts[i].substr(0, bodyParts[i].find('\n') - 1)) - 2 - startPoint));
 		std::string filename(bodyParts[i].substr(filenameStart, bodyParts[i].find("\"", filenameStart) - filenameStart));
-		this->createFile(route.getRoutePath(), filename, content);
+		this->createFile(route.getSavePath(), filename, content);
 	}
 	this->_response.setCode(201);
 	this->_response.setType(textPlain);

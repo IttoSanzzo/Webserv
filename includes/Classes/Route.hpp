@@ -9,6 +9,7 @@ class	Route {
 		std::string							_index;
 		std::string							_root;
 		std::string							_redirect;
+		std::string							_savePath;
 		bool								_autoindex;
 		std::map<std::string, std::string>	_cgiRelations;
 		std::map<std::string, bool>			_methods;
@@ -21,13 +22,15 @@ class	Route {
 		void		setRoutePath(const std::string& routePath);
 		void		setIndex(const std::string& index);
 		void		setRoot(const std::string& root);
+		void		setSavePath(const std::string& savePath);
 		void		setAutoindex(const bool& value);
-		void		setMethods(const std::string& method, const bool& value);
 		void		setCgiRelation(const std::string& extension, const std::string& path);
+		void		setMethods(const std::string& method, const bool& value);
 		std::string	getRoutePath(void) const;
 		std::string	getIndex(void) const;
 		std::string	getRoot(void) const;
 		std::string	getRedirect(void) const;
+		std::string	getSavePath(void) const;
 		bool		getAutoindex(void) const;
 		bool		getMethod(const t_method& method);
 		bool		getMethod(const std::string& method);
@@ -38,6 +41,7 @@ class	Route {
 		void		setIndex(const JsonNode& routeJson);
 		void		setRoot(const JsonNode& routeJson);
 		void		setRedirect(const JsonNode& routeJson);
+		void		setSavePath(const JsonNode& routeJson);
 		void		setAutoindex(const JsonNode& routeJson);
 		void		setMethods(const JsonNode& routeJson);
 		void		setCgiRelation(const JsonNode& routeJson);

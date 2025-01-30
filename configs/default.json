@@ -16,7 +16,8 @@
 			],
 			"routes": [
 				{
-					"routePath": "/posting",
+					"routePath": "/poster",
+					"savePath": "/posting",
 					"allow_methods": "GET POST DELETE"
 				},
 				{
