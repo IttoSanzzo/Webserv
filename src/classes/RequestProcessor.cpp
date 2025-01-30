@@ -164,10 +164,13 @@ void				RequestProcessor::patchMethod(const Route& route) {
 	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 void				RequestProcessor::deleteMethod(const Route& route) {
-	(void)route;
-	this->_response.setCode(501);
-	this->_response.setType(textPlain);
-	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
+	std::string file(std::string("./public/" + route.getRoutePath() + std::string("/") + this->_request.getTargetRoute().substr(this->_request.getTargetRoute().rfind("/") + 1)));
+	if (access(file.c_str(), F_OK) != 0)
+		this->_response.setCode(404);
+	else if (0 == std::remove(file.c_str()))
+		this->_response.setCode(204);
+	else
+		this->_response.setCode(500);
 }
 void				RequestProcessor::headMethod(const Route& route) {
 	(void)route;
