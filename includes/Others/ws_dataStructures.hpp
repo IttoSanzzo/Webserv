@@ -44,7 +44,8 @@ typedef enum e_contentType {
 	imageSvgXml,
 	appXWwwFormUrlencoded,
 	multipartFormData,
-	textPlain
+	textPlain,
+	folder
 }	t_contentType;
 typedef enum e_method {
 	no_method,

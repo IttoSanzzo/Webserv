@@ -1,0 +1,30 @@
+body {
+	background-image: linear-gradient(to right, grey, gray, darkgray);
+}
+
+h1 {
+	text-align: center;
+	font-size: 55px;
+}
+
+ul {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+}
+
+li {
+	display: inline-block;
+	justify-content: center;
+}
+li a {
+	color: darkblue;
+	text-decoration-line: none;
+	display: inline-block;
+	margin-bottom: 0px;
+}
+
+li img {
+	height: 30px;
+	width: 30px;
+}

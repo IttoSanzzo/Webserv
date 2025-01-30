@@ -117,8 +117,11 @@ void				RequestProcessor::doErrorPage(void) {
 	manualErroContent += httpStatusCodeToString(this->_response.getCode()) + std::string("!</div></div></body></html>");
 	this->_response.setContent(manualErroContent);
 }
-void				RequestProcessor::getMethod(const Route& route) { 
-	if (route.getRedirect() != "") {
+void				RequestProcessor::getMethod(const Route& route) {
+	if (route.getAutoindex() == true 
+		&& this->_request.getTargetRoute()[this->_request.getTargetRoute().size() - 1] == '/')
+		this->autoIndexingResponse("./public/" + this->_request.getTargetRoute());
+	else if (route.getRedirect() != "") {
 		if (route.getRedirect().find("http") == std::string::npos)
 			this->_response.doRedirectResponse(std::string("http://") + this->_server->getServerConfig().getListen().toString() + route.getRedirect());
 		else
@@ -185,6 +188,35 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	if (route.getRoutePath() != "")
 		return (route);
 	return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
+}
+void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
+	DIR* dir = opendir(targetRoute.c_str());
+	if (dir == NULL) {
+		Log::error("Could not open directory: " + targetRoute);
+		this->_response.setCode(404);
+		return ;
+	}
+	this->_response.setCode(200);
+	this->_response.setType(textHtml);
+	std::string	body(std::string("<html><head><title>Index of ") + this->_request.getTargetRoute() + std::string("</title><link rel=\"stylesheet\" href=\"/server/autoIndex.css\" /></head><body>"));
+	body += std::string("<h1>Index of ") + this->_request.getTargetRoute() + std::string("</h1><ul>");
+	struct dirent*	entry;
+	std::string		entryPath;
+	std::string		className;
+	while ((entry = readdir(dir)) != NULL) {
+		if (entry->d_name[0] == '.')
+			continue;
+		entryPath = this->_request.getTargetRoute() + entry->d_name;
+		DIR* testFolder = opendir(("./public/" + this->_request.getTargetRoute() + entry->d_name).c_str());
+		if (testFolder != NULL) {
+			body += "<li><img src=\"/server/folder.png\" /><a href=\"" + entryPath + std::string("\">") + entry->d_name + std::string("</a></li>");
+			closedir(testFolder);
+		}
+		else
+			body += "<li><img src=\"" + contentTypeToImage(contentTypeFromFile(entry->d_name)) + std::string("\" /><a href=\"") + entryPath + std::string("\">") + entry->d_name + std::string("</a></li>");
+	}
+	this->_response.setContent(body + "</ul></body></html>");
+    closedir(dir);
 }
 bool				RequestProcessor::send(const std::string& message) {
 	char clientTest[1];

@@ -38,6 +38,11 @@
 					"allow_methods": "GET"
 				},
 				{
+					"routePath": "/server/",
+					"autoindex": true,
+					"allow_methods": "GET"
+				},
+				{
 					"routePath": "/characters",
 					"routeIndex": "characters.html",
 					"autoindex": true,
@@ -61,6 +66,7 @@
 				},
 				{
 					"routePath": "/Envestora/",
+					"autoindex": true,
 					"allow_methods": "GET"
 				},
 				{

@@ -74,6 +74,7 @@ std::string		protocolToString(const t_protocol& protocol);
 t_contentType	contentTypeFromString(const std::string& contentType);
 std::string		contentTypeToString(const t_contentType& contentType);
 t_contentType	contentTypeFromFile(const std::string& filePath);
+std::string		contentTypeToImage(const t_contentType& contentType);
 std::string		httpStatusCodeToString(const int& code);
 void			infoAllServerSettings(ServerConfigArray& serverConfigs);
 
