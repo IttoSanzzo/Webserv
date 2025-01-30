@@ -34,7 +34,7 @@ bool				RequestProcessor::process(void) {
 	if (route.getRoutePath() == "")
 		this->_response.setCode(404);
 	else if (route.getMethod(this->_request.getMethodType()) == false)
-		this->_response.setCode(403);
+		this->_response.setCode(405);
 	else
 		switch (this->_request.getMethodType()) {
 			case (GET):
