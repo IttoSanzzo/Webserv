@@ -181,7 +181,7 @@ void				RequestProcessor::optionsMethod(const Route& route) {
 	(void)route;
 	this->_response.setCode(501);
 	this->_response.setType(textPlain);
-	this->_response.setContent(httpStatusCodeToString(this->_response.getCode())); 
+	this->_response.setContent(httpStatusCodeToString(this->_response.getCode()));
 }
 Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	Route route = this->_server->getServerConfig().getRoute(routePath);
