@@ -9,8 +9,14 @@ t_contentType	contentTypeFromString(const std::string& contentType) {
 		return (applicationJavascript);
 	else if (contentType == ".png")
 		return (imagePng);
+	else if (contentType == ".jpeg")
+		return (imageJpeg);
+		else if (contentType == ".mp4")
+		return (videoMp4);
 	else if (contentType == "application/x-www-form-urlencoded")
 		return (appXWwwFormUrlencoded);
+	else if (contentType == "multipart/form-data")
+		return (multipartFormData);
 	else
 		return (anyType);
 }
@@ -28,8 +34,17 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 		case (imagePng):
 			return ("image/png");
 		break;
+		case (imageJpeg):
+			return ("image/jpeg");
+		break;
+		case (videoMp4):
+			return ("video/mp4");
+		break;
 		case (appXWwwFormUrlencoded):
 			return ("application/x-www-form-urlencoded");
+		break;
+		case (multipartFormData):
+			return ("multipart/form-data");
 		break;
 		default:
 			return ("*/*");

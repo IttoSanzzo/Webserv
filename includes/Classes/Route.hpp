@@ -29,6 +29,7 @@ class	Route {
 		std::string	getRoot(void) const;
 		std::string	getRedirect(void) const;
 		bool		getAutoindex(void) const;
+		bool		getMethod(const t_method& method);
 		bool		getMethod(const std::string& method);
 		std::string	getCgiPath(const std::string& extension);
 	private:

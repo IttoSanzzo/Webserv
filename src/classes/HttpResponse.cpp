@@ -67,6 +67,9 @@ std::string		HttpResponse::getHeader(void) const {
 		header += "\r\nConnection: keep-alive\r\nKeep-Alive: timeout=" + stp_itoa(CLIENTTIMEOUT);
 	return (header);
 }
+std::string		HttpResponse::getFullHeader(void) const {
+	return (this->getHeader() + "\r\n\r\n");
+}
 std::string		HttpResponse::toString(void) const {
 	if (this->_redirect == false)
 		return (this->getHeader() + "\r\n\r\n" + this->getContent());

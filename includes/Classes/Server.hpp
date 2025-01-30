@@ -25,9 +25,10 @@ class Server {
 		void			closeSocketFd(const int& socketFd);
 		short			clientSocketCall(const short& clientSocket);
 	private:
-		void			deepCopy(const Server& src);
 		void			setAddr(void);
 		bool			serveRequest(const HttpRequest& request, const int& clientSocketFd);
+		std::string		readRequest(const short& clientSocket);
+		void			deepCopy(const Server& src);
 };
 
 #endif

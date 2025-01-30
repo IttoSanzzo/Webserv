@@ -39,7 +39,10 @@ typedef enum e_contentType {
 	textCss,
 	applicationJavascript,
 	imagePng,
-	appXWwwFormUrlencoded
+	imageJpeg,
+	videoMp4,
+	appXWwwFormUrlencoded,
+	multipartFormData
 }	t_contentType;
 typedef enum e_method {
 	no_method,

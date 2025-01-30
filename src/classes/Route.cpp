@@ -59,6 +59,9 @@ std::string	Route::getRedirect(void) const {
 bool		Route::getAutoindex(void) const {
 	return (this->_autoindex);
 }
+bool		Route::getMethod(const t_method& method) {
+	return (this->_methods[methodToString(method)]);
+}
 bool		Route::getMethod(const std::string& method) {
 	return (this->_methods[method]);
 }

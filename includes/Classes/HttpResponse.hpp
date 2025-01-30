@@ -29,6 +29,7 @@ class HttpResponse {
 		bool				getRedirect(void) const;
 		size_t				getSize(void) const;
 		std::string			getHeader(void) const;
+		std::string			getFullHeader(void) const;
 		std::string			toString(void) const;
 		void				doRedirectResponse(const std::string& target);
 	private:

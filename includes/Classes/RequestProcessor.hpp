@@ -24,15 +24,16 @@ class RequestProcessor {
 	private:
 		void				deepCopy(const RequestProcessor& src);
 		void				doErrorPage(void);
-		void				getMethod(void);
-		void				postMethod(void);
-		void				putMethod(void);
-		void				patchMethod(void);
-		void				deleteMethod(void);
-		void				headMethod(void);
-		void				optionsMethod(void);
+		void				getMethod(const Route& route);
+		void				postMethod(const Route& route);
+		void				putMethod(const Route& route);
+		void				patchMethod(const Route& route);
+		void				deleteMethod(const Route& route);
+		void				headMethod(const Route& route);
+		void				optionsMethod(const Route& route);
 		Route				resolveRoute(const std::string& routePath);
-		void				sendResponse(const std::string& responseString);
+		bool				send(const std::string& message);
+		int					createFile(const std::string& path, const std::string& filename, const std::string& content);
 };
 
 #endif

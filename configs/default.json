@@ -7,7 +7,7 @@
 			"dataDirectory": "./public",
 			"root": "docs/fusion_web/",
 			"index": "index.html",
-			"client_max_size_body": 2048,
+			"client_max_size_body": 204800,
 			"error_pages": [
 				{
 					"codes": "405",
@@ -15,6 +15,10 @@
 				}
 			],
 			"routes": [
+				{
+					"routePath": "/posting",
+					"allow_methods": "POST"
+				},
 				{
 					"routePath": "/",
 					"autoindex": false,

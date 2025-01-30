@@ -38,8 +38,24 @@ bool			Server::listenerSetup(void) {
 	int opt = 1;
 	if (setsockopt(this->_socketFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
 		Log::error("\t\t\tsetsockopt(SO_REUSEADDR) failed!");
-		return false;
+		return (false);
 	}
+	struct timeval timeout;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 1;
+	if (setsockopt(this->_socketFd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
+		Log::error("\t\t\tsetsockopt(SO_RCVTIMEO) failed!");
+		return (false);
+	}
+	// /*
+	struct linger so_linger;
+	so_linger.l_onoff = 1;
+	so_linger.l_linger = 2;
+	if (setsockopt(this->_socketFd, SOL_SOCKET, SO_LINGER, &so_linger, sizeof(so_linger)) < 0) {
+		Log::error("\t\t\tsetsockopt(SO_LINGER) failed!");
+		return (false);
+	}
+	// */
 	this->setAddr();
 	if (bind(this->_socketFd, (sockaddr*)&this->_addr, sizeof(this->_addr)) < 0) {
 		Log::error("\t\t\tCould not bind socket to the port " + stp_itoa(this->_serverConfig.getPort()) + "!");
@@ -63,35 +79,21 @@ void			Server::closeSocketFd(const int& socketFd) {
 	this->_requests.erase(socketFd);
 }
 short			Server::clientSocketCall(const short& clientSocket) {
-	char requestReadingBuffer[this->_serverConfig.getClientMaxBodySize() + 1];
-	int bytesRead = recv(clientSocket, requestReadingBuffer, sizeof(requestReadingBuffer), 0);
-	if (bytesRead > (int)this->_serverConfig.getClientMaxBodySize()) {
-		Log::error("Client sent a request bigger than permitted!");
-		::close(clientSocket);
-		return (-2);
-	}
-	else if (bytesRead  == -1)
-		return (-3);
-	else if (bytesRead == 0)
+	std::string	requestBufferString = this->readRequest(clientSocket);
+	if (requestBufferString == "")
 		return (0);
-	requestReadingBuffer[bytesRead] = '\0';
-	std::string	requestBufferString(requestReadingBuffer);
 	HttpRequest	clientRequest(requestBufferString);
+	/*
 	if (clientRequest.getBody().size() > this->_serverConfig.getClientMaxBodySize()) {
 		Log::error("Client sent a request bigger than permitted!");
 		::close(clientSocket);
 		return (-2);
 	}
-	Log::info(clientRequest.toString());
+	*/
+	// Log::info(clientRequest.toString());
 	if (this->serveRequest(clientRequest, clientSocket))
 		return (clientSocket);
 	return (-1);
-}
-void			Server::deepCopy(const Server& src) {
-	this->_serverConfig = src._serverConfig;
-	this->_socketFd = src._socketFd;
-	this->_addr= src._addr;
-	this->_requests = src._requests;
 }
 void			Server::setAddr(void) {
 	stp_memset((char*)&this->_addr, 0, sizeof(this->_addr));
@@ -102,4 +104,24 @@ void			Server::setAddr(void) {
 bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
 	RequestProcessor	processor(request, this, clientSocketFd);
 	return (processor.process());
+}
+std::string		Server::readRequest(const short& clientSocket) {
+	char requestBuffer[2048];
+	std::string fullRequest = "";
+	int bytesRead = recv(clientSocket, requestBuffer, 2048, MSG_DONTWAIT);
+	if (bytesRead == 2048)
+		while (bytesRead > 0) {
+			fullRequest.append(requestBuffer, bytesRead);
+			bytesRead = recv(clientSocket, requestBuffer, 2048, 0);
+		}
+	else if (bytesRead > 0)
+		fullRequest.append(requestBuffer, bytesRead);
+	Log::debug(stp_itoa(fullRequest.size()));
+	return (fullRequest);
+}
+void			Server::deepCopy(const Server& src) {
+	this->_serverConfig = src._serverConfig;
+	this->_socketFd = src._socketFd;
+	this->_addr= src._addr;
+	this->_requests = src._requests;
 }

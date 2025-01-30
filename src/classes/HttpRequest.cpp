@@ -142,8 +142,6 @@ std::string		HttpRequest::toString(void) {
 		returnString += "\n" + std::string("AcceptEncoding: ") + this->getAcceptEncoding(i);
 	for (std::map<std::string, std::string>::iterator i = this->_others.begin(); i != this->_others.end(); ++i)
 		returnString += "\n" + i->first + std::string(": ") + i->second;
-	if (this->_body != "")
-		returnString += "\n\n" + this->getBody();
 	return (returnString);
 }
 void			HttpRequest::deepCopy(const HttpRequest& src) {

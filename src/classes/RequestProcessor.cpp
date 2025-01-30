@@ -26,36 +26,48 @@ void				RequestProcessor::setRequest(const HttpRequest& request) {
 	this->_request = request;
 }
 bool				RequestProcessor::process(void) {
-	switch (this->_request.getMethodType()) {
-		case (GET):
-			this->getMethod();
-		break;
-		case (POST):
-			this->postMethod();
-		break;
-		case (PUT):
-			this->putMethod();
-		break;
-		case (PATCH):
-			this->patchMethod();
-		break;
-		case (DELETE):
-			this->deleteMethod();
-		break;
-		case (HEAD):
-			this->headMethod();
-		break;
-		case (OPTIONS):
-			this->optionsMethod();
-		break;
-		default:
-		break;
-	}
+	
+	// Log::debug(this->_request.getOriginalString());
+	// Log::debug(this->_request.getBody());
+	
+	Route route = this->resolveRoute(this->_request.getTargetRoute());
+	if (route.getRoutePath() == "")
+		this->_response.setCode(404);
+	else if (route.getMethod(this->_request.getMethodType()) == false)
+		this->_response.setCode(403);
+	else
+		switch (this->_request.getMethodType()) {
+			case (GET):
+				this->getMethod(route);
+			break;
+			case (POST):
+				this->postMethod(route);
+			break;
+			case (PUT):
+				this->putMethod(route);
+			break;
+			case (PATCH):
+				this->patchMethod(route);
+			break;
+			case (DELETE):
+				this->deleteMethod(route);
+			break;
+			case (HEAD):
+				this->headMethod(route);
+			break;
+			case (OPTIONS):
+				this->optionsMethod(route);
+			break;
+			default:
+			break;
+		}
 	if (this->_response.getCode() != 200 && this->_response.getCode() != 301)
 		this->doErrorPage();
 	if (this->_request.getOther("Connection") == "keep-alive" && this->_response.getCode() != 301)
 		this->_response.setKeepAlive(true);
-	this->sendResponse(this->_response.toString());
+	if (this->send(this->_response.getFullHeader()) == false
+		|| this->send(this->_response.getContent()) == false)
+		return (false);
 	return (this->_response.getKeepAlive());
 }
 HttpResponse		RequestProcessor::readFileToResponse(const std::string& filePath) {
@@ -109,16 +121,7 @@ void				RequestProcessor::doErrorPage(void) {
 	manualErroContent += httpStatusCodeToString(this->_response.getCode()) + std::string("!</div></div></body></html>");
 	this->_response.setContent(manualErroContent);
 }
-void				RequestProcessor::getMethod(void) {
-	Route route = this->resolveRoute(this->_request.getTargetRoute());
-	if (route.getRoutePath() == "") {
-		this->_response.setCode(404);
-		return ;
-	}
-	else if (route.getMethod("GET") == false) {
-		this->_response.setCode(403);
-		return ;
-	}
+void				RequestProcessor::getMethod(const Route& route) { 
 	if (route.getRedirect() != "") {
 		if (route.getRedirect().find("http") == std::string::npos)
 			this->_response.doRedirectResponse(std::string("http://") + this->_server->getServerConfig().getListen().toString() + route.getRedirect());
@@ -130,19 +133,28 @@ void				RequestProcessor::getMethod(void) {
 	else
 		this->_response = this->readFileToResponse(this->_request.getTargetRoute());
 }
-void				RequestProcessor::postMethod() {
-	Log::debug("POST REQUESTED");
-	Log::debug(stp_itoa(this->_request.getContentLength()));
+void				RequestProcessor::postMethod(const Route& route) {
+	int	startPoint = this->_request.getBody().find("\r\n\r\n") + 4;
+	std::string content(this->_request.getBody().substr(startPoint, this->_request.getBody().rfind(this->_request.getBody().substr(0, this->_request.getBody().find('\n') - 1)) - 2 - startPoint));
+	int	filenameStart = this->_request.getBody().find("filename=\"") + 10;
+	std::string filename(this->_request.getBody().substr(filenameStart, this->_request.getBody().find("\"", filenameStart) - filenameStart));
+	// std::ofstream file(std::string(std::string("./public") + route.getRoutePath() + std::string("/LyraCrop.txt")).c_str(), std::ios::out | std::ios::binary);
+	this->createFile(route.getRoutePath(), filename, content);
 }
-void				RequestProcessor::putMethod() {
+void				RequestProcessor::putMethod(const Route& route) {
+	(void)route;
 }
-void				RequestProcessor::patchMethod() {
+void				RequestProcessor::patchMethod(const Route& route) {
+	(void)route;
 }
-void				RequestProcessor::deleteMethod() {
+void				RequestProcessor::deleteMethod(const Route& route) {
+	(void)route;
 }
-void				RequestProcessor::headMethod() {
+void				RequestProcessor::headMethod(const Route& route) {
+	(void)route;
 }
-void				RequestProcessor::optionsMethod() {
+void				RequestProcessor::optionsMethod(const Route& route) {
+	(void)route;
 }
 Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 	Route route = this->_server->getServerConfig().getRoute(routePath);
@@ -150,14 +162,35 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 		return (route);
 	return (this->_server->getServerConfig().getRoute(routePath.substr(0, routePath.rfind("/") + 1)));
 }
-void				RequestProcessor::sendResponse(const std::string& responseString) {
+bool				RequestProcessor::send(const std::string& message) {
+	Log::error("Send Start");
+	char clientTest[1];
+	size_t n;
 	size_t sent = 0;
-	while (sent < responseString.size()) {
-    	size_t n = ::send(this->_clientFD, responseString.c_str() + sent, responseString.size() - sent, 0);
+	while (sent < message.size()) {
+		Log::error("Sending...");
+		if (recv(this->_clientFD, clientTest, 1, MSG_DONTWAIT) == 0) {
+			Log::error("The client closed connection while sending.");
+			return (false);
+		}
+    	n = ::send(this->_clientFD, message.c_str() + sent, message.size() - sent,  MSG_NOSIGNAL);
+		Log::error("Sended " + stp_itoa(n));
     	if ((int)n <= 0) {
 	        Log::error("Send failed for FD " + stp_itoa(this->_clientFD));
-        	return ;
+        	return (false);
     	}
     	sent += n;
 	}
+	Log::error("Send End");
+	return (true);
+}
+int					RequestProcessor::createFile(const std::string& path, const std::string& filename, const std::string& content) {
+	std::ofstream file(std::string(std::string("./public") + path + std::string("/") + filename).c_str(), std::ios::out | std::ios::binary);
+    if (!file) {
+        Log::error("Error while creating file.");
+		return (-1);
+	}
+	file.write(content.c_str(), content.size());
+	file.close();
+	return (0);
 }
