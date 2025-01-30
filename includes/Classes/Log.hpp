@@ -31,6 +31,7 @@ class Log {
 		static bool	getErrorState(void);
 		static bool	getDebugState(void);
 		static void	log(const std::string& message);
+		static void	logNoEndl(const std::string& message);
 		static void	info(const std::string& message);
 		static void	warning(const std::string& message);
 		static void	error(const std::string& message);

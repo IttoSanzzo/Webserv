@@ -22,6 +22,12 @@ void	Log::log(const std::string& message) {
 		std::cout << LOGCOLOR_LOG << message << "\033[0m" << std::endl;
 	}
 }
+void	Log::logNoEndl(const std::string& message) {
+	if (Log::key_log) {
+		Log::timestamp();
+		std::cout << LOGCOLOR_LOG << message << "\033[0m";
+	}
+}
 void	Log::info(const std::string& message) {
 	if (Log::key_info) {
 		Log::timestamp();

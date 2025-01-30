@@ -171,9 +171,9 @@ bool				RequestProcessor::send(const std::string& message) {
 			Log::error("The client closed connection while sending.");
 			return (false);
 		}
-		Log::error("Sending...");
+		Log::logNoEndl("Sending...");
     	n = ::send(this->_clientFD, message.c_str() + sent, message.size() - sent,  MSG_NOSIGNAL);
-		Log::error("Sended " + stp_itoa(n));
+		Log::log("Sended " + stp_itoa(n));
     	if ((int)n <= 0) {
 	        Log::error("Send failed for FD " + stp_itoa(this->_clientFD));
         	return (false);
