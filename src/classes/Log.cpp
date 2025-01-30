@@ -28,6 +28,10 @@ void	Log::logNoEndl(const std::string& message) {
 		std::cout << LOGCOLOR_LOG << message << "\033[0m";
 	}
 }
+void	Log::logNoTimestamp(const std::string& message) {
+	if (Log::key_log)
+		std::cout << LOGCOLOR_LOG << message << "\033[0m" << std::endl;
+}
 void	Log::info(const std::string& message) {
 	if (Log::key_info) {
 		Log::timestamp();
@@ -55,6 +59,16 @@ void	Log::debug(const std::string& message) {
 		Log::timestamp();
 		std::cout << LOGCOLOR_DEBUG << message << "\033[0m" << std::endl;
 	}
+}
+void	Log::debugNoEndl(const std::string& message) {
+	if (Log::key_debug) {
+		Log::timestamp();
+		std::cout << LOGCOLOR_DEBUG << message << "\033[0m";
+	}
+}
+void	Log::debugNoTimestamp(const std::string& message) {
+	if (Log::key_debug)
+		std::cout << LOGCOLOR_DEBUG << message << "\033[0m" << std::endl;
 }
 void	Log::omni(const LogType& type, const std::string& message) {
 	switch (type) {

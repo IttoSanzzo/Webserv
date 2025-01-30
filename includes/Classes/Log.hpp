@@ -32,11 +32,14 @@ class Log {
 		static bool	getDebugState(void);
 		static void	log(const std::string& message);
 		static void	logNoEndl(const std::string& message);
+		static void	logNoTimestamp(const std::string& message);
 		static void	info(const std::string& message);
 		static void	warning(const std::string& message);
 		static void	error(const std::string& message);
 		static void	error(const std::exception& ex);
 		static void	debug(const std::string& message);
+		static void	debugNoEndl(const std::string& message);
+		static void	debugNoTimestamp(const std::string& message);
 		static void	omni(const LogType& type, const std::string& message);
 	private:
 		static void	timestamp(void);

@@ -11,8 +11,10 @@ t_contentType	contentTypeFromString(const std::string& contentType) {
 		return (imagePng);
 	else if (contentType == ".jpeg")
 		return (imageJpeg);
-		else if (contentType == ".mp4")
+	else if (contentType == ".mp4")
 		return (videoMp4);
+	else if (contentType == ".svg")
+		return (imageSvgXml);
 	else if (contentType == "application/x-www-form-urlencoded")
 		return (appXWwwFormUrlencoded);
 	else if (contentType == "multipart/form-data")
@@ -39,6 +41,9 @@ std::string		contentTypeToString(const t_contentType& contentType) {
 		break;
 		case (videoMp4):
 			return ("video/mp4");
+		break;
+		case (imageSvgXml):
+			return ("multipart/form-data");
 		break;
 		case (appXWwwFormUrlencoded):
 			return ("application/x-www-form-urlencoded");
