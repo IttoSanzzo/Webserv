@@ -33,6 +33,7 @@ class RequestProcessor {
 		void				optionsMethod(const Route& route);
 		Route				resolveRoute(const std::string& routePath);
 		void				autoIndexingResponse(const std::string& targetRoute);		
+		std::string			autoIndexingHTML(DIR* dir);
 		bool				send(const std::string& message);
 		int					createFile(const std::string& path, const std::string& filename, const std::string& content);
 };

@@ -11,5 +11,7 @@ bool						stp_checkSufix(const std::string& str, const std::string& sufix);
 std::string					stp_itoa(const int& number);
 std::string					stp_btoa(const bool& value);
 void*						stp_memset(void* target, const int& value, const size_t& size);
+bool						stp_isFolder(const std::string& path);
+void						stp_sortInsert(std::vector<std::string>& vector, const std::string& newEntry);
 
 #endif

@@ -1,29 +1,32 @@
 body {
 	background-image: linear-gradient(to right, grey, gray, darkgray);
 }
-
 h1 {
 	text-align: center;
 	font-size: 55px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 15px;
 }
-
 ul {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
 }
-
 li {
-	display: inline-block;
-	justify-content: center;
+	display: block;
+	padding-left: 10px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 15px;
 }
-li a {
-	color: darkblue;
+div {
+	border: 1px solid red;
+}
+a {
+	color: rgb(25, 25, 137);
 	text-decoration-line: none;
-	display: inline-block;
-	margin-bottom: 0px;
+	font-size: 15px;
+	width: 100%;
 }
-
 li img {
 	height: 30px;
 	width: 30px;

@@ -97,3 +97,20 @@ void*						stp_memset(void* target, const int& value, const size_t& size) {
 		((unsigned char *)target)[i] = value;
 	return (target);
 }
+bool						stp_isFolder(const std::string& path) {
+	DIR* folder = opendir(path.c_str());
+	if (folder != NULL) {
+		closedir(folder);
+		return (true);
+	}
+	return (false);
+}
+void						stp_sortInsert(std::vector<std::string>& vector, const std::string& newEntry) {
+	for (size_t i = 0; i < vector.size(); ++i) {
+		if (vector[i].compare(newEntry) > 0) {
+			vector.insert(vector.begin() + i, newEntry);
+			return ;
+		}
+	}
+	vector.push_back(newEntry);
+}

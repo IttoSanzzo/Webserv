@@ -189,7 +189,6 @@ Route				RequestProcessor::resolveRoute(const std::string& routePath) {
 		return (route);
 	std::string	fatherPath = routePath.substr(0, routePath.rfind("/", routePath.size() - 2) + 1);
 	while (fatherPath != "/") {
-		Log::error(fatherPath);
 		route = this->_server->getServerConfig().getRoute(fatherPath);
 		if (route.getRoutePath() != "")
 			return (route);
@@ -206,25 +205,29 @@ void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 	}
 	this->_response.setCode(200);
 	this->_response.setType(textHtml);
+	this->_response.setContent(this->autoIndexingHTML(dir));
+    closedir(dir);
+}
+std::string			RequestProcessor::autoIndexingHTML(DIR* dir) {
 	std::string	body(std::string("<html><head><title>Index of ") + this->_request.getTargetRoute() + std::string("</title><link rel=\"stylesheet\" href=\"/server/autoIndex.css\" /></head><body>"));
 	body += std::string("<h1>Index of ") + this->_request.getTargetRoute() + std::string("</h1><ul>");
 	struct dirent*	entry;
-	std::string		entryPath;
-	std::string		className;
+	std::vector<std::string> entries;
 	while ((entry = readdir(dir)) != NULL) {
 		if (entry->d_name[0] == '.')
 			continue;
-		entryPath = this->_request.getTargetRoute() + entry->d_name;
-		DIR* testFolder = opendir(("./public/" + this->_request.getTargetRoute() + entry->d_name).c_str());
-		if (testFolder != NULL) {
-			body += "<li><img src=\"/server/folder.png\" /><a href=\"" + entryPath + std::string("/\">") + entry->d_name + std::string("</a></li>");
-			closedir(testFolder);
-		}
-		else
-			body += "<li><a href=\"" + entryPath + std::string("\" target=\"_blank\" ><img src=\"") + contentTypeToImage(contentTypeFromFile(entry->d_name)) + std::string("\" />") + entry->d_name + std::string("</a></li>");
+		stp_sortInsert(entries, entry->d_name);
 	}
-	this->_response.setContent(body + "</ul></body></html>");
-    closedir(dir);
+	std::string		entryPath;
+	std::string		className;
+	for (size_t i = 0; i <  entries.size(); ++i) {
+		entryPath = this->_request.getTargetRoute() + entries[i];
+		if (stp_isFolder("./public/" + this->_request.getTargetRoute() + entries[i]))
+			body += "\n<a href=\"" + entryPath + std::string("/\"><li><img src=\"/server/folder.png\" />") + entries[i] + std::string("</li></a>");
+		else
+			body += "\n<a href=\"" + entryPath + std::string("\" target=\"_blank\"><li><img src=\"") + contentTypeToImage(contentTypeFromFile(entries[i])) + std::string("\" />") + entries[i] + std::string("</li></a>");
+	}
+	return (body + "\n</ul></body></html>");
 }
 bool				RequestProcessor::send(const std::string& message) {
 	char clientTest[1];
