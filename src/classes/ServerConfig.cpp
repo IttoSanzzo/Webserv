@@ -6,7 +6,6 @@ ServerConfig::ServerConfig(void) {
 	this->_listen.host = 0;
 	this->_server_name = "";
 	this->_dataDirectory = "";
-	this->_root = "";
 	this->_index = "";
 	this->_autoindex = false;
 	this->_client_max_body_size = MAX_CLI_SIZE;
@@ -19,12 +18,12 @@ ServerConfig::ServerConfig(const JsonNode& configJson) {
 	this->setHost(configJson);
 	this->setServerName(configJson);
 	this->setDataDirectory(configJson);
-	this->setRoot(configJson);
 	this->setIndex(configJson);
 	this->setClientMaxBodySize(configJson);
 	this->setAutoindex(configJson);
 	this->setErrorPages(configJson);
 	this->setRoutes(configJson);
+	this->setCgiRelation(configJson);
 }
 ServerConfig&	ServerConfig::operator=(const ServerConfig& src) {
 	if (this != &src)
@@ -56,10 +55,6 @@ void			ServerConfig::setServerName(const std::string& server_name) {
 void			ServerConfig::setDataDirectory(const std::string& dataDirectory) {
 	this->_dataDirectory = dataDirectory;
 }
-void			ServerConfig::setRoot(const std::string& root) {
-	// TODO ServerConfig::setRoot
-	this->_root = root;
-}
 void			ServerConfig::setIndex(const std::string& index) {
 	this->_index = index;
 }
@@ -68,6 +63,9 @@ void			ServerConfig::setAutoindex(bool autoindex) {
 }
 void			ServerConfig::setClientMaxBodySize(int body_size) {
 	this->_client_max_body_size = body_size;
+}
+void			ServerConfig::setCgiRelation(const std::string& extension, const std::string& path) {
+	this->_cgiRelations[extension] = path;
 }
 t_listen		ServerConfig::getListen(void) const {
 	return (this->_listen);
@@ -84,9 +82,6 @@ std::string		ServerConfig::getServerName(void) const {
 std::string		ServerConfig::getDataDirectory(void) const {
 	return (this->_dataDirectory);
 }
-std::string		ServerConfig::getRoot(void) const {
-	return (this->_root);
-}
 std::string		ServerConfig::getIndex(void) const {
 	return (this->_index);
 }
@@ -102,10 +97,16 @@ std::string		ServerConfig::getErrorPage(const short& pos) {
 Route			ServerConfig::getRoute(const std::string& page) {
 	return (this->_routes[page]);
 }
-std::map<short, std::string>&	ServerConfig::getErrorPagesMap(void) {
+std::string		ServerConfig::getCgiPath(const std::string& extension) {
+	return (this->_cgiRelations[extension]);
+}
+std::map<std::string, std::string>& ServerConfig::getCgiPaths(void) {
+	return (this->_cgiRelations);
+}
+std::map<short, std::string>&		ServerConfig::getErrorPagesMap(void) {
 	return (this->_error_pages);
 }
-std::map<std::string, Route>&	ServerConfig::getRoutesMap(void) {
+std::map<std::string, Route>&		ServerConfig::getRoutesMap(void) {
 	return (this->_routes);
 }
 std::string		ServerConfig::toString(void) {
@@ -114,10 +115,14 @@ std::string		ServerConfig::toString(void) {
 	serverConfigInfo += "\tPort.......: " + stp_itoa(this->_listen.port) + "\n";
 	serverConfigInfo += "\tName.......: " + this->_server_name + "\n";
 	serverConfigInfo += "\tDataDir....: " + this->_dataDirectory + "\n";
-	serverConfigInfo += "\tRoot.......: " + this->_root + "\n";
 	serverConfigInfo += "\tIndex......: " + this->_index + "\n";
 	serverConfigInfo += "\tAutoindex..: " + stp_btoa(this->_autoindex) + "\n";
 	serverConfigInfo += "\tCliMaxSize.: " + stp_itoa(this->_client_max_body_size);
+	if (this->_cgiRelations.size() > 0) {
+		serverConfigInfo += std::string("\n\tCGI Paths->");
+		for (std::map<std::string, std::string>::iterator i = this->_cgiRelations.begin(); i != this->_cgiRelations.end(); ++i)
+			serverConfigInfo += "\n\t\tCGI Path[" + i->first + "].: " + i->second;
+	}
 	if (this->_error_pages.size() > 0) {
 		serverConfigInfo += std::string("\n\tErrorPages->");
 		for (std::map<short, std::string>::iterator i = this->_error_pages.begin(); i != this->_error_pages.end(); ++i)
@@ -193,18 +198,6 @@ void			ServerConfig::setDataDirectory(const JsonNode& configJson) {
 			throw (ServerConfig::ErrorException(ex.what()));
 	}
 }
-void			ServerConfig::setRoot(const JsonNode& configJson) {
-	try {
-		this->setRoot(configJson.TryGetString("root"));
-	} catch (const std::exception& ex) {
-		if (std::string(ex.what()).find("Not this type") != std::string::npos)
-			throw (ServerConfig::ErrorException("\"root\" Element should be string!"));
-		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
-			this->_root = "docs/fusion_web/";
-		else
-			throw (ServerConfig::ErrorException(ex.what()));
-	}
-}
 void			ServerConfig::setIndex(const JsonNode& configJson) {
 	try {
 		this->setIndex(configJson.TryGetString("index"));
@@ -273,6 +266,35 @@ void			ServerConfig::setRoutes(const JsonNode& configJson) {
 		this->_routes[route.getRoutePath()] = route;
 	}
 }
+void			ServerConfig::setCgiRelation(const JsonNode& configJson) {
+	JsonChildren cgiChildren;
+	try {
+		cgiChildren = configJson.TryGetChildren("cgi");
+	} catch (const std::exception& ex) {
+		if (std::string(ex.what()).find("Not this type") != std::string::npos)
+			throw (ServerConfig::ErrorException("\"cgi\" Element should be children!"));
+		else if (std::string(ex.what()).find("Not Found") != std::string::npos)
+			return ;
+		else
+			throw (ServerConfig::ErrorException(ex.what()));
+	}
+	for (size_t i = 0; i < cgiChildren.GetSize(); ++i)
+		this->parseCgiChild(cgiChildren.GetChildNode(i));
+}
+void			ServerConfig::parseCgiChild(const JsonNode& cgiChild) {
+	std::string	path = this->parseCgiElement(cgiChild, "path");
+	std::string	extension = this->parseCgiElement(cgiChild, "extension");
+	this->_cgiRelations[extension] = path;
+}
+std::string		ServerConfig::parseCgiElement(const JsonNode& cgiChild, const std::string& element) {
+	try {
+		return (cgiChild.TryGetString(element));
+	} catch (const std::exception& ex) {
+		if (std::string(ex.what()).find("Not this type") != std::string::npos)
+			throw (ServerConfig::ErrorException("\"cgi." + element + "\" Element should be string!"));
+		throw (ServerConfig::ErrorException(ex.what()));
+	}
+}
 void			ServerConfig::parseErrorChild(const JsonNode& errorChild) {
 	std::string	page = this->parseErrorElement(errorChild, "page");
 	if (stp_checkSufix(page, ".html") == false)
@@ -299,10 +321,10 @@ void			ServerConfig::deepCopy(const ServerConfig& src) {
 	this->_listen = src._listen;
 	this->_server_name = src._server_name;
 	this->_dataDirectory = src._dataDirectory;
-	this->_root = src._root;
 	this->_index = src._index;
 	this->_autoindex = src._autoindex;
 	this->_client_max_body_size = src._client_max_body_size;
 	this->_error_pages = src._error_pages;
 	this->_routes = src._routes;
+	this->_cgiRelations = src._cgiRelations;
 }

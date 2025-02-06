@@ -114,3 +114,11 @@ void						stp_sortInsert(std::vector<std::string>& vector, const std::string& ne
 	}
 	vector.push_back(newEntry);
 }
+char*						stp_strdup(const std::string& src) {
+	char* ret = (char*)malloc((src.size() + 1) * sizeof(char));
+	size_t i = -1;
+	while (src[++i])
+		ret[i] = src[i];
+	ret[i] = '\0';
+	return (ret);
+}

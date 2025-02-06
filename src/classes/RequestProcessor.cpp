@@ -61,7 +61,11 @@ bool				RequestProcessor::process(void) {
 		this->doErrorPage();
 	if (this->_request.getOther("Connection") == "keep-alive" && this->_response.getCode() != 301)
 		this->_response.setKeepAlive(true);
-	if (this->send(this->_response.getFullHeader()) == false
+	if (route.getCgi() == true && this->_response.getCode() != 501) {
+		this->send(this->_response.getContent());
+		return (false);
+	}
+	else if (this->send(this->_response.getFullHeader()) == false
 		|| this->send(this->_response.getContent()) == false)
 		return (false);
 	return (this->_response.getKeepAlive());
@@ -127,6 +131,8 @@ void				RequestProcessor::getMethod(const Route& route) {
 		else
 			this->_response.doRedirectResponse(route.getRedirect());
 	}
+	else if (route.getCgi())
+			this->runCgi(route.getIndex());
 	else if (route.getIndex() != "")
 		this->_response = this->readFileToResponse(route.getIndex());
 	else
@@ -207,6 +213,13 @@ void				RequestProcessor::autoIndexingResponse(const std::string& targetRoute) {
 	this->_response.setType(textHtml);
 	this->_response.setContent(this->autoIndexingHTML(dir));
     closedir(dir);
+}
+void				RequestProcessor::runCgi(const std::string& index) {
+	if (index == "") {
+		this->_response.setCode(503);
+		return ;
+	}
+	this->_response = this->_server->getCgiEngine().runCgi(index, this->_request);
 }
 std::string			RequestProcessor::autoIndexingHTML(DIR* dir) {
 	std::string	body(std::string("<html><head><title>Index of ") + this->_request.getTargetRoute() + std::string("</title><link rel=\"stylesheet\" href=\"/server/autoIndex.css\" /></head><body>"));

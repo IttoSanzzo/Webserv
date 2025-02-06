@@ -25,6 +25,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_body = "";
 	this->setHeaderPart(request.substr(0, request.find("\r\n\r") + 1));
 	this->setBody(request.substr(request.find("\r\n\r") + 4));
+	this->doQueryParameters(this->getTargetRoute());
 }
 HttpRequest&	HttpRequest::operator=(const HttpRequest& src) {
 	if (this != &src)
@@ -95,6 +96,12 @@ std::string		HttpRequest::getAcceptEncoding(const size_t& pos) const {
 std::string		HttpRequest::getOther(const std::string& name) {
 	return (this->_others[name]);
 }
+std::string		HttpRequest::getQueryParameter(const std::string& name) {
+	return (this->_queryParameters[name]);
+}
+std::map<std::string, std::string>&	HttpRequest::getQueryParameters(void) {
+	return (this->_queryParameters);
+}
 std::map<std::string, std::string>&	HttpRequest::getOther(void) {
 	return (this->_others);
 }
@@ -125,6 +132,19 @@ void			HttpRequest::setHeaderSwitch(const std::string& name, const std::string& 
 	else
 		this->_others[name] = value;
 }
+void			HttpRequest::doQueryParameters(const std::string& fullRoute) {
+	size_t	questionMark = fullRoute.find('?');
+	if (questionMark == std::string::npos)
+		return ;
+	this->_targetRoute = this->_targetRoute.substr(0, questionMark);
+	std::vector<std::string> fullQueryParameters = stp_split(fullRoute.substr(questionMark + 1), "&");
+	std::vector<std::string> queryPar;
+	for (size_t i = 0; i < fullQueryParameters.size(); ++i) {
+		queryPar = stp_split(fullQueryParameters[i], "=");
+		if (queryPar.size() > 1)
+			this->_queryParameters[queryPar[0]] = queryPar[1];
+	}
+}
 std::string		HttpRequest::toString(void) {
 	std::string	returnString = "Method: " + methodToString(this->getMethodType()) + "\n";
 	returnString += "Route: " + this->getTargetRoute() + "\n";
@@ -137,6 +157,8 @@ std::string		HttpRequest::toString(void) {
 		returnString += "\n" + std::string("AcceptEncoding: ") + this->getAcceptEncoding(i);
 	for (std::map<std::string, std::string>::iterator i = this->_others.begin(); i != this->_others.end(); ++i)
 		returnString += "\n" + i->first + std::string(": ") + i->second;
+	for (std::map<std::string, std::string>::iterator i = this->_queryParameters.begin(); i != this->_queryParameters.end(); ++i)
+		returnString += "\nQuery |" + i->first + std::string("=") + i->second + std::string("");
 	return (returnString);
 }
 void			HttpRequest::deepCopy(const HttpRequest& src) {
@@ -151,4 +173,5 @@ void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_acceptEncoding = src._acceptEncoding;
 	this->_body = src._body;
 	this->_others = src._others;
+	this->_queryParameters = src._queryParameters;
 }

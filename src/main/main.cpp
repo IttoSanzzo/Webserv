@@ -9,7 +9,7 @@ void infoAllServerSettings(ServerConfigArray& serverConfigs) {
 	Log::debug("Server Info Given");
 }
 
-int	main(int ac, char** av) {
+int	main(int ac, char** av, char** ev) {
 	std::string	serverConfigurationFilePath = DEFAULT_CONFIG;
 	if (MAX_CLI_SIZE > 4000) {
 		Log::error("You should not set Max Client Body Size above 4000!");
@@ -25,6 +25,7 @@ int	main(int ac, char** av) {
 	if (cluster.getError() > 0)
 		return (cluster.getError());
 	infoAllServerSettings(cluster.getServerConfigArray());
+	CgiEngine::setEnvp(ev);
 	try {
 		cluster.runCluster();
 	} catch (const std::exception& ex) {

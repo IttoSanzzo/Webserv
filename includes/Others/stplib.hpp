@@ -13,5 +13,6 @@ std::string					stp_btoa(const bool& value);
 void*						stp_memset(void* target, const int& value, const size_t& size);
 bool						stp_isFolder(const std::string& path);
 void						stp_sortInsert(std::vector<std::string>& vector, const std::string& newEntry);
+char*						stp_strdup(const std::string& src);
 
 #endif

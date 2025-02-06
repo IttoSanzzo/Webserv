@@ -43,6 +43,7 @@ class	Server;
 class	ServerConfig;
 class	ServerConfigArray;
 class	Route;
+class	CgiEngine;
 class	HttpRequest;
 class	HttpResponse;
 
@@ -55,8 +56,9 @@ class	HttpResponse;
 # include "../CppJsonHandler/includes/JsonHandler.hpp"
 # include "Classes/Log.hpp"
 # include "Classes/ServerConfig.hpp"
-# include "Classes/Route.hpp"
 # include "Classes/ServerConfigArray.hpp"
+# include "Classes/Route.hpp"
+# include "Classes/CgiEngine.hpp"
 # include "Classes/Server.hpp"
 # include "Classes/Cluster.hpp"
 # include "Classes/HttpRequest.hpp"

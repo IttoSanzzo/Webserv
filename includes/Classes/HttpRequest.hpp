@@ -16,6 +16,7 @@ class HttpRequest {
 		std::vector<std::string>			_accept;
 		std::vector<std::string>			_acceptEncoding;
 		std::map<std::string, std::string>	_others;
+		std::map<std::string, std::string>	_queryParameters;
 	public:
 		~HttpRequest(void);
 		HttpRequest(void);
@@ -44,9 +45,12 @@ class HttpRequest {
 		std::string		getAccept(const size_t& pos) const;
 		std::string		getAcceptEncoding(const size_t& pos) const;
 		std::string		getOther(const std::string& name);
+		std::string		getQueryParameter(const std::string& name);
+		std::map<std::string, std::string>&	getQueryParameters(void);
 		std::map<std::string, std::string>&	getOther(void);
 		void			setHeaderPart(const std::string& header);
 		void			setHeaderSwitch(const std::string& name, const std::string& value);
+		void			doQueryParameters(const std::string& fullRoute);
 		std::string		toString(void);
 	private:
 		void			deepCopy(const HttpRequest& src);

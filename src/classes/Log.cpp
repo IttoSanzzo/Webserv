@@ -70,6 +70,10 @@ void	Log::debugNoTimestamp(const std::string& message) {
 	if (Log::key_debug)
 		std::cout << LOGCOLOR_DEBUG << message << "\033[0m" << std::endl;
 }
+void	Log::debugSimple(const std::string& message) {
+	if (Log::key_debug)
+		std::cout << LOGCOLOR_DEBUG << message << "\033[0m";
+}
 void	Log::omni(const LogType& type, const std::string& message) {
 	switch (type) {
 		case (0):

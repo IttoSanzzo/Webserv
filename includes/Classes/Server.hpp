@@ -9,6 +9,7 @@ class Server {
 		int							_socketFd;
 		sockaddr_in					_addr;
 		std::map<long, std::string>	_requests;
+		CgiEngine					_CgiEngine;
 		Server(void);
 	public:
 		~Server(void);
@@ -20,6 +21,7 @@ class Server {
 		ServerConfig&	getServerConfig(void);
 		int				getSocketFd(void) const;
 		sockaddr_in		getAddr(void) const;
+		CgiEngine&		getCgiEngine(void);
 		bool			listenerSetup(void);
 		void			closeSocketFd(void);
 		void			closeSocketFd(const int& socketFd);

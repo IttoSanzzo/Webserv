@@ -7,6 +7,7 @@ Server::Server(const Server& src) {
 Server::Server(const ServerConfig& serverConfig) {
 	this->_serverConfig = serverConfig;
 	this->_socketFd = -1;
+	this->_CgiEngine = CgiEngine(&this->_serverConfig);
 }
 Server&			Server::operator=(const Server& src) {
 	if (this != & src)
@@ -27,6 +28,9 @@ int				Server::getSocketFd(void) const {
 }
 sockaddr_in		Server::getAddr(void) const {
 	return (this->_addr);
+}
+CgiEngine&		Server::getCgiEngine(void) {
+	return (this->_CgiEngine);
 }
 bool			Server::listenerSetup(void) {
 	this->closeSocketFd();
@@ -97,6 +101,8 @@ void			Server::setAddr(void) {
 	this->_addr.sin_port = htons(this->_serverConfig.getPort());
 }
 bool			Server::serveRequest(const HttpRequest& request, const int& clientSocketFd) {
+	// Log::info("\n" + request.getOriginalString());
+
 	RequestProcessor	processor(request, this, clientSocketFd);
 	return (processor.process());
 }
@@ -118,4 +124,5 @@ void			Server::deepCopy(const Server& src) {
 	this->_socketFd = src._socketFd;
 	this->_addr= src._addr;
 	this->_requests = src._requests;
+	this->_CgiEngine = src._CgiEngine;
 }

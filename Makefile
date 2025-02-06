@@ -28,6 +28,7 @@ N_CLAS	=	ServerConfig.cpp		\
 			HttpRequest.cpp			\
 			HttpResponse.cpp		\
 			RequestProcessor.cpp	\
+			CgiEngine.cpp			\
 			Log.cpp
 N_UTIL	=	ws_inet_pton.cpp			\
 			ws_inet_addr.cpp			\

@@ -40,6 +40,7 @@ class Log {
 		static void	debug(const std::string& message);
 		static void	debugNoEndl(const std::string& message);
 		static void	debugNoTimestamp(const std::string& message);
+		static void	debugSimple(const std::string& message);
 		static void	omni(const LogType& type, const std::string& message);
 	private:
 		static void	timestamp(void);

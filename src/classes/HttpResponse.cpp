@@ -56,6 +56,8 @@ size_t			HttpResponse::getSize(void) const {
 	return (this->toString().size());
 }
 std::string		HttpResponse::getHeader(void) const {
+	if (this->_redirect == true)
+		return ("HTTP/1.1 301 Moved Permanently\r\nLocation: " + this->_content +  "\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
 	std::string	header = "HTTP/1.1 ";
 	header += stp_itoa(this->_code);
 	std::string	codeDescription = httpStatusCodeToString(this->_code);
@@ -71,14 +73,14 @@ std::string		HttpResponse::getFullHeader(void) const {
 	return (this->getHeader() + "\r\n\r\n");
 }
 std::string		HttpResponse::toString(void) const {
-	if (this->_redirect == false)
-		return (this->getHeader() + "\r\n\r\n" + this->getContent());
-	return ("HTTP/1.1 301 Moved Permanently\r\nLocation: " + this->_content +  "\r\nContent-Length: 0\r\nConnection: close");
+	if (this->_redirect == true)
+		return ("HTTP/1.1 301 Moved Permanently\r\nLocation: " + this->_content +  "\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+	return (this->getHeader() + "\r\n\r\n" + this->getContent());
 }
 void			HttpResponse::doRedirectResponse(const std::string& target) {
+	this->_code = 301;
 	this->_redirect = true;
 	this->_content = target;
-	this->_code = 301;
 }
 void			HttpResponse::deepCopy(const HttpResponse& src) {
 	this->_code = src._code;
