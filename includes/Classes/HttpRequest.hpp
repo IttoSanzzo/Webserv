@@ -13,9 +13,11 @@ class HttpRequest {
 		std::string							_userAgent;
 		size_t								_contentLength;
 		std::string							_body;
+		std::string							_fullCookie;
 		std::vector<std::string>			_accept;
 		std::vector<std::string>			_acceptEncoding;
 		std::map<std::string, std::string>	_others;
+		std::map<std::string, std::string>	_cookies;
 		std::map<std::string, std::string>	_queryParameters;
 	public:
 		~HttpRequest(void);
@@ -42,9 +44,11 @@ class HttpRequest {
 		std::string		getUserAgent(void) const;
 		size_t			getContentLength(void) const;
 		std::string		getBody(void);
+		std::string		getFullCookie(void) const;
 		std::string		getAccept(const size_t& pos) const;
 		std::string		getAcceptEncoding(const size_t& pos) const;
 		std::string		getOther(const std::string& name);
+		std::string		getCookie(const std::string& name);
 		std::string		getQueryParameter(const std::string& name);
 		std::map<std::string, std::string>&	getQueryParameters(void);
 		std::map<std::string, std::string>&	getOther(void);

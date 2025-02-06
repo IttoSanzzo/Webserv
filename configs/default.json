@@ -99,6 +99,12 @@
 					"index": "/cgi-bin/test.py",
 					"cgi": true,
 					"allow_methods": "GET POST DELETE"
+				},
+				{
+					"routePath": "/cookie-py",
+					"index": "/cgi-bin/cookie.py",
+					"cgi": true,
+					"allow_methods": "GET POST DELETE"
 				}
 			]
 		},

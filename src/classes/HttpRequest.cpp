@@ -10,6 +10,7 @@ HttpRequest::HttpRequest(void) {
 	this->_userAgent = "";
 	this->_contentLength = 0;
 	this->_body = "";
+	this->_fullCookie = "";
 }
 HttpRequest::HttpRequest(const HttpRequest& src) {
 	this->deepCopy(src);
@@ -23,6 +24,7 @@ HttpRequest::HttpRequest(const std::string& request) {
 	this->_userAgent = "";
 	this->_contentLength = 0;
 	this->_body = "";
+	this->_fullCookie = "";
 	this->setHeaderPart(request.substr(0, request.find("\r\n\r") + 1));
 	this->setBody(request.substr(request.find("\r\n\r") + 4));
 	this->doQueryParameters(this->getTargetRoute());
@@ -87,6 +89,9 @@ size_t			HttpRequest::getContentLength(void) const {
 std::string		HttpRequest::getBody(void) {
 	return (this->_body);
 }
+std::string		HttpRequest::getFullCookie(void) const {
+	return (this->_fullCookie);
+}
 std::string		HttpRequest::getAccept(const size_t& pos) const {
 	return (this->_accept[pos]);
 }
@@ -95,6 +100,9 @@ std::string		HttpRequest::getAcceptEncoding(const size_t& pos) const {
 }
 std::string		HttpRequest::getOther(const std::string& name) {
 	return (this->_others[name]);
+}
+std::string		HttpRequest::getCookie(const std::string& name) {
+	return (this->_cookies[name]);
 }
 std::string		HttpRequest::getQueryParameter(const std::string& name) {
 	return (this->_queryParameters[name]);
@@ -129,6 +137,14 @@ void			HttpRequest::setHeaderSwitch(const std::string& name, const std::string& 
 		this->_acceptEncoding = stp_split(value, ", ");
 	else if (name == "Content-Length")
 		this->_contentLength = std::atoi(value.c_str());
+	else if (name == "Cookie") {
+		this->_fullCookie = value;
+		std::vector<std::string> individualCookies = stp_split(value, "; ");
+		for (size_t i = 0; i < individualCookies.size(); ++i) {
+			std::vector<std::string> cookie = stp_split(individualCookies[i], "=");
+			this->_cookies[cookie[0]] = cookie[1];
+		}
+	}
 	else
 		this->_others[name] = value;
 }
@@ -157,8 +173,10 @@ std::string		HttpRequest::toString(void) {
 		returnString += "\n" + std::string("AcceptEncoding: ") + this->getAcceptEncoding(i);
 	for (std::map<std::string, std::string>::iterator i = this->_others.begin(); i != this->_others.end(); ++i)
 		returnString += "\n" + i->first + std::string(": ") + i->second;
+	for (std::map<std::string, std::string>::iterator i = this->_cookies.begin(); i != this->_cookies.end(); ++i)
+		returnString += "\nCookie: " + i->first + std::string("=") + i->second;
 	for (std::map<std::string, std::string>::iterator i = this->_queryParameters.begin(); i != this->_queryParameters.end(); ++i)
-		returnString += "\nQuery |" + i->first + std::string("=") + i->second + std::string("");
+		returnString += "\nQuery |" + i->first + std::string("=") + i->second + std::string("|");
 	return (returnString);
 }
 void			HttpRequest::deepCopy(const HttpRequest& src) {
@@ -172,6 +190,8 @@ void			HttpRequest::deepCopy(const HttpRequest& src) {
 	this->_accept = src._accept;
 	this->_acceptEncoding = src._acceptEncoding;
 	this->_body = src._body;
+	this->_fullCookie = src._fullCookie;
 	this->_others = src._others;
+	this->_cookies = src._cookies;
 	this->_queryParameters = src._queryParameters;
 }

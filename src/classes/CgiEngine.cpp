@@ -73,7 +73,7 @@ void			CgiEngine::runFork(const std::string& index, HttpRequest& request, int pi
 	std::exit(20);
 }
 void			CgiEngine::runExtension(const std::string& index, const std::string& extension, HttpRequest& request) {
-	char**	argv = this->formArgv(this->_binPaths[extension], this->_dataDirectory + index, request.getQueryParameters());
+	char**	argv = this->formArgv(this->_binPaths[extension], this->_dataDirectory + index, request.getFullCookie(), request.getQueryParameters());
 	execve(argv[0], argv, CgiEngine::_envp);
 }
 void			CgiEngine::runExtensionless(const std::string& programName, const std::string& extension, const std::string& index, HttpRequest& request) {
@@ -82,12 +82,13 @@ void			CgiEngine::runExtensionless(const std::string& programName, const std::st
 	(void)index;
 	(void)request;
 }
-char**			CgiEngine::formArgv(const std::string& binary, const std::string& program, const std::map<std::string, std::string> queryParameters) {
+char**			CgiEngine::formArgv(const std::string& binary, const std::string& program, const std::string cookies, const std::map<std::string, std::string> queryParameters) {
 	size_t totalParameters = queryParameters.size() * 2;
-	char** argv = (char**)malloc((totalParameters + 3) * sizeof(char*));
+	char** argv = (char**)malloc((totalParameters + 4) * sizeof(char*));
 	argv[0] = stp_strdup(binary);
 	argv[1] = stp_strdup(program);
-	size_t position = 1;
+	argv[2] = stp_strdup(cookies);
+	size_t position = 2;
 	for (std::map<std::string, std::string>::const_iterator i = queryParameters.begin(); i != queryParameters.end(); ++i) {
 		argv[++position] = stp_strdup(i->first);
 		argv[++position] = stp_strdup(i->second);

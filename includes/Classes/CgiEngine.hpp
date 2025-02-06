@@ -25,7 +25,7 @@ class CgiEngine {
 		void			runFork(const std::string& index, HttpRequest& request, int pipeFDs[2]);
 		void			runExtension(const std::string& index, const std::string& extension, HttpRequest& request);
 		void			runExtensionless(const std::string& programName, const std::string& extension, const std::string& index, HttpRequest& request);
-		char**			formArgv(const std::string& binary, const std::string& program, const std::map<std::string, std::string> queryParameters);
+		char**			formArgv(const std::string& binary, const std::string& program, const std::string cookies, const std::map<std::string, std::string> queryParameters);
 		std::string		readPipe(const int& pipeFD);
 		void			deepCopy(const CgiEngine& src);
 };
