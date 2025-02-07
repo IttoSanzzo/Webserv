@@ -46,7 +46,7 @@
 -   Any configured route's access permission are recursive to it's sub-routes.
 -   For directory routes, you can set auto-indexing, to send a simple automatic, static and interactive page to the browser, which will show all files and folders inside the accessed routes index, or path.
 
-<p align="center"><img alt="Auto-indexing Example" src="https://i.imgur.com/KY6SA1K.png"></p>
+<p align="center"><img alt="Auto-indexing Example" src="https://i.imgur.com/gsvzbte.png"></p>
 
 -   All paths and routes accessed will be concatenated to the "dataDirectory" configuration. If there's none, then it will be the root of your WebServer.
 -   You can too set routes to redirect to other routes or links, in a routes configuration.
