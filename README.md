@@ -62,7 +62,7 @@
 
 ## Error Handling
 
--   While there is an automatic error handling, that serves static pages for each error code, you can set your own error pages, by inserting them at the configuration file.
+-   While there is an automatic error handling, that serves static pages for each error code, you can set your own error pages, by inserting them in the configuration file.
 
 <p align="center"><img alt="Error 404 example" src="https://i.imgur.com/cAVExjw.png"></p>
 
