@@ -22,7 +22,9 @@
 
 ## Compiling
 
--   First, just clone it, and use `make` inside the cloned repository. This will compile the files into a "Webserv" file.
+-   First, just clone it.
+-   Then use `git submodule update --init --recursive` inside the cloned repository. This will initiate the [Json Engine](https://github.com/IttoSanzzo/CppJsonHandler) sub-repo.
+-   Now use `make`. This will compile the files into a `webserv` file.
 
 ## How to use it
 
