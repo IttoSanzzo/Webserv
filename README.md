@@ -24,7 +24,7 @@
 
 -   First, just clone it.
 -   Then use `git submodule update --init --recursive` inside the cloned repository. This will initiate the [Json Engine](https://github.com/IttoSanzzo/CppJsonHandler) sub-repo.
--   Now use `make`. This will compile the files into a `webserv` file.
+-   Now use `make` and it will compile the files into a `webserv` file.
 
 ## How to use it
 
