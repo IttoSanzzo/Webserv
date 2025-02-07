@@ -6,6 +6,7 @@ h1 {
 	font-size: 55px;
 	background-color: rgba(0, 0, 0, 0.5);
 	border-radius: 15px;
+	text-shadow: 0px 0px 5px rgb(255, 255, 255);
 }
 ul {
 	display: grid;
@@ -22,7 +23,8 @@ div {
 	border: 1px solid red;
 }
 a {
-	color: rgb(25, 25, 137);
+	color: rgb(255, 255, 255);
+	text-shadow: 0px 0px 5px rgb(0, 0, 0);
 	text-decoration-line: none;
 	font-size: 15px;
 	width: 100%;
