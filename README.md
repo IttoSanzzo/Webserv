@@ -28,7 +28,7 @@
 
 <p align="center"><img width=500px alt="Default Config" src="https://i.imgur.com/KiKU5k7.png"></p>
 
--   You can run it using `./Webserver`, and it will user the default configuration file located at `./configs/default.json`. You can modify the default configuration to your needs, or alternatively, you can run `./Webserv "./path/to/config"` to use a expecific configuration file.
+-   You can run it using `./webserver`, and it will user the default configuration file located at `./configs/default.json`. You can modify the default configuration to your needs, or alternatively, you can run `./webserv "./path/to/config"` to use a expecific configuration file.
 -   It comes with some pre-made configuration files, and mocked pages, to exemplify how it works.
 -   It will accept any valid json file that has the minimal information to run a server, which are a valid port, a valid host, and some routes.
 -   Other aspects can be tweaked as shown in the example image above.
