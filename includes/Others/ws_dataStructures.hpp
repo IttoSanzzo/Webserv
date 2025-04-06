@@ -42,6 +42,7 @@ typedef enum e_contentType {
 	imageJpeg,
 	videoMp4,
 	imageSvgXml,
+	applicationZip,
 	appXWwwFormUrlencoded,
 	multipartFormData,
 	textPlain,
